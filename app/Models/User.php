@@ -40,5 +40,22 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
+    
+    /**
+     * Get the employee associated with the user.
+     */
+    public function employee()
+    {
+        return $this->hasOne(Employee::class);
+    }
+    
+    /**
+     * Get the student associated with the user.
+     */
+    public function student()
+    {
+        return $this->hasOne(Student::class);
+    }
 }

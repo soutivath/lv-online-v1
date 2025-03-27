@@ -1,0 +1,40 @@
+/* Routes for Admin Dashboard */
+
+// Dashboard
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+
+// Students
+Route::resource('students', App\Http\Controllers\StudentController::class);
+
+// Employees
+Route::resource('employees', App\Http\Controllers\EmployeeController::class);
+
+// Semesters
+Route::resource('semesters', App\Http\Controllers\SemesterController::class);
+
+// Terms
+Route::resource('terms', App\Http\Controllers\TermController::class);
+
+// Years
+Route::resource('years', App\Http\Controllers\YearController::class);
+
+// Tuitions
+Route::resource('tuitions', App\Http\Controllers\TuitionController::class);
+
+// Credits
+Route::resource('credits', App\Http\Controllers\CreditController::class);
+
+// Subjects
+Route::resource('subjects', App\Http\Controllers\SubjectController::class);
+
+// Majors
+Route::resource('majors', App\Http\Controllers\MajorController::class);
+
+// Registrations
+Route::resource('registrations', App\Http\Controllers\RegistrationController::class);
+
+// Payments
+Route::resource('payments', App\Http\Controllers\PaymentController::class);
+
+// Upgrades
+Route::resource('upgrades', App\Http\Controllers\UpgradeController::class);
