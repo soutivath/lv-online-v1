@@ -279,4 +279,23 @@ class StudentController extends Controller
         $pdf = \PDF::loadView('pdfs.students', $data);
         return $pdf->download('all-students.pdf');
     }
+
+    /**
+     * Show the student registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        // Get all data for dropdowns in one go to avoid multiple database queries
+        $years = \App\Models\Year::orderBy('name', 'desc')->get();
+        $terms = \App\Models\Term::orderBy('name')->get();
+        $semesters = \App\Models\Semester::orderBy('name')->get();
+        $majors = \App\Models\Major::with(['semester', 'term', 'year'])
+            ->orderBy('name')
+            ->get();
+        
+        // Pass all data to the view
+        return view('student-registration', compact('years', 'terms', 'semesters', 'majors'));
+    }
 }

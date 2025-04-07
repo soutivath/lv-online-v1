@@ -79,4 +79,10 @@ class SemesterController extends Controller
         $pdf = \PDF::loadView('pdfs.semesters', $data);
         return $pdf->download('all-semesters.pdf');
     }
+
+    public function getSemestersByYearTerm($yearId, $termId)
+    {
+        $semesters = \App\Models\Semester::orderBy('name')->get();
+        return response()->json($semesters);
+    }
 }

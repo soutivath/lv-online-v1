@@ -235,4 +235,14 @@ class MajorController extends Controller
             ], 500);
         }
     }
+
+    public function getMajorsByYearTermSemester($yearId, $termId, $semesterId)
+    {
+        $majors = \App\Models\Major::where('year_id', $yearId)
+            ->where('term_id', $termId)
+            ->where('semester_id', $semesterId)
+            ->orderBy('name')
+            ->get();
+        return response()->json($majors);
+    }
 }

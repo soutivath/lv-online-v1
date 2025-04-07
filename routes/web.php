@@ -37,10 +37,7 @@ Route::get('/', function () {
 })->name('home');
 
 // Student Registration Routes
-Route::get('/student-registration', function () {
-    return view('student-registration');
-})->name('student.registration');
-
+Route::get('/student-registration', [App\Http\Controllers\StudentController::class, 'showRegistrationForm'])->name('student.registration');
 Route::post('/student-register', 'App\Http\Controllers\StudentController@register')->name('student.register');
 
 // Student Upgrade Routes
@@ -49,6 +46,18 @@ Route::post('/student-upgrade-submit', 'App\Http\Controllers\UpgradeController@s
 
 // Make sure the API route is outside middleware groups and accessible to all
 Route::get('/api/subjects-by-major/{major}', 'App\Http\Controllers\UpgradeController@getSubjectsByMajor');
+
+// API routes for dropdown dependencies
+Route::get('/api/academic-years', 'App\Http\Controllers\YearController@getYears');
+Route::get('/api/terms-by-year/{yearId}', 'App\Http\Controllers\TermController@getTermsByYear');
+Route::get('/api/semesters-by-year-term/{yearId}/{termId}', 'App\Http\Controllers\SemesterController@getSemestersByYearTerm');
+Route::get('/api/majors-by-year-term-semester/{yearId}/{termId}/{semesterId}', 'App\Http\Controllers\MajorController@getMajorsByYearTermSemester');
+
+// API routes for dropdown dependencies - make sure they are accessible without authentication
+Route::get('/api/academic-years', [App\Http\Controllers\YearController::class, 'getYears']);
+Route::get('/api/terms-by-year/{yearId}', [App\Http\Controllers\TermController::class, 'getTermsByYear']);
+Route::get('/api/semesters-by-year-term/{yearId}/{termId}', [App\Http\Controllers\SemesterController::class, 'getSemestersByYearTerm']);
+Route::get('/api/majors-by-year-term-semester/{yearId}/{termId}/{semesterId}', [App\Http\Controllers\MajorController::class, 'getMajorsByYearTermSemester']);
 
 // Check user type and redirect accordingly
 Route::get('/', function () {
