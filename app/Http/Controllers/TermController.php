@@ -79,4 +79,10 @@ class TermController extends Controller
         $pdf = \PDF::loadView('pdfs.terms', $data);
         return $pdf->download('all-terms.pdf');
     }
+
+    public function getTermsByYear($yearId)
+    {
+        $terms = \App\Models\Term::orderBy('name')->get();
+        return response()->json($terms);
+    }
 }

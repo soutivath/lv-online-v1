@@ -70,22 +70,22 @@
                                     <input type="tel" class="form-control" id="tell" name="tell" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="email" class="form-label">ອີເມວ</label>
-                                    <input type="email" class="form-control" id="email" name="email">
+                                    <label for="email" class="form-label">ອີເມວ <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <label for="address" class="form-label">ທີ່ຢູ່ປັດຈຸບັນ <span class="text-danger">*</span></label>
-                                    <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                                    <textarea class="form-control" id="address" name="address" rows="3" required maxlength="50"></textarea>
                                 </div>
                             </div>
                             
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="nationality" class="form-label">ສັນຊາດ <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="nationality" name="nationality" value="ລາວ" required>
+                                    <input type="text" class="form-control" id="nationality" name="nationality" value="ລາວ" required maxlength="10">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="picture" class="form-label">ຮູບໂປຣໄຟລ໌ (3x4 ຊມ)</label>
@@ -102,75 +102,183 @@
                         <!-- Step 2: Registration -->
                         <div class="step d-none" id="step2">
                             <h5 class="mb-4">ຂໍ້ມູນການລົງທະບຽນ</h5>
-
-                            <div class="mb-3">
-                                <label for="major" class="form-label">ສາຂາທີ່ຕ້ອງການຮຽນ <span class="text-danger">*</span></label>
-                                <select class="form-select" id="major" name="major" required>
-                                    <option value="" selected disabled>ເລືອກສາຂາ</option>
-                                    <option value="computer_business">ສາຂາໄອທີ (Computer Business Technology)</option>
-                                    <option value="finance_accounting">ສາຂາການເງິນ-ບັນຊີ (Finance-Accounting)</option>
-                                    <option value="business_english">ສາຂາພາສາອັງກິດທຸລະກິດ (Business English)</option>
-                                    <option value="business_chinese">ສາຂາພາສາຈີນທຸລະກິດ (Business Chinese)</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="education_level" class="form-label">ລະດັບການສຶກສາ <span class="text-danger">*</span></label>
-                                <select class="form-select" id="education_level" name="education_level" required>
-                                    <option value="" selected disabled>ເລືອກລະດັບການສຶກສາ</option>
-                                    <option value="diploma">ຊັ້ນກາງ (ອະນຸປະລິນຍາ)</option>
-                                    <option value="bachelor">ຊັ້ນສູງ (ປະລິນຍາຕີ)</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="study_time" class="form-label">ເວລາຮຽນ <span class="text-danger">*</span></label>
-                                <select class="form-select" id="study_time" name="study_time" required>
-                                    <option value="" selected disabled>ເລືອກເວລາຮຽນ</option>
-                                    <option value="morning">ພາກເຊົ້າ (8:00 - 11:30)</option>
-                                    <option value="afternoon">ພາກບ່າຍ (13:30 - 16:30)</option>
-                                    <option value="evening">ພາກຄ່ຳ (17:30 - 19:30)</option>
-                                    <option value="weekend">ພາກວັນເສົາ-ອາທິດ</option>
-                                </select>
-                            </div>
-
-                            <div class="mb-4 border rounded p-3 bg-light">
-                                <div class="mb-3">
-                                    <label for="previous_school" class="form-label">ຊື່ໂຮງຮຽນທີ່ຮຽນຈົບມາ <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="previous_school" name="previous_school" required>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="graduation_year" class="form-label">ປີທີ່ຮຽນຈົບ <span class="text-danger">*</span></label>
-                                        <input type="number" class="form-control" id="graduation_year" name="graduation_year" min="2000" max="2030" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="gpa" class="form-label">ຄະແນນສະເລ່ຍ</label>
-                                        <input type="number" class="form-control" id="gpa" name="gpa" min="0" max="10" step="0.01">
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="score" class="form-label">ໃບປະກາສະນີຍະບັດ <span class="text-danger">*</span></label>
-                                    <input type="file" class="form-control" id="score" name="score" accept="image/*" required>
-                                    <div class="form-text">ອັບໂຫລດໃບປະກາສະນີຍະບັດ ຫຼື ໃບຢັ້ງຢືນການສຶກສາ (ຮູບພາບ)</div>
-                                </div>
-                            </div>
-
+                            
+                            <!-- Academic selections -->
                             <div class="mb-4">
-                                <label for="dormitory" class="form-label">ຕ້ອງການພັກຫໍພັກຂອງວິທະຍາໄລບໍ່?</label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="dormitory" id="dormitory_yes" value="yes">
-                                    <label class="form-check-label" for="dormitory_yes">
-                                        ຕ້ອງການ
-                                    </label>
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">ເລືອກສົກຮຽນ ແລະ ສາຂາ</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="academic_year_id" class="form-label">ສົກຮຽນ <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="academic_year_id" name="academic_year_id" required>
+                                                    <option value="" selected disabled>ເລືອກສົກຮຽນ</option>
+                                                    <!-- Will be populated dynamically -->
+                                                </select>
+                                                <div class="invalid-feedback">ກະລຸນາເລືອກສົກຮຽນ</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="term_id" class="form-label">ເທີມ <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="term_id" name="term_id" disabled required>
+                                                    <option value="" selected disabled>ເລືອກເທີມ</option>
+                                                    <!-- Will be populated after year is selected -->
+                                                </select>
+                                                <div class="invalid-feedback">ກະລຸນາເລືອກເທີມ</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="semester_id" class="form-label">ພາກຮຽນ <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="semester_id" name="semester_id" disabled required>
+                                                    <option value="" selected disabled>ເລືອກພາກຮຽນ</option>
+                                                    <!-- Will be populated after term is selected -->
+                                                </select>
+                                                <div class="invalid-feedback">ກະລຸນາເລືອກພາກຮຽນ</div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="major_id" class="form-label">ສາຂາທີ່ຕ້ອງການຮຽນ <span class="text-danger">*</span></label>
+                                                <div class="input-group">
+                                                    <select class="form-select" id="major_id" name="major_id" disabled required>
+                                                        <option value="" selected disabled>ເລືອກສາຂາ</option>
+                                                        <!-- Will be populated after semester is selected -->
+                                                    </select>
+                                                    <button type="button" class="btn btn-primary" id="add-major-btn" disabled>
+                                                        <i class="bi bi-plus"></i> ເພີ່ມ
+                                                    </button>
+                                                </div>
+                                                <div class="invalid-feedback">ກະລຸນາເລືອກສາຂາ</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="dormitory" id="dormitory_no" value="no" checked>
-                                    <label class="form-check-label" for="dormitory_no">
-                                        ບໍ່ຕ້ອງການ
-                                    </label>
+                            </div>
+
+                            <!-- Selected Majors Table -->
+                            <div class="mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0">ສາຂາທີ່ເລືອກ</h6>
+                                        <span class="badge bg-primary" id="selected-major-count">0</span>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped mb-0">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ລຳດັບ</th>
+                                                        <th>ສາຂາ</th>
+                                                        <th>ພາກຮຽນ</th>
+                                                        <th>ເທີມ</th>
+                                                        <th>ສົກຮຽນ</th>
+                                                        <th>ຄ່າຮຽນ</th>
+                                                        <th>ຈັດການ</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="selected-majors-table">
+                                                    <tr id="no-majors-row">
+                                                        <td colspan="7" class="text-center py-3">ຍັງບໍ່ມີສາຂາທີ່ຖືກເລືອກ</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot class="table-light">
+                                                    <tr>
+                                                        <th colspan="5" class="text-end">ລວມ:</th>
+                                                        <th id="major-total-price" class="text-end">0 ກີບ</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Program Type and Study Time -->
+                            <div class="mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">ຂໍ້ມູນການຮຽນ</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="education_level" class="form-label">ລະດັບການສຶກສາ <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="education_level" name="education_level" required>
+                                                    <option value="" selected>ເລືອກລະດັບການສຶກສາ</option>
+                                                    <option value="diploma">ຊັ້ນກາງ (ອະນຸປະລິນຍາ)</option>
+                                                    <option value="bachelor">ຊັ້ນສູງ (ປະລິນຍາຕີ)</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="study_time" class="form-label">ເວລາຮຽນ <span class="text-danger">*</span></label>
+                                                <select class="form-select" id="study_time" name="study_time" required>
+                                                    <option value="" selected disabled>ເລືອກເວລາຮຽນ</option>
+                                                    <option value="morning">ພາກເຊົ້າ (8:00 - 11:30)</option>
+                                                    <option value="afternoon">ພາກບ່າຍ (13:30 - 16:30)</option>
+                                                    <option value="evening">ພາກຄ່ຳ (17:30 - 19:30)</option>
+                                                    <option value="weekend">ພາກວັນເສົາ-ອາທິດ</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Previous Education -->
+                            <div class="mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">ຂໍ້ມູນການສຶກສາທີ່ຜ່ານມາ</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="previous_school" class="form-label">ຊື່ໂຮງຮຽນທີ່ຮຽນຈົບມາ <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="previous_school" name="previous_school" required>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="graduation_year" class="form-label">ປີທີ່ຮຽນຈົບ <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control" id="graduation_year" name="graduation_year" min="2000" max="2030" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="gpa" class="form-label">ຄະແນນສະເລ່ຍ</label>
+                                                <input type="number" class="form-control" id="gpa" name="gpa" min="0" max="10" step="0.01">
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="score" class="form-label">ໃບປະກາສະນີຍະບັດ <span class="text-danger">*</span></label>
+                                            <input type="file" class="form-control" id="score" name="score" accept="image/*" required>
+                                            <div class="form-text">ອັບໂຫລດໃບປະກາສະນີຍະບັດ ຫຼື ໃບຢັ້ງຢືນການສຶກສາ (ຮູບພາບ)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dormitory Option -->
+                            <div class="mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">ຂໍ້ມູນທີ່ພັກ</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <label for="dormitory" class="form-label">ຕ້ອງການພັກຫໍພັກຂອງວິທະຍາໄລບໍ່?</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="dormitory" id="dormitory_yes" value="yes">
+                                            <label class="form-check-label" for="dormitory_yes">
+                                                ຕ້ອງການ
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="dormitory" id="dormitory_no" value="no" checked>
+                                            <label class="form-check-label" for="dormitory_no">
+                                                ບໍ່ຕ້ອງການ
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -246,8 +354,16 @@
                             </div>
 
                             <div class="mb-4">
-                                <label for="payment_date" class="form-label">ວັນທີຊຳລະເງິນ <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" id="payment_date" name="payment_date" required>
+                                <label for="registration_date" class="form-label">ວັນທີຊຳລະເງິນ <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="registration_date" name="registration_date" value="{{ date('Y-m-d') }}" required>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="pro" class="form-label">ສ່ວນຫຼຸດ (%)</label>
+                                    <input type="number" class="form-control" id="pro" name="pro" min="0" max="100" value="0" step="0.01">
+                                    <div class="form-text">ປ້ອນຄ່າສ່ວນຫຼຸດຖ້າມີ (ຕົວຢ່າງ: 10 ສຳລັບສ່ວນຫຼຸດ 10%)</div>
+                                </div>
                             </div>
 
                             <div class="form-check mb-4">
@@ -263,6 +379,10 @@
                                 <div class="form-text">ຕັ້ງລະຫັດຜ່ານທີ່ປອດໄພສຳລັບບັນຊີຂອງທ່ານ</div>
                             </div>
 
+                            <!-- Hidden input fields to store registration detail information -->
+                            <input type="hidden" name="detail_price" id="detail_price">
+                            <input type="hidden" name="total_price" id="total_price">
+
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-outline-secondary px-4" onclick="prevStep(3)"><i class="bi bi-arrow-left me-2"></i> ກັບຄືນ</button>
                                 <button type="submit" class="btn btn-success px-5"><i class="bi bi-check-circle me-2"></i> ສົ່ງຂໍ້ມູນລົງທະບຽນ</button>
@@ -274,6 +394,15 @@
         </div>
     </div>
 </div>
+
+<!-- Add data for JavaScript -->
+<script>
+    // Embed all data from controller as JavaScript variables
+    const allYears = @json($years);
+    const allTerms = @json($terms);
+    const allSemesters = @json($semesters);
+    const allMajors = @json($majors);
+</script>
 
 <script>
     // Current step tracker
@@ -362,16 +491,31 @@
                 }
             });
         } else if (step === 2) {
-            // Validate registration fields
+            // Check if at least one major is selected
+            if (selectedMajors.length === 0) {
+                alert('ກະລຸນາເລືອກຢ່າງໜ້ອຍ 1 ສາຂາ');
+                isValid = false;
+                return isValid;
+            }
+            
+            // Validate other required fields
             const requiredFields = [
-                'major', 'education_level', 'study_time', 
-                'previous_school', 'graduation_year', 'score'
+                'education_level', 'study_time', 'previous_school', 
+                'graduation_year', 'score'
             ];
             
             requiredFields.forEach(field => {
                 const input = document.getElementById(field);
-                if ((!input.value && input.type !== 'file') || 
-                    (input.type === 'file' && input.files.length === 0)) {
+                if (!input) return;
+                
+                if (input.type === 'file') {
+                    if (input.files.length === 0) {
+                        input.classList.add('is-invalid');
+                        isValid = false;
+                    } else {
+                        input.classList.remove('is-invalid');
+                    }
+                } else if (!input.value) {
                     input.classList.add('is-invalid');
                     isValid = false;
                 } else {
@@ -385,10 +529,11 @@
     
     // Calculate total amount based on selections
     document.addEventListener('DOMContentLoaded', function() {
-        const majorSelect = document.getElementById('major');
+        const majorSelect = document.getElementById('major_id');
         const educationLevelSelect = document.getElementById('education_level');
         const dormitoryYesRadio = document.getElementById('dormitory_yes');
         const dormitoryNoRadio = document.getElementById('dormitory_no');
+        const proInput = document.getElementById('pro');
         
         // Function to update total
         function updateTotal() {
@@ -398,7 +543,7 @@
             let dormitoryFee = 0;
             
             // Adjust tuition based on major and education level
-            if (majorSelect.value === 'business_english' || majorSelect.value === 'business_chinese') {
+            if (majorSelect.value == '3' || majorSelect.value == '4') {
                 tuitionFee = 1700000;
             }
             
@@ -418,7 +563,21 @@
             }
             
             // Calculate and update total
-            const total = baseFee + tuitionFee + uniformFee + dormitoryFee;
+            let subtotal = baseFee + tuitionFee + uniformFee + dormitoryFee;
+            
+            // Apply discount if any
+            let discount = 0;
+            if (proInput.value) {
+                discount = (parseFloat(proInput.value) / 100) * subtotal;
+            }
+            
+            const total = subtotal - discount;
+            
+            // Update the hidden fields
+            document.getElementById('detail_price').value = subtotal;
+            document.getElementById('total_price').value = total;
+            
+            // Update displayed total
             document.getElementById('total_amount').textContent = formatNumber(total) + ' ກີບ';
         }
         
@@ -432,6 +591,7 @@
         educationLevelSelect.addEventListener('change', updateTotal);
         dormitoryYesRadio.addEventListener('change', updateTotal);
         dormitoryNoRadio.addEventListener('change', updateTotal);
+        proInput.addEventListener('input', updateTotal);
         
         // Initialize province-district selector
         const provinceSelect = document.getElementById('province');
@@ -462,7 +622,424 @@
                 districtSelect.appendChild(option);
             });
         });
+
+        // Initialize dropdowns with data from controller
+        initializeDropdowns();
+        
+        function initializeDropdowns() {
+            // Clear any previous data
+            resetAllDropdowns();
+            
+            // Populate years dropdown with data from controller
+            populateYears();
+        }
+        
+        // Function to populate years dropdown with data from controller
+        function populateYears() {
+            const yearSelect = document.getElementById('academic_year_id');
+            if (!yearSelect) {
+                console.error('Year select element not found');
+                return;
+            }
+            
+            yearSelect.innerHTML = '<option value="" selected disabled>ເລືອກສົກຮຽນ</option>';
+            
+            if (allYears && allYears.length > 0) {
+                allYears.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year.id;
+                    option.textContent = year.name;
+                    yearSelect.appendChild(option);
+                });
+                
+                // Set up the year change event handler
+                yearSelect.addEventListener('change', handleYearChange);
+            } else {
+                console.warn('No academic years data available');
+                useHardcodedData();
+            }
+        }
+        
+        // Handle year selection - now works with embedded data
+        function handleYearChange() {
+            const yearId = this.value;
+            if (!yearId) {
+                resetDependentDropdowns('term_id');
+                return;
+            }
+            
+            // Populate terms with all terms data
+            populateTerms();
+            const termSelect = document.getElementById('term_id');
+            if (termSelect) {
+                termSelect.disabled = false;
+            }
+            resetDependentDropdowns('term_id');
+        }
+        
+        // Function to populate terms dropdown - works with embedded data
+        function populateTerms() {
+            const termSelect = document.getElementById('term_id');
+            if (!termSelect) {
+                console.error('Term select element not found');
+                return;
+            }
+            
+            termSelect.innerHTML = '<option value="" selected disabled>ເລືອກເທີມ</option>';
+            
+            if (allTerms && allTerms.length > 0) {
+                allTerms.forEach(term => {
+                    const option = document.createElement('option');
+                    option.value = term.id;
+                    option.textContent = term.name;
+                    termSelect.appendChild(option);
+                });
+                
+                // Set up the term change event handler
+                termSelect.addEventListener('change', handleTermChange);
+            } else {
+                console.warn('No terms data available');
+            }
+        }
+        
+        // Handle term selection - works with embedded data
+        function handleTermChange() {
+            const termId = this.value;
+            const yearSelect = document.getElementById('academic_year_id');
+            const yearId = yearSelect ? yearSelect.value : null;
+            
+            if (!termId || !yearId) {
+                resetDependentDropdowns('semester_id');
+                return;
+            }
+            
+            // Populate semesters with all semesters data
+            populateSemesters();
+            const semesterSelect = document.getElementById('semester_id');
+            if (semesterSelect) {
+                semesterSelect.disabled = false;
+            }
+            resetDependentDropdowns('semester_id');
+        }
+        
+        // Function to populate semesters dropdown - works with embedded data
+        function populateSemesters() {
+            const semesterSelect = document.getElementById('semester_id');
+            if (!semesterSelect) {
+                console.error('Semester select element not found');
+                return;
+            }
+            
+            semesterSelect.innerHTML = '<option value="" selected disabled>ເລືອກພາກຮຽນ</option>';
+            
+            if (allSemesters && allSemesters.length > 0) {
+                allSemesters.forEach(semester => {
+                    const option = document.createElement('option');
+                    option.value = semester.id;
+                    option.textContent = semester.name;
+                    semesterSelect.appendChild(option);
+                });
+                
+                // Set up the semester change event handler
+                semesterSelect.addEventListener('change', handleSemesterChange);
+            } else {
+                console.warn('No semesters data available');
+            }
+        }
+        
+        // Handle semester selection - works with embedded data
+        function handleSemesterChange() {
+            const semesterId = this.value;
+            const termSelect = document.getElementById('term_id');
+            const termId = termSelect ? termSelect.value : null;
+            const yearSelect = document.getElementById('academic_year_id');
+            const yearId = yearSelect ? yearSelect.value : null;
+            
+            if (!semesterId || !termId || !yearId) {
+                resetDependentDropdowns('major_id');
+                return;
+            }
+            
+            // Filter majors based on selected year, term, and semester
+            populateFilteredMajors(yearId, termId, semesterId);
+            const majorSelect = document.getElementById('major_id');
+            if (majorSelect) {
+                majorSelect.disabled = false;
+            }
+        }
+        
+        // Function to populate majors dropdown with filtered data
+        function populateFilteredMajors(yearId, termId, semesterId) {
+            const majorSelect = document.getElementById('major_id');
+            if (!majorSelect) {
+                console.error('Major select element not found');
+                return;
+            }
+            
+            majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
+            
+            // Filter the majors based on selected criteria
+            const filteredMajors = allMajors.filter(major => 
+                major.year_id == yearId && 
+                major.term_id == termId && 
+                major.semester_id == semesterId
+            );
+            
+            if (filteredMajors && filteredMajors.length > 0) {
+                filteredMajors.forEach(major => {
+                    const option = document.createElement('option');
+                    option.value = major.id;
+                    option.textContent = major.name;
+                    majorSelect.appendChild(option);
+                });
+                
+                // Enable add button when major is selected
+                majorSelect.addEventListener('change', function() {
+                    const addButton = document.getElementById('add-major-btn');
+                    if (addButton) {
+                        addButton.disabled = !this.value;
+                    }
+                });
+            } else {
+                console.warn('No majors available for the selected combination');
+                // If no majors found, display a message in the dropdown
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "ບໍ່ມີສາຂາສຳລັບການເລືອກນີ້";
+                option.disabled = true;
+                majorSelect.appendChild(option);
+            }
+        }
+        
+        // Reset dependent dropdowns when a parent dropdown changes
+        function resetDependentDropdowns(startFrom) {
+            if (startFrom === 'term_id') {
+                const semesterSelect = document.getElementById('semester_id');
+                const majorSelect = document.getElementById('major_id');
+                const addButton = document.getElementById('add-major-btn');
+                
+                if (semesterSelect) {
+                    semesterSelect.innerHTML = '<option value="" selected disabled>ເລືອກພາກຮຽນ</option>';
+                    semesterSelect.disabled = true;
+                }
+                if (majorSelect) {
+                    majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
+                    majorSelect.disabled = true;
+                }
+                if (addButton) {
+                    addButton.disabled = true;
+                }
+            } else if (startFrom === 'semester_id') {
+                const majorSelect = document.getElementById('major_id');
+                const addButton = document.getElementById('add-major-btn');
+                
+                if (majorSelect) {
+                    majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
+                    majorSelect.disabled = true;
+                }
+                if (addButton) {
+                    addButton.disabled = true;
+                }
+            }
+        }
+        
+        // Reset all dropdowns
+        function resetAllDropdowns() {
+            const yearSelect = document.getElementById('academic_year_id');
+            const termSelect = document.getElementById('term_id');
+            const semesterSelect = document.getElementById('semester_id');
+            const majorSelect = document.getElementById('major_id');
+            const addButton = document.getElementById('add-major-btn');
+            
+            if (yearSelect) {
+                yearSelect.innerHTML = '<option value="" selected disabled>ເລືອກສົກຮຽນ</option>';
+            }
+            if (termSelect) {
+                termSelect.innerHTML = '<option value="" selected disabled>ເລືອກເທີມ</option>';
+                termSelect.disabled = true;
+            }
+            if (semesterSelect) {
+                semesterSelect.innerHTML = '<option value="" selected disabled>ເລືອກພາກຮຽນ</option>';
+                semesterSelect.disabled = true;
+            }
+            if (majorSelect) {
+                majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
+                majorSelect.disabled = true;
+            }
+            if (addButton) {
+                addButton.disabled = true;
+            }
+        }
+        
+        // Fall back to hardcoded data if API calls fail
+        function useHardcodedData() {
+            console.log('Using hardcoded data as fallback');
+            
+            // Populate years with hardcoded data
+            const yearSelect = document.getElementById('academic_year_id');
+            yearSelect.innerHTML = '<option value="" selected disabled>ເລືອກສົກຮຽນ</option>';
+            const years = [
+                { id: 1, name: "2023-2024" },
+                { id: 2, name: "2024-2025" },
+                { id: 3, name: "2025-2026" }
+            ];
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year.id;
+                option.textContent = year.name;
+                yearSelect.appendChild(option);
+            });
+            
+            // Set up the year change event handler
+            yearSelect.addEventListener('change', function() {
+                document.getElementById('term_id').disabled = false;
+                populateHardcodedTerms();
+                resetDependentDropdowns('term_id');
+            });
+        }
+        
+        // Populate terms with hardcoded data
+        function populateHardcodedTerms() {
+            const termSelect = document.getElementById('term_id');
+            termSelect.innerHTML = '<option value="" selected disabled>ເລືອກເທີມ</option>';
+            const terms = [
+                { id: 1, name: "ເທີມ 1" },
+                { id: 2, name: "ເທີມ 2" }
+            ];
+            terms.forEach(term => {
+                const option = document.createElement('option');
+                option.value = term.id;
+                option.textContent = term.name;
+                termSelect.appendChild(option);
+            });
+            
+            // Set up the term change event handler
+            termSelect.addEventListener('change', function() {
+                document.getElementById('semester_id').disabled = false;
+                populateHardcodedSemesters();
+                resetDependentDropdowns('semester_id');
+            });
+        }
+        
+        // Populate semesters with hardcoded data
+        function populateHardcodedSemesters() {
+            const semesterSelect = document.getElementById('semester_id');
+            semesterSelect.innerHTML = '<option value="" selected disabled>ເລືອກພາກຮຽນ</option>';
+            const semesters = [
+                { id: 1, name: "ພາກຮຽນທີ 1" },
+                { id: 2, name: "ພາກຮຽນທີ 2" }
+            ];
+            semesters.forEach(semester => {
+                const option = document.createElement('option');
+                option.value = semester.id;
+                option.textContent = semester.name;
+                semesterSelect.appendChild(option);
+            });
+            
+            // Set up the semester change event handler
+            semesterSelect.addEventListener('change', function() {
+                document.getElementById('major_id').disabled = false;
+                populateHardcodedMajors();
+            });
+        }
+        
+        // Populate majors with hardcoded data
+        function populateHardcodedMajors() {
+            const majorSelect = document.getElementById('major_id');
+            majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
+            const majors = [
+                { id: 1, name: "ສາຂາໄອທີ (Computer Business Technology)" },
+                { id: 2, name: "ສາຂາການເງິນ-ບັນຊີ (Finance-Accounting)" },
+                { id: 3, name: "ສາຂາພາສາອັງກິດທຸລະກິດ (Business English)" },
+                { id: 4, name: "ສາຂາພາສາຈີນທຸລະກິດ (Business Chinese)" }
+            ];
+            majors.forEach(major => {
+                const option = document.createElement('option');
+                option.value = major.id;
+                option.textContent = major.name;
+                majorSelect.appendChild(option);
+            });
+            
+            document.getElementById('add-major-btn').disabled = true;
+            majorSelect.addEventListener('change', function() {
+                document.getElementById('add-major-btn').disabled = !this.value;
+            });
+        }
+        
+        // ...existing code for add-major-btn event handler etc...
     });
+    
+    // Store selected majors
+    let selectedMajors = [];
+    let selectedMajorsData = {};
+    let totalMajorPrice = 0;
+    
+    // Update selected majors table
+    function updateSelectedMajorsTable() {
+        const tableBody = document.getElementById('selected-majors-table');
+        const noMajorsRow = document.getElementById('no-majors-row');
+        const majorCount = document.getElementById('selected-major-count');
+        const majorTotalPrice = document.getElementById('major-total-price');
+        
+        // Clear table
+        tableBody.innerHTML = '';
+        
+        // Update count
+        majorCount.textContent = selectedMajors.length;
+        
+        // Display no majors message if empty
+        if (selectedMajors.length === 0) {
+            tableBody.appendChild(noMajorsRow);
+            majorTotalPrice.textContent = '0 ກີບ';
+            return;
+        }
+        
+        // Reset total price
+        totalMajorPrice = 0;
+        
+        // Add each major to table
+        selectedMajors.forEach((majorId, index) => {
+            const majorData = selectedMajorsData[majorId];
+            totalMajorPrice += majorData.price;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td><span class="badge bg-info">${majorData.name}</span></td>
+                <td>${majorData.semester}</td>
+                <td>${majorData.term}</td>
+                <td>${majorData.year}</td>
+                <td class="text-end">${formatNumber(majorData.price)} ກີບ</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-danger" onclick="removeMajor('${majorId}')">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+            
+            // Add hidden input for major
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'selected_majors[]';
+            hiddenInput.value = majorId;
+            document.getElementById('studentRegistrationForm').appendChild(hiddenInput);
+        });
+        
+        // Update total price
+        majorTotalPrice.textContent = formatNumber(totalMajorPrice) + ' ກີບ';
+    }
+    
+    // Remove major from selection
+    function removeMajor(majorId) {
+        selectedMajors = selectedMajors.filter(id => id !== majorId);
+        delete selectedMajorsData[majorId];
+        updateSelectedMajorsTable();
+        
+        // Remove hidden inputs
+        const hiddenInputs = document.querySelectorAll(`input[name="selected_majors[]"][value="${majorId}"]`);
+        hiddenInputs.forEach(input => input.remove());
+    }
 </script>
 
 <style>

@@ -79,4 +79,10 @@ class YearController extends Controller
         $pdf = \PDF::loadView('pdfs.years', $data);
         return $pdf->download('all-years.pdf');
     }
+
+    public function getYears()
+    {
+        $years = \App\Models\Year::orderBy('name', 'desc')->get();
+        return response()->json($years);
+    }
 }
