@@ -19,7 +19,7 @@
                     <select class="form-select select2" id="student_id" name="student_id" required>
                         <option value="">Select Student</option>
                         @foreach($students as $student)
-                            <option value="{{ $student->id }}">{{ $student->id }} - {{ $student->name }} {{ $student->sername }}</option>
+                        <option value="{{ $student->id }}">{{ $student->id }} - {{ $student->name }} {{ $student->sername }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -40,7 +40,7 @@
                     </p>
                 </div>
             </div>
-            
+
             <!-- Major Filters Section -->
             <div class="card mb-3">
                 <div class="card-header bg-light">
@@ -53,7 +53,7 @@
                             <select class="form-select select2" id="year_filter">
                                 <option value="">All Years</option>
                                 @foreach(App\Models\Year::all() as $year)
-                                    <option value="{{ $year->id }}">{{ $year->name }}</option>
+                                <option value="{{ $year->id }}">{{ $year->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -62,7 +62,7 @@
                             <select class="form-select select2" id="term_filter">
                                 <option value="">All Terms</option>
                                 @foreach(App\Models\Term::all() as $term)
-                                    <option value="{{ $term->id }}">{{ $term->name }}</option>
+                                <option value="{{ $term->id }}">{{ $term->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -71,7 +71,7 @@
                             <select class="form-select select2" id="semester_filter">
                                 <option value="">All Semesters</option>
                                 @foreach(App\Models\Semester::all() as $semester)
-                                    <option value="{{ $semester->id }}">{{ $semester->name }}</option>
+                                <option value="{{ $semester->id }}">{{ $semester->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -85,18 +85,18 @@
                     <select class="form-select select2" id="major_selector">
                         <option value="">Select Major</option>
                         @foreach($majors as $major)
-                            <option value="{{ $major->id }}" 
-                                    data-id="{{ $major->id }}"
-                                    data-name="{{ $major->name }}"
-                                    data-semester="{{ $major->semester->name }}"
-                                    data-term="{{ $major->term->name }}"
-                                    data-year="{{ $major->year->name }}"
-                                    data-price="{{ $major->tuition->price }}"
-                                    data-semester-id="{{ $major->semester_id }}"
-                                    data-term-id="{{ $major->term_id }}"
-                                    data-year-id="{{ $major->year_id }}">
-                                {{ $major->name }} | {{ $major->semester->name }} | {{ $major->term->name }} | {{ $major->year->name }} | Fee: {{ number_format($major->tuition->price, 2) }}
-                            </option>
+                        <option value="{{ $major->id }}"
+                            data-id="{{ $major->id }}"
+                            data-name="{{ $major->name }}"
+                            data-semester="{{ $major->semester->name }}"
+                            data-term="{{ $major->term->name }}"
+                            data-year="{{ $major->year->name }}"
+                            data-price="{{ $major->tuition->price }}"
+                            data-semester-id="{{ $major->semester_id }}"
+                            data-term-id="{{ $major->term_id }}"
+                            data-year-id="{{ $major->year_id }}">
+                            {{ $major->name }} | {{ $major->semester->name }} | {{ $major->term->name }} | {{ $major->year->name }} | Fee: {{ number_format($major->tuition->price, 2) }}
+                        </option>
                         @endforeach
                     </select>
                     <button type="button" class="btn btn-primary" id="add-major-btn">
@@ -166,85 +166,423 @@
     </div>
 </div>
 @endsection
-
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.select2').select2();
-        
-        let selectedMajors = [];
+    // Format number with commas
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    document.addEventListener('DOMContentLoaded', function() { // Define the variables for dropdowns
+
         let allMajors = @json($majors);
-        
-        // Filter change event handlers
-        $('#year_filter, #term_filter, #semester_filter').on('change', function() {
-            filterMajors();
-        });
-        
-        function filterMajors() {
-            const yearId = $('#year_filter').val();
-            const termId = $('#term_filter').val();
-            const semesterId = $('#semester_filter').val();
-            
-            // Show loading indicator
-            $('#major_selector').html('<option value="">Loading majors...</option>');
-            
-            // Fetch filtered majors from server
-            $.ajax({
-                url: "{{ route('majors.filtered') }}",
-                type: "GET",
-                data: {
-                    year_id: yearId,
-                    term_id: termId,
-                    semester_id: semesterId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    // Clear current options and add default option
-                    $('#major_selector').empty().append('<option value="">Select Major</option>');
-                    
-                    // Add filtered majors
-                    if (response.majors && response.majors.length > 0) {
-                        response.majors.forEach(function(major) {
-                            // Check if this major is already selected
-                            if (!selectedMajors.some(m => m.id === major.id.toString())) {
-                                $('#major_selector').append(
-                                    `<option value="${major.id}" 
-                                        data-id="${major.id}"
-                                        data-name="${major.name}"
-                                        data-semester="${major.semester.name}"
-                                        data-term="${major.term.name}"
-                                        data-year="${major.year.name}"
-                                        data-price="${major.tuition.price}"
-                                        data-semester-id="${major.semester_id}"
-                                        data-term-id="${major.term_id}"
-                                        data-year-id="${major.year_id}">
-                                        ${major.name} | ${major.semester.name} | ${major.term.name} | ${major.year.name} | Fee: ${parseFloat(major.tuition.price).toFixed(2)}
-                                    </option>`
-                                );
-                            }
-                        });
-                    } else {
-                        $('#major_selector').append('<option value="" disabled>No majors match the selected filters</option>');
-                    }
-                    
-                    // Refresh Select2
-                    $('#major_selector').trigger('change');
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error fetching filtered majors:", error);
-                    console.log("Response:", xhr.responseText);
-                    $('#major_selector').html('<option value="">Error loading majors. Please try again.</option>');
-                }
-            });
+        const allYears = @json($years);
+        const allTerms = @json($terms);
+        const allSemesters = @json($semesters);
+
+
+        initializeDropdowns();
+
+        function initializeDropdowns() {
+
+            // Clear any previous data
+            resetAllDropdowns();
+
+            // Populate years dropdown with data from controller
+            populateYears();
         }
+
+        // Function to populate years dropdown with data from controller
+        function populateYears() {
+            const yearSelect = document.getElementById('year_filter');
+            if (!yearSelect) {
+                console.error('Year select element not found');
+                return;
+            }
+
+            yearSelect.innerHTML = '<option value="" selected disabled>All Years</option>';
+
+            if (allYears && allYears.length > 0) {
+                allYears.forEach(year => {
+                    const option = document.createElement('option');
+                    option.value = year.id;
+                    option.textContent = year.name;
+                    yearSelect.appendChild(option);
+                });
+
+                // Set up the year change event handler
+                yearSelect.addEventListener('change', handleYearChange);
+            } else {
+                console.warn('No academic years data available');
+                useHardcodedData();
+            }
+        }
+
+        // Handle year selection - now works with embedded data
+        function handleYearChange() {
+            const yearId = this.value;
+            if (!yearId) {
+                resetDependentDropdowns('term_filter');
+                return;
+            }
+
+            // Populate terms with all terms data
+            populateTerms();
+            const termSelect = document.getElementById('term_filter');
+            if (termSelect) {
+                termSelect.disabled = false;
+            }
+            resetDependentDropdowns('term_filter');
+        }
+
+        // Function to populate terms dropdown - works with embedded data
+        function populateTerms() {
+            const termSelect = document.getElementById('term_filter');
+            if (!termSelect) {
+                console.error('Term select element not found');
+                return;
+            }
+
+            termSelect.innerHTML = '<option value="" selected disabled>All Terms</option>';
+
+            if (allTerms && allTerms.length > 0) {
+                allTerms.forEach(term => {
+                    const option = document.createElement('option');
+                    option.value = term.id;
+                    option.textContent = term.name;
+                    termSelect.appendChild(option);
+                });
+
+                // Set up the term change event handler
+                termSelect.addEventListener('change', handleTermChange);
+            } else {
+                console.warn('No terms data available');
+            }
+        }
+
+        // Handle term selection - works with embedded data
+        function handleTermChange() {
+            const termId = this.value;
+            const yearSelect = document.getElementById('year_filter');
+            const yearId = yearSelect ? yearSelect.value : null;
+
+            if (!termId || !yearId) {
+                resetDependentDropdowns('semester_filter');
+                return;
+            }
+
+            // Populate semesters with all semesters data
+            populateSemesters();
+            const semesterSelect = document.getElementById('semester_filter');
+            if (semesterSelect) {
+                semesterSelect.disabled = false;
+            }
+            resetDependentDropdowns('semester_filter');
+        }
+
+        // Function to populate semesters dropdown - works with embedded data
+        function populateSemesters() {
+            const semesterSelect = document.getElementById('semester_filter');
+            if (!semesterSelect) {
+                console.error('Semester select element not found');
+                return;
+            }
+
+            semesterSelect.innerHTML = '<option value="" selected disabled>All Semesters</option>';
+
+            if (allSemesters && allSemesters.length > 0) {
+                allSemesters.forEach(semester => {
+                    const option = document.createElement('option');
+                    option.value = semester.id;
+                    option.textContent = semester.name;
+                    semesterSelect.appendChild(option);
+                });
+
+                // Set up the semester change event handler
+                semesterSelect.addEventListener('change', handleSemesterChange);
+            } else {
+                console.warn('No semesters data available');
+            }
+        }
+
+        // Handle semester selection - works with embedded data
+        function handleSemesterChange() {
+
+            const semesterId = this.value;
+            const termSelect = document.getElementById('term_filter');
+            const termId = termSelect ? termSelect.value : null;
+            const yearSelect = document.getElementById('year_filter');
+            const yearId = yearSelect ? yearSelect.value : null;
+            const addButton = document.getElementById('add-major-btn');
+
+            // Disable add button by default
+            if (addButton) {
+                addButton.disabled = true;
+            }
+
+            if (!semesterId || !termId || !yearId) {
+                resetDependentDropdowns('major_selector');
+                return;
+            }
+
+            // Filter majors based on selected year, term, and semester
+            populateFilteredMajors(yearId, termId, semesterId);
+            const majorSelect = document.getElementById('major_selector');
+            if (majorSelect) {
+                majorSelect.disabled = false;
+            }
+        }
+
+        // Function to populate majors dropdown with filtered data
+        function populateFilteredMajors(yearId, termId, semesterId) {
+
+            const majorSelect = document.getElementById('major_selector');
+            if (!majorSelect) {
+                console.error('Major select element not found');
+                return;
+            }
+
+            majorSelect.innerHTML = '<option value="" selected disabled>Select Major</option>';
+
+            // Filter the majors based on selected criteria
+            const filteredMajors = allMajors.filter(major =>
+                major.year_id == yearId &&
+                major.term_id == termId &&
+                major.semester_id == semesterId
+            );
+
+
+            if (filteredMajors && filteredMajors.length > 0) {
+                filteredMajors.forEach(major => {
+                    const option = document.createElement('option');
+                    option.value = major.id;
+                    // Add all necessary data attributes
+                    option.setAttribute('data-id', major.id);
+                    option.setAttribute('data-name', major.name);
+                    option.setAttribute('data-semester', major.semester.name);
+                    option.setAttribute('data-term', major.term.name);
+                    option.setAttribute('data-year', major.year.name);
+                    option.setAttribute('data-price', major.tuition.price);
+                    option.setAttribute('data-semester-id', major.semester_id);
+                    option.setAttribute('data-term-id', major.term_id);
+                    option.setAttribute('data-year-id', major.year_id);
+
+                    // Format the display text
+                    option.textContent = `${major.name} | ${major.semester.name} | ${major.term.name} | ${major.year.name} | ${formatNumber(major.tuition.price)} ກີບ`;
+
+                    majorSelect.appendChild(option);
+                });
+
+                // Enable major select and add button when majors are available
+                majorSelect.disabled = false;
+                const addButton = document.getElementById('add-major-btn');
+                if (addButton) {
+                    // Keep button disabled until a major is selected
+                    addButton.disabled = true;
+                    majorSelect.addEventListener('change', function() {
+                        addButton.disabled = !this.value;
+                    });
+                }
+            } else {
+                console.warn('No majors available for the selected combination');
+                // If no majors found, display a message in the dropdown
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "ບໍ່ມີສາຂາສຳລັບການເລືອກນີ້";
+                option.disabled = true;
+                majorSelect.appendChild(option);
+                majorSelect.disabled = true;
+
+                const addButton = document.getElementById('add-major-btn');
+                if (addButton) {
+                    addButton.disabled = true;
+                }
+            }
+        }
+
+
+        // Then modify the resetDependentDropdowns function:
+        function resetDependentDropdowns(startFrom) {
+            const addButton = document.getElementById('add-major-btn');
+
+            if (startFrom === 'term_id') {
+                const semesterSelect = document.getElementById('semester_filter');
+                const majorSelect = document.getElementById('major_selector');
+
+                if (semesterSelect) {
+                    semesterSelect.innerHTML = '<option value="" selected disabled>All Semesters</option>';
+                    semesterSelect.disabled = true;
+                }
+                if (majorSelect) {
+                    majorSelect.innerHTML = '<option value="" selected disabled>Select Major</option>';
+                    majorSelect.disabled = true;
+                }
+                if (addButton) {
+                    addButton.disabled = true;
+                }
+            } else if (startFrom === 'semester_filter') {
+                const majorSelect = document.getElementById('major_selector');
+
+                if (majorSelect) {
+                    majorSelect.innerHTML = '<option value="" selected disabled>Select Major</option>';
+                    majorSelect.disabled = true;
+                }
+                if (addButton) {
+                    addButton.disabled = true;
+                }
+            }
+        }
+
+        // Reset all dropdowns
+        function resetAllDropdowns() {
+            const yearSelect = document.getElementById('year_filter');
+            const termSelect = document.getElementById('term_filter');
+            const semesterSelect = document.getElementById('semester_filter');
+            const majorSelect = document.getElementById('major_selector');
+            const addButton = document.getElementById('add-major-btn');
+
+            if (yearSelect) {
+                yearSelect.innerHTML = '<option value="" selected disabled>All Years</option>';
+            }
+            if (termSelect) {
+                termSelect.innerHTML = '<option value="" selected disabled>All Terms</option>';
+                termSelect.disabled = true;
+            }
+            if (semesterSelect) {
+                semesterSelect.innerHTML = '<option value="" selected disabled>All Semesters</option>';
+                semesterSelect.disabled = true;
+            }
+            if (majorSelect) {
+                majorSelect.innerHTML = '<option value="" selected disabled>Select Major</option>';
+                majorSelect.disabled = true;
+            }
+            if (addButton) {
+                addButton.disabled = true;
+            }
+        }
+
+    });
+
+
+    // Store selected majors
+    let selectedMajors = [];
+    let selectedMajorsData = {};
+    let totalMajorPrice = 0;
+
+    // Update selected majors table
+    function updateSelectedMajorsTable() {
+       
+        const tableBody = $('#selected-majors-table tbody');
+        const majorCount = $('#selected-major-count');
+        const majorTotalPrice = $('#major-total-price');
+
+        // Clear table
+        tableBody.empty();
+
+        // Update count
+        majorCount.text(selectedMajors.length);
+
+        // Display no majors message if empty
+        if (selectedMajors.length === 0) {
+            tableBody.html(`
+            <tr id="no-majors-row">
+                <td colspan="7" class="text-center py-3">ຍັງບໍ່ມີສາຂາທີ່ຖືກເລືອກ</td>
+            </tr>
+        `);
+            majorTotalPrice.text('0 ກີບ');
+            
+        }
+
+        // Reset total price
+        totalMajorPrice = 0;
+
+    
+        // Add each major to table
+        selectedMajors.forEach((majorId, index) => {
+
+
+            const mjid = majorId['id'];
+            const majorData = selectedMajorsData[mjid];
+
+            totalMajorPrice += majorData.price;
+
+            const row = `
+            <tr>
+                <td>${index + 1}</td>
+                <td><span class="badge bg-info">${majorData.name}</span></td>
+                <td>${majorData.semester}</td>
+                <td>${majorData.term}</td>
+                <td>${majorData.year}</td>
+                <td class="text-end">${formatNumber(majorData.price)} ກີບ</td>
+                <td class="text-center">
+                   <button type="button" class="btn btn-sm btn-danger " onclick="removeMajor('${mjid}')">
+                          X
+                    </button>
+                </td>
+            </tr>
+        `;
+            tableBody.append(row);
+        });
+
+       
+        // Update major IDs input
+        const majorIdsInput = document.getElementById('major_ids');
+        console
+    if (majorIdsInput) {
+        // Join the selectedMajors array directly since it already contains the IDs
         
-        // Add major button click handler
+        const majorIds = selectedMajors.map(major => major.id);
+        majorIdsInput.value = majorIds.join(',');
+        console.log("Selected Major IDs:", majorIdsInput.value);
+    
+
+    }
+
+        // Update discount based on number of majors
+        // if (selectedMajors.length >= 2) {
+        //     $('#pro').val(30).prop('disabled', true);
+        // } else {
+        //     $('#pro').val(0).prop('disabled', false);
+        // }
+
+        if (selectedMajors.length >= 1) {
+            $('#submit-btn').prop('disabled', false);
+        } else {
+            $('#submit-btn').prop('disabled', true);
+        }
+
+        // Update total price display
+        majorTotalPrice.text(formatNumber(totalMajorPrice) + ' ກີບ');
+
+        // Update totals
+        updateTotals();
+
+
+    }
+
+    function removeMajor(majorId) {
+     
+            console.log("majorId: ", majorId);
+            selectedMajors = selectedMajors.filter(major => major.id !== majorId);
+            console.log("selectedMajors: ", selectedMajors);
+            delete selectedMajorsData[majorId];
+
+            updateSelectedMajorsTable();
+
+            // Remove hidden inputs
+            const hiddenInputs = document.querySelectorAll(`input[name="major_ids"][value="${majorId}"]`);
+            hiddenInputs.forEach(input => input.remove());
+            
+    }
+
+    $(document).ready(function() {
+       
+
         $('#add-major-btn').on('click', function() {
+            console.log("Add Major button clicked");
             const majorSelect = $('#major_selector');
             const selectedOption = majorSelect.find('option:selected');
             const majorId = selectedOption.val();
-            
+
             if (!majorId) {
                 Swal.fire({
                     icon: 'warning',
@@ -253,7 +591,7 @@
                 });
                 return;
             }
-            
+
             // Check for duplicate
             if (selectedMajors.some(m => m.id === majorId)) {
                 Swal.fire({
@@ -263,7 +601,7 @@
                 });
                 return;
             }
-            
+
             // Get major data from data attributes
             const majorData = {
                 id: majorId,
@@ -273,89 +611,22 @@
                 year: selectedOption.data('year'),
                 price: parseFloat(selectedOption.data('price'))
             };
-            
+
+            console.log("Major Data: ", majorData);
+
             // Add to selected majors array
+            selectedMajorsData[majorId] = majorData;
             selectedMajors.push(majorData);
-            
+            console.log("selectedMajorsData : ", selectedMajorsData[majorId]);
+            console.log("selectedMajors Data: ", selectedMajors);
+
             // Update the table
-            updateMajorsTable();
-            
+            updateSelectedMajorsTable();
+
             // Reset select
-            majorSelect.val('').trigger('change');
+            majorSelect.val('');
         });
-        
-        // Function to update majors table
-        function updateMajorsTable() {
-            const tbody = $('#selected-majors-table tbody');
-            const noMajorsRow = $('#no-majors-row');
-            const submitBtn = $('#submit-btn');
-            
-            // Clear current rows
-            tbody.empty();
-            
-            if (selectedMajors.length === 0) {
-                tbody.append(noMajorsRow);
-                submitBtn.prop('disabled', true);
-                updateTotals();
-                return;
-            }
-            
-            // Enable submit button
-            submitBtn.prop('disabled', false);
-            
-            // Add rows for each selected major
-            selectedMajors.forEach((major, index) => {
-                const row = `
-                    <tr data-major-id="${major.id}">
-                        <td>${major.name}</td>
-                        <td>${major.semester}</td>
-                        <td>${major.term}</td>
-                        <td>${major.year}</td>
-                        <td>${major.price.toFixed(2)}</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-danger remove-major" data-index="${index}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                tbody.append(row);
-            });
-            
-            // Update major IDs hidden input
-            $('#major_ids').val(selectedMajors.map(m => m.id).join(','));
-            
-            // Attach remove handlers
-            $('.remove-major').on('click', function() {
-                const index = $(this).data('index');
-                selectedMajors.splice(index, 1);
-                updateMajorsTable();
-            });
-            
-            // Update totals
-            updateTotals();
-        }
-        
-        // Function to update price totals
-        function updateTotals() {
-            const totalElement = $('#majors-total');
-            const discountElement = $('#discount-amount');
-            const finalTotalElement = $('#final-total');
-            const discountPercent = parseFloat($('#pro').val()) || 0;
-            
-            // Calculate base total
-            const total = selectedMajors.reduce((sum, major) => sum + major.price, 0);
-            
-            // Calculate discount
-            const discountAmount = (total * discountPercent / 100);
-            const finalTotal = total - discountAmount;
-            
-            // Update displays
-            totalElement.text(total.toFixed(2));
-            discountElement.text(discountAmount.toFixed(2));
-            finalTotalElement.text(finalTotal.toFixed(2));
-        }
-        
+
         // Update totals when discount changes
         $('#pro').on('change input', updateTotals);
 
@@ -363,20 +634,53 @@
         $('#payment_proof').on('change', function() {
             const file = this.files[0];
             const preview = $('.payment-proof-preview');
-            
+
             if (file) {
                 const reader = new FileReader();
-                
+
                 reader.onload = function(e) {
                     preview.html(`<img src="${e.target.result}" class="img-thumbnail mt-2" style="max-height: 150px;">`);
                     preview.show();
                 };
-                
+
                 reader.readAsDataURL(file);
             } else {
                 preview.empty().hide();
             }
         });
+    });
+
+
+    // // Function to update price totals
+    function updateTotals() {
+        const totalElement = $('#majors-total');
+        const discountElement = $('#discount-amount');
+        const finalTotalElement = $('#final-total');
+        const discountPercent = parseFloat($('#pro').val()) || 0;
+
+        // Calculate base total
+        const total = selectedMajors.reduce((sum, major) => sum + major.price, 0);
+
+        console.log("Total: ", total);
+
+        // Calculate discount
+        const discountAmount = (total * discountPercent / 100);
+        const finalTotal = total - discountAmount;
+
+        // Update displays
+        totalElement.text(total.toFixed(2));
+        discountElement.text(discountAmount.toFixed(2));
+        finalTotalElement.text(finalTotal.toFixed(2));
+    }
+</script>
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+
+        $('.select2').select2();
+
     });
 </script>
 @endsection

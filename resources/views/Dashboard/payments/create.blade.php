@@ -111,12 +111,13 @@
     </div>
 </div>
 @endsection
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+    console.log("Payment create page loaded");
     $(document).ready(function() {
-        $('.select2').select2();
+ 
         
         // Filter change event handlers
         $('#year_filter, #term_filter, #semester_filter').on('change', function() {
@@ -187,4 +188,10 @@
         calculateFinalPrice();
     });
 </script>
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        $('.select2').select2(); });
+        </script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\RegistrationController;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,6 +21,18 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
+          // First validate the email existence
+          $existingUser = User::where('email', $request->email)->first();
+          if ($existingUser) {
+              return redirect()->back()
+                  ->with('sweet_alert', [
+                      'type' => 'error',
+                      'title' => 'ຜິດພາດ!',
+                      'text' => 'ອີເມວນີ້ຖືກນຳໃຊ້ແລ້ວ'
+                  ])
+                  ->withInput();
+          }
+          
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'sername' => 'required|string|max:255',
@@ -297,5 +310,59 @@ class StudentController extends Controller
         
         // Pass all data to the view
         return view('student-registration', compact('years', 'terms', 'semesters', 'majors'));
+    }
+
+    public function register(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'sername' => 'required|string|max:255',
+            'gender' => 'required|string|max:50',
+            'birthday' => 'required|date',
+            'nationality' => 'required|string|max:100',
+            'tell' => 'required|string|max:50',
+            'address' => 'required|string',
+            'picture' => 'nullable|image|max:2048',
+            'score' => 'nullable|image|max:2048', // Changed to only accept images
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+        ]);
+
+    
+     
+            // Create user account first
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'password' => Hash::make($validatedData['password']),
+            ]);
+
+            // Create student record
+            $student = new Student();
+            $student->user_id = $user->id;
+            $student->name = $validatedData['name'];
+            $student->sername = $validatedData['sername'];
+            $student->gender = $validatedData['gender'];
+            $student->birthday = $validatedData['birthday'];
+            $student->nationality = $validatedData['nationality'];
+            $student->tell = $validatedData['tell'];
+            $student->address = $validatedData['address'];
+
+            // Handle picture upload if present
+            if ($request->hasFile('picture')) {
+                $student->picture = $request->file('picture')->store('student_pictures', 'public');
+            }
+            
+            // Handle score upload if present
+            if ($request->hasFile('score')) {
+                $student->score = $request->file('score')->store('student_scores', 'public');
+            }
+
+            $student->save();
+
+       
+
+            return $student;
+       
     }
 }

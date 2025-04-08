@@ -225,7 +225,7 @@ class MajorController extends Controller
             }
             
             $majors = $query->get();
-            
+           
             return response()->json(['majors' => $majors]);
         } catch (\Exception $e) {
             // Return error with details for debugging
