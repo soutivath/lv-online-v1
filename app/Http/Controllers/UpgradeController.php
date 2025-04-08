@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Upgrade;
 use App\Models\UpgradeDetail;
 use App\Models\Student;
@@ -200,9 +201,9 @@ class UpgradeController extends Controller
             \Log::info('Fetching subjects for major ID: ' . $majorId);
             
             // Using major_id instead of department_id
-            $subjects = Subject::with('credit')
-                // ->where('major_id', $majorId)
-                ->get();
+            $major = Major::with(['subjects.credit'])->findOrFail($majorId);
+            $subjects = $major->subjects;
+        
             
             \Log::info('Found subjects: ' . $subjects->count());
             
@@ -251,14 +252,14 @@ class UpgradeController extends Controller
         DB::beginTransaction();
         try {
             // Get the currently logged in student via session
-            $userId = session('auth_user.id') ?? null;
+            //$userId = session('user') ?? null;
+            $userData = Session::get('user');
+            $user = User::with('student')->find($userData['id']);
             
-            if (!$userId) {
+            if (!$user) {
                 return redirect()->back()->with('error', 'ທ່ານຕ້ອງເຂົ້າສູ່ລະບົບກ່ອນ');
             }
-            
-            $user = User::with('student')->find($userId);
-            
+           
             if (!$user || !$user->student) {
                 return redirect()->back()->with('error', 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາ');
             }
@@ -266,7 +267,7 @@ class UpgradeController extends Controller
             // Create new upgrade record
             $upgrade = new Upgrade();
             $upgrade->student_id = $user->student->id;
-            $upgrade->date = $request->date;
+            $upgrade->date = Carbon::parse($request->date)->format('Y-m-d H:i:s');
             $upgrade->major_id = $request->major_id;
             $upgrade->payment_status = 'pending';
             
@@ -296,7 +297,7 @@ class UpgradeController extends Controller
             
             DB::commit();
             
-            return redirect()->route('home')->with('sweet_alert', [
+            return redirect()->back()->with('sweet_alert', [
                 'type' => 'success',
                 'title' => 'ສຳເລັດ!',
                 'text' => 'ການລົງທະບຽນວິຊາເສີມຂອງທ່ານສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'

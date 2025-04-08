@@ -187,6 +187,9 @@
     }
 </style>
 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     // Current step tracker
     let currentStep = 1;
@@ -365,7 +368,7 @@
             })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    throw new Error(`HTTP error! Status: ${response}`);
                 }
                 return response.json();
             })
@@ -466,4 +469,30 @@
         }
     }
 </script>
+
+
+<script>
+        @if(session('sweet_alert'))
+            // Only show SweetAlert for fresh page loads, not when navigating back
+            let alreadyShown = sessionStorage.getItem('alert_shown_{{ session()->getId() }}');
+            
+            if (!alreadyShown) {
+                Swal.fire({
+                    icon: '{{ session('sweet_alert.type') }}',
+                    title: '{{ session('sweet_alert.title') }}',
+                    text: '{{ session('sweet_alert.text') }}',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                
+                // Mark this alert as shown in this session
+                sessionStorage.setItem('alert_shown_{{ session()->getId() }}', 'true');
+            }
+            
+            // Clear the session storage item when leaving the page
+            window.addEventListener('beforeunload', function() {
+                sessionStorage.removeItem('alert_shown_{{ session()->getId() }}');
+            });
+        @endif
+    </script>
 @endsection

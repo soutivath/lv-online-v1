@@ -31,9 +31,9 @@
                     </div>
 
                     <!-- Form -->
-                    <form id="studentRegistrationForm" action="{{ route('student.register') }}" method="POST" enctype="multipart/form-data">
+                    <form id="studentRegistrationForm" action="{{ route('registrations.student') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        
+
                         <!-- Step 1: Student Information -->
                         <div class="step" id="step1">
                             <h5 class="mb-4">ຂໍ້ມູນສ່ວນຕົວຂອງນັກສຶກສາ</h5>
@@ -81,7 +81,7 @@
                                     <textarea class="form-control" id="address" name="address" rows="3" required maxlength="50"></textarea>
                                 </div>
                             </div>
-                            
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="nationality" class="form-label">ສັນຊາດ <span class="text-danger">*</span></label>
@@ -93,7 +93,7 @@
                                     <div class="form-text">ໄຟລ໌ຮູບຕ້ອງບໍ່ເກີນ 2MB</div>
                                 </div>
                             </div>
-                            
+
                             <div class="d-flex justify-content-end mt-4">
                                 <button type="button" class="btn btn-primary px-4" onclick="nextStep(1)">ຕໍ່ໄປ <i class="bi bi-arrow-right ms-2"></i></button>
                             </div>
@@ -102,7 +102,7 @@
                         <!-- Step 2: Registration -->
                         <div class="step d-none" id="step2">
                             <h5 class="mb-4">ຂໍ້ມູນການລົງທະບຽນ</h5>
-                            
+
                             <!-- Academic selections -->
                             <div class="mb-4">
                                 <div class="card">
@@ -115,15 +115,19 @@
                                                 <label for="academic_year_id" class="form-label">ສົກຮຽນ <span class="text-danger">*</span></label>
                                                 <select class="form-select" id="academic_year_id" name="academic_year_id" required>
                                                     <option value="" selected disabled>ເລືອກສົກຮຽນ</option>
-                                                    <!-- Will be populated dynamically -->
+                                                    @foreach(App\Models\Year::all() as $year)
+                                                    <option value="{{ $year->id }}">{{ $year->name }}</option>
+                                                    @endforeach
                                                 </select>
                                                 <div class="invalid-feedback">ກະລຸນາເລືອກສົກຮຽນ</div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="term_id" class="form-label">ເທີມ <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="term_id" name="term_id" disabled required>
+                                                <select class="form-select" id="term_id" name="term_id" required>
                                                     <option value="" selected disabled>ເລືອກເທີມ</option>
-                                                    <!-- Will be populated after year is selected -->
+                                                    @foreach(App\Models\Term::all() as $term)
+                                                    <option value="{{ $term->id }}">{{ $term->name }}</option>
+                                                    @endforeach
                                                 </select>
                                                 <div class="invalid-feedback">ກະລຸນາເລືອກເທີມ</div>
                                             </div>
@@ -132,25 +136,46 @@
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label for="semester_id" class="form-label">ພາກຮຽນ <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="semester_id" name="semester_id" disabled required>
+                                                <select class="form-select" id="semester_id" name="semester_id" required>
                                                     <option value="" selected disabled>ເລືອກພາກຮຽນ</option>
-                                                    <!-- Will be populated after term is selected -->
+                                                    @foreach(App\Models\Semester::all() as $semester)
+                                                    <option value="{{ $semester->id }}">{{ $semester->name }}</option>
+                                                    @endforeach
                                                 </select>
                                                 <div class="invalid-feedback">ກະລຸນາເລືອກພາກຮຽນ</div>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="major_id" class="form-label">ສາຂາທີ່ຕ້ອງການຮຽນ <span class="text-danger">*</span></label>
                                                 <div class="input-group">
-                                                    <select class="form-select" id="major_id" name="major_id" disabled required>
+                                                    <select class="form-select" id="major_id" name="major_id">
                                                         <option value="" selected disabled>ເລືອກສາຂາ</option>
-                                                        <!-- Will be populated after semester is selected -->
+                                                        @foreach($majors as $major)
+                                                        <option value="{{ $major->id }}"
+                                                            data-id="{{ $major->id }}"
+                                                            data-name="{{ $major->name }}"
+                                                            data-semester="{{ $major->semester->name }}"
+                                                            data-term="{{ $major->term->name }}"
+                                                            data-year="{{ $major->year->name }}"
+                                                            data-price="{{ $major->tuition->price }}"
+                                                            data-semester-id="{{ $major->semester_id }}"
+                                                            data-term-id="{{ $major->term_id }}"
+                                                            data-year-id="{{ $major->year_id }}">
+                                                            {{ $major->name }} | {{ $major->semester->name }} | {{ $major->term->name }} | {{ $major->year->name }} | Fee: {{ number_format($major->tuition->price, 2) }}
+                                                        </option>
+                                                        @endforeach
                                                     </select>
-                                                    <button type="button" class="btn btn-primary" id="add-major-btn" disabled>
-                                                        <i class="bi bi-plus"></i> ເພີ່ມ
-                                                    </button>
+
                                                 </div>
                                                 <div class="invalid-feedback">ກະລຸນາເລືອກສາຂາ</div>
                                             </div>
+
+
+                                        </div>
+
+                                        <div class=" mt-3 mx-1 row ">
+                                            <button type="button" class="btn btn-primary" id="add-major-btn">
+                                                <i class="bi bi-plus"></i> ເພີ່ມ
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -190,7 +215,10 @@
                                                     </tr>
                                                 </tfoot>
                                             </table>
+
+
                                         </div>
+                                        <input type="hidden" name="major_ids" id="major_ids" value="" >
                                     </div>
                                 </div>
                             </div>
@@ -316,7 +344,9 @@
                                                         <td class="text-end">400,000 ກີບ</td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="2"><hr></td>
+                                                        <td colspan="2">
+                                                            <hr>
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th>ລວມທັງໝົດ:</th>
@@ -396,6 +426,9 @@
 </div>
 
 <!-- Add data for JavaScript -->
+<!-- Add this before your closing </body> tag but before your scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Embed all data from controller as JavaScript variables
     const allYears = @json($years);
@@ -408,50 +441,50 @@
     // Current step tracker
     let currentStep = 1;
     const totalSteps = 3;
-    
+
     // Navigate to next step
     function nextStep(step) {
         // Validate current step
         if (!validateStep(step)) {
             return false;
         }
-        
+
         // Hide current step
         document.getElementById('step' + step).classList.add('d-none');
-        
+
         // Show next step
         document.getElementById('step' + (step + 1)).classList.remove('d-none');
-        
+
         // Update progress bar
         currentStep = step + 1;
         updateProgress();
-        
+
         // Scroll to top
         window.scrollTo(0, 0);
     }
-    
+
     // Navigate to previous step
     function prevStep(step) {
         // Hide current step
         document.getElementById('step' + step).classList.add('d-none');
-        
+
         // Show previous step
         document.getElementById('step' + (step - 1)).classList.remove('d-none');
-        
+
         // Update progress bar
         currentStep = step - 1;
         updateProgress();
-        
+
         // Scroll to top
         window.scrollTo(0, 0);
     }
-    
+
     // Update progress bar and step indicators
     function updateProgress() {
         // Update progress bar width
         const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
         document.getElementById('registration-progress').style.width = progressPercentage + '%';
-        
+
         // Update step buttons
         const stepButtons = document.querySelectorAll('.btn-step');
         stepButtons.forEach((button, index) => {
@@ -469,18 +502,18 @@
             }
         });
     }
-    
+
     // Validate each step
     function validateStep(step) {
         let isValid = true;
-        
+
         if (step === 1) {
             // Validate student information fields
             const requiredFields = [
-                'name', 'sername', 'birthday', 'gender', 
+                'name', 'sername', 'birthday', 'gender',
                 'tell', 'address', 'nationality'
             ];
-            
+
             requiredFields.forEach(field => {
                 const input = document.getElementById(field);
                 if (!input.value) {
@@ -493,21 +526,25 @@
         } else if (step === 2) {
             // Check if at least one major is selected
             if (selectedMajors.length === 0) {
-                alert('ກະລຸນາເລືອກຢ່າງໜ້ອຍ 1 ສາຂາ');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'ບໍ່ໄດ້ເລືອກສາຂາ',
+                    text: 'ກະລຸນາເລືອກຢ່າງໜ້ອຍ 1 ສາຂາ'
+                });
                 isValid = false;
                 return isValid;
             }
-            
+
             // Validate other required fields
             const requiredFields = [
-                'education_level', 'study_time', 'previous_school', 
+                'education_level', 'study_time', 'previous_school',
                 'graduation_year', 'score'
             ];
-            
+
             requiredFields.forEach(field => {
                 const input = document.getElementById(field);
                 if (!input) return;
-                
+
                 if (input.type === 'file') {
                     if (input.files.length === 0) {
                         input.classList.add('is-invalid');
@@ -523,37 +560,48 @@
                 }
             });
         }
-        
+
         return isValid;
     }
-    
+</script>
+
+<script>
+    // Format number with commas
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
     // Calculate total amount based on selections
     document.addEventListener('DOMContentLoaded', function() {
+
+        // Initialize dropdowns with data from controller
+        initializeDropdowns();
+
         const majorSelect = document.getElementById('major_id');
         const educationLevelSelect = document.getElementById('education_level');
         const dormitoryYesRadio = document.getElementById('dormitory_yes');
         const dormitoryNoRadio = document.getElementById('dormitory_no');
         const proInput = document.getElementById('pro');
-        
+
         // Function to update total
         function updateTotal() {
             let baseFee = 500000; // Registration fee
             let tuitionFee = 1500000; // Default tuition
             const uniformFee = 250000;
             let dormitoryFee = 0;
-            
+
             // Adjust tuition based on major and education level
             if (majorSelect.value == '3' || majorSelect.value == '4') {
                 tuitionFee = 1700000;
             }
-            
+
             if (educationLevelSelect.value === 'bachelor') {
                 tuitionFee += 300000;
             }
-            
+
             // Update displayed tuition
             document.getElementById('tuition_fee').textContent = formatNumber(tuitionFee);
-            
+
             // Check if dormitory is selected
             if (dormitoryYesRadio.checked) {
                 dormitoryFee = 400000;
@@ -561,42 +609,45 @@
             } else {
                 document.querySelector('.dormitory-fee').style.display = 'none';
             }
-            
+
             // Calculate and update total
             let subtotal = baseFee + tuitionFee + uniformFee + dormitoryFee;
-            
+
             // Apply discount if any
             let discount = 0;
             if (proInput.value) {
                 discount = (parseFloat(proInput.value) / 100) * subtotal;
             }
-            
+
             const total = subtotal - discount;
-            
+
             // Update the hidden fields
             document.getElementById('detail_price').value = subtotal;
             document.getElementById('total_price').value = total;
-            
+
             // Update displayed total
             document.getElementById('total_amount').textContent = formatNumber(total) + ' ກີບ';
         }
-        
-        // Format number with commas
-        function formatNumber(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-        
+
+
+
         // Add change event listeners
         majorSelect.addEventListener('change', updateTotal);
         educationLevelSelect.addEventListener('change', updateTotal);
         dormitoryYesRadio.addEventListener('change', updateTotal);
         dormitoryNoRadio.addEventListener('change', updateTotal);
         proInput.addEventListener('input', updateTotal);
-        
+
         // Initialize province-district selector
         const provinceSelect = document.getElementById('province');
         const districtSelect = document.getElementById('district');
-        
+
+        // Check if elements exist
+        if (!provinceSelect || !districtSelect) {
+            console.warn('Province or district select elements not found');
+            return;
+        }
+
         // Sample district data by province
         const districtsByProvince = {
             'vientiane_capital': ['ໄຊເສດຖາ', 'ຈັນທະບູລີ', 'ສີໂຄດຕະບອງ', 'ສີສັດຕະນາກ', 'ນາຊາຍທອງ', 'ໄຊທານີ', 'ຫາດຊາຍຟອງ', 'ປາກງື່ມ', 'ສັງທອງ'],
@@ -605,15 +656,15 @@
             'champassak': ['ເມືອງປາກເຊ', 'ເມືອງຊະນະສົມບູນ', 'ເມືອງບາຈຽງຈະເລີນສຸກ', 'ເມືອງປະທຸມພອນ', 'ເມືອງໂພນທອງ']
             // Add other provinces and districts as needed
         };
-        
+
         // Update districts when province changes
         provinceSelect.addEventListener('change', function() {
             const selectedProvince = this.value;
             const districts = districtsByProvince[selectedProvince] || [];
-            
+
             // Clear current options
             districtSelect.innerHTML = '<option value="" selected disabled>ເລືອກເມືອງ</option>';
-            
+
             // Add new options
             districts.forEach(district => {
                 const option = document.createElement('option');
@@ -623,17 +674,17 @@
             });
         });
 
-        // Initialize dropdowns with data from controller
-        initializeDropdowns();
-        
+
+
         function initializeDropdowns() {
+            console.log("initializeDropdowns");
             // Clear any previous data
             resetAllDropdowns();
-            
+
             // Populate years dropdown with data from controller
             populateYears();
         }
-        
+
         // Function to populate years dropdown with data from controller
         function populateYears() {
             const yearSelect = document.getElementById('academic_year_id');
@@ -641,9 +692,9 @@
                 console.error('Year select element not found');
                 return;
             }
-            
+
             yearSelect.innerHTML = '<option value="" selected disabled>ເລືອກສົກຮຽນ</option>';
-            
+
             if (allYears && allYears.length > 0) {
                 allYears.forEach(year => {
                     const option = document.createElement('option');
@@ -651,7 +702,7 @@
                     option.textContent = year.name;
                     yearSelect.appendChild(option);
                 });
-                
+
                 // Set up the year change event handler
                 yearSelect.addEventListener('change', handleYearChange);
             } else {
@@ -659,7 +710,7 @@
                 useHardcodedData();
             }
         }
-        
+
         // Handle year selection - now works with embedded data
         function handleYearChange() {
             const yearId = this.value;
@@ -667,7 +718,7 @@
                 resetDependentDropdowns('term_id');
                 return;
             }
-            
+
             // Populate terms with all terms data
             populateTerms();
             const termSelect = document.getElementById('term_id');
@@ -676,7 +727,7 @@
             }
             resetDependentDropdowns('term_id');
         }
-        
+
         // Function to populate terms dropdown - works with embedded data
         function populateTerms() {
             const termSelect = document.getElementById('term_id');
@@ -684,9 +735,9 @@
                 console.error('Term select element not found');
                 return;
             }
-            
+
             termSelect.innerHTML = '<option value="" selected disabled>ເລືອກເທີມ</option>';
-            
+
             if (allTerms && allTerms.length > 0) {
                 allTerms.forEach(term => {
                     const option = document.createElement('option');
@@ -694,25 +745,25 @@
                     option.textContent = term.name;
                     termSelect.appendChild(option);
                 });
-                
+
                 // Set up the term change event handler
                 termSelect.addEventListener('change', handleTermChange);
             } else {
                 console.warn('No terms data available');
             }
         }
-        
+
         // Handle term selection - works with embedded data
         function handleTermChange() {
             const termId = this.value;
             const yearSelect = document.getElementById('academic_year_id');
             const yearId = yearSelect ? yearSelect.value : null;
-            
+
             if (!termId || !yearId) {
                 resetDependentDropdowns('semester_id');
                 return;
             }
-            
+
             // Populate semesters with all semesters data
             populateSemesters();
             const semesterSelect = document.getElementById('semester_id');
@@ -721,7 +772,7 @@
             }
             resetDependentDropdowns('semester_id');
         }
-        
+
         // Function to populate semesters dropdown - works with embedded data
         function populateSemesters() {
             const semesterSelect = document.getElementById('semester_id');
@@ -729,9 +780,9 @@
                 console.error('Semester select element not found');
                 return;
             }
-            
+
             semesterSelect.innerHTML = '<option value="" selected disabled>ເລືອກພາກຮຽນ</option>';
-            
+
             if (allSemesters && allSemesters.length > 0) {
                 allSemesters.forEach(semester => {
                     const option = document.createElement('option');
@@ -739,27 +790,34 @@
                     option.textContent = semester.name;
                     semesterSelect.appendChild(option);
                 });
-                
+
                 // Set up the semester change event handler
                 semesterSelect.addEventListener('change', handleSemesterChange);
             } else {
                 console.warn('No semesters data available');
             }
         }
-        
+
         // Handle semester selection - works with embedded data
         function handleSemesterChange() {
+
             const semesterId = this.value;
             const termSelect = document.getElementById('term_id');
             const termId = termSelect ? termSelect.value : null;
             const yearSelect = document.getElementById('academic_year_id');
             const yearId = yearSelect ? yearSelect.value : null;
-            
+            const addButton = document.getElementById('add-major-btn');
+
+            // Disable add button by default
+            if (addButton) {
+                addButton.disabled = true;
+            }
+
             if (!semesterId || !termId || !yearId) {
                 resetDependentDropdowns('major_id');
                 return;
             }
-            
+
             // Filter majors based on selected year, term, and semester
             populateFilteredMajors(yearId, termId, semesterId);
             const majorSelect = document.getElementById('major_id');
@@ -767,39 +825,57 @@
                 majorSelect.disabled = false;
             }
         }
-        
+
         // Function to populate majors dropdown with filtered data
         function populateFilteredMajors(yearId, termId, semesterId) {
+
             const majorSelect = document.getElementById('major_id');
             if (!majorSelect) {
                 console.error('Major select element not found');
                 return;
             }
-            
+
             majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
-            
+
             // Filter the majors based on selected criteria
-            const filteredMajors = allMajors.filter(major => 
-                major.year_id == yearId && 
-                major.term_id == termId && 
+            const filteredMajors = allMajors.filter(major =>
+                major.year_id == yearId &&
+                major.term_id == termId &&
                 major.semester_id == semesterId
             );
-            
+
+
             if (filteredMajors && filteredMajors.length > 0) {
                 filteredMajors.forEach(major => {
                     const option = document.createElement('option');
                     option.value = major.id;
-                    option.textContent = major.name;
+                    // Add all necessary data attributes
+                    option.setAttribute('data-id', major.id);
+                    option.setAttribute('data-name', major.name);
+                    option.setAttribute('data-semester', major.semester.name);
+                    option.setAttribute('data-term', major.term.name);
+                    option.setAttribute('data-year', major.year.name);
+                    option.setAttribute('data-price', major.tuition.price);
+                    option.setAttribute('data-semester-id', major.semester_id);
+                    option.setAttribute('data-term-id', major.term_id);
+                    option.setAttribute('data-year-id', major.year_id);
+
+                    // Format the display text
+                    option.textContent = `${major.name} | ${major.semester.name} | ${major.term.name} | ${major.year.name} | ${formatNumber(major.tuition.price)} ກີບ`;
+
                     majorSelect.appendChild(option);
                 });
-                
-                // Enable add button when major is selected
-                majorSelect.addEventListener('change', function() {
-                    const addButton = document.getElementById('add-major-btn');
-                    if (addButton) {
+
+                // Enable major select and add button when majors are available
+                majorSelect.disabled = false;
+                const addButton = document.getElementById('add-major-btn');
+                if (addButton) {
+                    // Keep button disabled until a major is selected
+                    addButton.disabled = true;
+                    majorSelect.addEventListener('change', function() {
                         addButton.disabled = !this.value;
-                    }
-                });
+                    });
+                }
             } else {
                 console.warn('No majors available for the selected combination');
                 // If no majors found, display a message in the dropdown
@@ -808,16 +884,25 @@
                 option.textContent = "ບໍ່ມີສາຂາສຳລັບການເລືອກນີ້";
                 option.disabled = true;
                 majorSelect.appendChild(option);
+                majorSelect.disabled = true;
+
+                const addButton = document.getElementById('add-major-btn');
+                if (addButton) {
+                    addButton.disabled = true;
+                }
             }
         }
-        
-        // Reset dependent dropdowns when a parent dropdown changes
+
+
+
+        // Then modify the resetDependentDropdowns function:
         function resetDependentDropdowns(startFrom) {
+            const addButton = document.getElementById('add-major-btn');
+
             if (startFrom === 'term_id') {
                 const semesterSelect = document.getElementById('semester_id');
                 const majorSelect = document.getElementById('major_id');
-                const addButton = document.getElementById('add-major-btn');
-                
+
                 if (semesterSelect) {
                     semesterSelect.innerHTML = '<option value="" selected disabled>ເລືອກພາກຮຽນ</option>';
                     semesterSelect.disabled = true;
@@ -831,8 +916,7 @@
                 }
             } else if (startFrom === 'semester_id') {
                 const majorSelect = document.getElementById('major_id');
-                const addButton = document.getElementById('add-major-btn');
-                
+
                 if (majorSelect) {
                     majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
                     majorSelect.disabled = true;
@@ -842,7 +926,7 @@
                 }
             }
         }
-        
+
         // Reset all dropdowns
         function resetAllDropdowns() {
             const yearSelect = document.getElementById('academic_year_id');
@@ -850,7 +934,7 @@
             const semesterSelect = document.getElementById('semester_id');
             const majorSelect = document.getElementById('major_id');
             const addButton = document.getElementById('add-major-btn');
-            
+
             if (yearSelect) {
                 yearSelect.innerHTML = '<option value="" selected disabled>ເລືອກສົກຮຽນ</option>';
             }
@@ -870,138 +954,48 @@
                 addButton.disabled = true;
             }
         }
-        
-        // Fall back to hardcoded data if API calls fail
-        function useHardcodedData() {
-            console.log('Using hardcoded data as fallback');
-            
-            // Populate years with hardcoded data
-            const yearSelect = document.getElementById('academic_year_id');
-            yearSelect.innerHTML = '<option value="" selected disabled>ເລືອກສົກຮຽນ</option>';
-            const years = [
-                { id: 1, name: "2023-2024" },
-                { id: 2, name: "2024-2025" },
-                { id: 3, name: "2025-2026" }
-            ];
-            years.forEach(year => {
-                const option = document.createElement('option');
-                option.value = year.id;
-                option.textContent = year.name;
-                yearSelect.appendChild(option);
-            });
-            
-            // Set up the year change event handler
-            yearSelect.addEventListener('change', function() {
-                document.getElementById('term_id').disabled = false;
-                populateHardcodedTerms();
-                resetDependentDropdowns('term_id');
-            });
-        }
-        
-        // Populate terms with hardcoded data
-        function populateHardcodedTerms() {
-            const termSelect = document.getElementById('term_id');
-            termSelect.innerHTML = '<option value="" selected disabled>ເລືອກເທີມ</option>';
-            const terms = [
-                { id: 1, name: "ເທີມ 1" },
-                { id: 2, name: "ເທີມ 2" }
-            ];
-            terms.forEach(term => {
-                const option = document.createElement('option');
-                option.value = term.id;
-                option.textContent = term.name;
-                termSelect.appendChild(option);
-            });
-            
-            // Set up the term change event handler
-            termSelect.addEventListener('change', function() {
-                document.getElementById('semester_id').disabled = false;
-                populateHardcodedSemesters();
-                resetDependentDropdowns('semester_id');
-            });
-        }
-        
-        // Populate semesters with hardcoded data
-        function populateHardcodedSemesters() {
-            const semesterSelect = document.getElementById('semester_id');
-            semesterSelect.innerHTML = '<option value="" selected disabled>ເລືອກພາກຮຽນ</option>';
-            const semesters = [
-                { id: 1, name: "ພາກຮຽນທີ 1" },
-                { id: 2, name: "ພາກຮຽນທີ 2" }
-            ];
-            semesters.forEach(semester => {
-                const option = document.createElement('option');
-                option.value = semester.id;
-                option.textContent = semester.name;
-                semesterSelect.appendChild(option);
-            });
-            
-            // Set up the semester change event handler
-            semesterSelect.addEventListener('change', function() {
-                document.getElementById('major_id').disabled = false;
-                populateHardcodedMajors();
-            });
-        }
-        
-        // Populate majors with hardcoded data
-        function populateHardcodedMajors() {
-            const majorSelect = document.getElementById('major_id');
-            majorSelect.innerHTML = '<option value="" selected disabled>ເລືອກສາຂາ</option>';
-            const majors = [
-                { id: 1, name: "ສາຂາໄອທີ (Computer Business Technology)" },
-                { id: 2, name: "ສາຂາການເງິນ-ບັນຊີ (Finance-Accounting)" },
-                { id: 3, name: "ສາຂາພາສາອັງກິດທຸລະກິດ (Business English)" },
-                { id: 4, name: "ສາຂາພາສາຈີນທຸລະກິດ (Business Chinese)" }
-            ];
-            majors.forEach(major => {
-                const option = document.createElement('option');
-                option.value = major.id;
-                option.textContent = major.name;
-                majorSelect.appendChild(option);
-            });
-            
-            document.getElementById('add-major-btn').disabled = true;
-            majorSelect.addEventListener('change', function() {
-                document.getElementById('add-major-btn').disabled = !this.value;
-            });
-        }
-        
+
+
         // ...existing code for add-major-btn event handler etc...
     });
-    
+
     // Store selected majors
     let selectedMajors = [];
     let selectedMajorsData = {};
     let totalMajorPrice = 0;
-    
+
     // Update selected majors table
     function updateSelectedMajorsTable() {
         const tableBody = document.getElementById('selected-majors-table');
-        const noMajorsRow = document.getElementById('no-majors-row');
         const majorCount = document.getElementById('selected-major-count');
         const majorTotalPrice = document.getElementById('major-total-price');
-        
+
         // Clear table
         tableBody.innerHTML = '';
-        
+
         // Update count
         majorCount.textContent = selectedMajors.length;
-        
+
         // Display no majors message if empty
         if (selectedMajors.length === 0) {
+            const noMajorsRow = document.createElement('tr');
+            noMajorsRow.id = 'no-majors-row';
+            noMajorsRow.innerHTML = `
+            <td colspan="7" class="text-center py-3">ຍັງບໍ່ມີສາຂາທີ່ຖືກເລືອກ</td>
+        `;
             tableBody.appendChild(noMajorsRow);
             majorTotalPrice.textContent = '0 ກີບ';
             return;
         }
-        
+
         // Reset total price
         totalMajorPrice = 0;
-        
+
         // Add each major to table
         selectedMajors.forEach((majorId, index) => {
             const majorData = selectedMajorsData[majorId];
             totalMajorPrice += majorData.price;
-            
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${index + 1}</td>
@@ -1017,30 +1011,125 @@
                 </td>
             `;
             tableBody.appendChild(row);
-            
+
             // Add hidden input for major
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.name = 'selected_majors[]';
-            hiddenInput.value = majorId;
-            document.getElementById('studentRegistrationForm').appendChild(hiddenInput);
+         
+
+            
         });
+          // Correctly set the major_ids value
+    const majorIdsInput = document.getElementById('major_ids');
+    if (majorIdsInput) {
+        // Join the selectedMajors array directly since it already contains the IDs
+        majorIdsInput.value = selectedMajors.join(',');
         
+        // Debug log to verify the value
+    }
+
+    if(selectedMajors.length >= 2){
+        document.getElementById('pro').value = 30;
+        document.getElementById('pro').disabled=true;
+    }else{
+        document.getElementById('pro').value = 0;
+        document.getElementById('pro').disabled=false;
+    }
+        // Update total price
+        const totalMajorPriceElement = document.getElementById('major_total_price');
+        if (totalMajorPriceElement) {
+            totalMajorPriceElement.textContent = formatNumber(totalMajorPrice) + ' ກີບ';
+    }
         // Update total price
         majorTotalPrice.textContent = formatNumber(totalMajorPrice) + ' ກີບ';
     }
-    
+
+
     // Remove major from selection
     function removeMajor(majorId) {
         selectedMajors = selectedMajors.filter(id => id !== majorId);
         delete selectedMajorsData[majorId];
+     
         updateSelectedMajorsTable();
-        
+
         // Remove hidden inputs
-        const hiddenInputs = document.querySelectorAll(`input[name="selected_majors[]"][value="${majorId}"]`);
+        const hiddenInputs = document.querySelectorAll(`input[name="major_ids"][value="${majorId}"]`);
         hiddenInputs.forEach(input => input.remove());
     }
+
+    // Add major button click handler
+    $('#add-major-btn').on('click', function() {
+        // Use the correct selector for major select element
+        const majorSelect = $('#major_id'); // Changed from major_selector to major_id
+        const selectedOption = majorSelect.find('option:selected');
+        const majorId = selectedOption.val();
+
+        if (!majorId) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ບໍ່ໄດ້ເລືອກສາຂາ',
+                text: 'ກະລຸນາເລືອກສາຂາທີ່ຕ້ອງການກ່ອນ'
+            });
+            return;
+        }
+
+        // Check for duplicate
+        if (selectedMajors.includes(majorId)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'ສາຂາຊ້ຳກັນ',
+                text: 'ສາຂານີ້ຖືກເລືອກແລ້ວ'
+            });
+            return;
+        }
+
+        // Get major data from data attributes
+        const majorData = {
+            id: majorId,
+            name: selectedOption.data('name'),
+            semester: selectedOption.data('semester'),
+            term: selectedOption.data('term'),
+            year: selectedOption.data('year'),
+            price: parseFloat(selectedOption.data('price'))
+        };
+
+        // Store major data
+        selectedMajorsData[majorId] = majorData;
+        selectedMajors.push(majorId);
+
+        // Update the table
+        updateSelectedMajorsTable();
+
+        // Reset select
+        majorSelect.val('');
+
+        // Disable add button
+
+    });
 </script>
+
+<script>
+        @if(session('sweet_alert'))
+            // Only show SweetAlert for fresh page loads, not when navigating back
+            let alreadyShown = sessionStorage.getItem('alert_shown_{{ session()->getId() }}');
+            
+            if (!alreadyShown) {
+                Swal.fire({
+                    icon: '{{ session('sweet_alert.type') }}',
+                    title: '{{ session('sweet_alert.title') }}',
+                    text: '{{ session('sweet_alert.text') }}',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                
+                // Mark this alert as shown in this session
+                sessionStorage.setItem('alert_shown_{{ session()->getId() }}', 'true');
+            }
+            
+            // Clear the session storage item when leaving the page
+            window.addEventListener('beforeunload', function() {
+                sessionStorage.removeItem('alert_shown_{{ session()->getId() }}');
+            });
+        @endif
+    </script>
 
 <style>
     .step-label {

@@ -56,4 +56,9 @@ class Major extends Model
     {
         return $this->hasMany(Upgrade::class, 'major_id')->cascadeOnDelete();
     }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class);
+    }
 }

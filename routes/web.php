@@ -137,6 +137,7 @@ Route::middleware(['check.role:admin'])->group(function () {
     Route::patch('registrations/{registration}/confirm-payment', [RegistrationController::class, 'confirmPayment'])->name('registrations.confirm-payment');
     Route::get('registrations/{registration}/export-pdf', [RegistrationController::class, 'exportPDF'])->name('registrations.export-pdf');
     Route::get('registrations-export-all', [RegistrationController::class, 'exportAllPDF'])->name('registrations.export-all-pdf');
+    Route::post('/student-register', [RegistrationController::class, 'studentRegistration'])->name('registrations.student');
 
     // Payments
     Route::resource('payments', PaymentController::class);

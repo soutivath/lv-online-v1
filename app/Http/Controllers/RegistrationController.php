@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Registration;
 use App\Models\RegistrationDetail;
 use App\Models\Student;
@@ -322,6 +323,109 @@ class RegistrationController extends Controller
                     'type' => 'error',
                     'title' => 'Error!',
                     'text' => 'Failed to confirm payment. Error: ' . $e->getMessage()
+                ]);
+        }
+    }
+
+
+
+    public function studentRegistration(Request $request)
+    {
+
+       
+        $validatedData = $request->validate([
+            'pro' => 'required|numeric|min:0|max:100',
+            'major_ids' => 'required|string',
+            'payment_proof' => 'nullable|image|max:2048',
+        ]);
+
+  
+
+        DB::beginTransaction();
+        try {
+
+            $stdController = new StudentController();
+            $stdData = $stdController->register($request);
+    
+            $registration = new Registration();
+            $registration->student_id = $stdData->id;
+            $registration->date = Carbon::parse($request->date)->format('Y-m-d H:i:s');
+            $registration->pro = $request->pro;
+            
+            // Get employee_id from session if user is logged in as employee
+            $employeeId = null;
+            $paymentStatus = 'pending'; // Default for student registrations
+            
+            
+            $registration->payment_status = $paymentStatus;
+            
+            // Handle payment proof upload
+            $paymentProofPath = null;
+            if ($request->hasFile('payment_proof')) {
+                $paymentProofPath = $request->file('payment_proof')->store('registration_proofs', 'public');
+                $registration->payment_proof = $paymentProofPath;
+            }
+            
+            $registration->save();
+            
+            $totalRegistrationPrice = 0;
+            
+            // Generate a single bill number for all payments from this registration
+            $billNumber = $this->generateBillNumber();
+
+                  // Convert major_ids string to array
+            $majorIds = array_filter(explode(',', $request->major_ids));
+        
+            // Create registration details for each selected major
+            foreach ($majorIds as $majorId) {
+                $major = Major::with('tuition')->findOrFail($majorId);
+                
+                $detail_price = $major->tuition->price;
+                
+                $registrationDetail = new RegistrationDetail();
+                $registrationDetail->registration_id = $registration->id;
+                $registrationDetail->major_id = $majorId;
+                $registrationDetail->detail_price = $detail_price;
+                
+                // Calculate discounted price
+                $discount = ($request->pro / 100) * $detail_price;
+                $registrationDetail->total_price = $detail_price - $discount;
+                
+                $registrationDetail->save();
+                
+                // Create corresponding payment record with the bill number
+                Payment::create([
+                    'student_id' => $stdData->id,
+                    'major_id' => $majorId,
+                    'employee_id' => $employeeId,
+                    'bill_number' => $billNumber, // Add bill number to link payments
+                    'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
+                    'detail_price' => $detail_price,
+                    'pro' => $request->pro,
+                    'total_price' => $detail_price - $discount,
+                    'status' => $paymentStatus,
+                    'payment_proof' => $paymentProofPath
+                ]);
+                
+                $totalRegistrationPrice += $registrationDetail->total_price;
+            }
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with('sweet_alert', [
+                    'type' => 'success',
+                    'title' => 'Success!',
+                    'text' => 'Registration created successfully with ' . count($majorIds) . ' majors.'
+                ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            
+            return redirect()->back()
+                ->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'Error!',
+                    'text' => 'Failed to create registration. Error: ' . $e->getMessage()
                 ]);
         }
     }

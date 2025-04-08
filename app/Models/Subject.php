@@ -27,4 +27,9 @@ class Subject extends Model
     {
         return $this->hasMany(UpgradeDetail::class, 'subject_id')->onDelete('cascade');
     }
+
+    public function majors()
+    {
+        return $this->belongsToMany(Major::class);
+    }
 }
