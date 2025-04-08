@@ -1023,7 +1023,7 @@
         // Join the selectedMajors array directly since it already contains the IDs
         majorIdsInput.value = selectedMajors.join(',');
         
-        // Debug log to verify the value
+
     }
 
     if(selectedMajors.length >= 2){
@@ -1100,8 +1100,6 @@
 
         // Reset select
         majorSelect.val('');
-
-        // Disable add button
 
     });
 </script>

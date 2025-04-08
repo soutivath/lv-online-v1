@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,6 +20,19 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
+
+           // First validate the email existence
+           $existingUser = User::where('email', $request->email)->first();
+           if ($existingUser) {
+               return redirect()->back()
+                   ->with('sweet_alert', [
+                       'type' => 'error',
+                       'title' => 'ຜິດພາດ!',
+                       'text' => 'ອີເມວນີ້ຖືກນຳໃຊ້ແລ້ວ'
+                   ])
+                   ->withInput();
+           }
+        
         $validatedData = $request->validate([
             'name' => 'required|string|max:20',
             'sername' => 'required|string|max:20',
@@ -47,7 +61,7 @@ class EmployeeController extends Controller
             $employee->name = $request->name;
             $employee->sername = $request->sername;
             $employee->birthday = $request->birthday;
-            $employee->date = $request->date;
+            $employee->date = Carbon::parse($request->date)->format('Y-m-d H:i:s');
             $employee->gender = $request->gender;
             $employee->address = $request->address;
             $employee->tell = $request->tell;

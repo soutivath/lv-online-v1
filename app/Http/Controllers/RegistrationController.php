@@ -7,6 +7,9 @@ use App\Models\Registration;
 use App\Models\RegistrationDetail;
 use App\Models\Student;
 use App\Models\Major;
+use App\Models\Year;
+use App\Models\Term;
+use App\Models\Semester;
 use App\Models\Employee;
 use App\Models\User;
 use App\Models\Payment;
@@ -20,7 +23,7 @@ use Illuminate\Support\Str;
 class RegistrationController extends Controller
 {
     protected $paymentStatusService;
-    
+
     public function __construct(PaymentStatusService $paymentStatusService)
     {
         $this->paymentStatusService = $paymentStatusService;
@@ -36,7 +39,16 @@ class RegistrationController extends Controller
     {
         $students = Student::all();
         $majors = Major::with(['semester', 'term', 'year', 'tuition'])->get();
-        return view('Dashboard.registrations.create', compact('students', 'majors'));
+        $years = Year::all();
+        $terms = Term::all();
+        $semesters = Semester::all();
+        return view('Dashboard.registrations.create', compact(
+            'students',
+            'majors',
+            'years',
+            'terms',
+            'semesters'
+        ));
     }
 
     /**
@@ -49,7 +61,7 @@ class RegistrationController extends Controller
         $month = date('m');
         $random = strtoupper(Str::random(4));
         $timestamp = time();
-        
+
         return "{$prefix}-{$year}{$month}-{$random}-{$timestamp}";
     }
 
@@ -65,7 +77,7 @@ class RegistrationController extends Controller
 
         // Convert major_ids string to array
         $majorIds = explode(',', $request->major_ids);
-        
+
         // Check if there are any major IDs
         if (empty($majorIds)) {
             return redirect()->route('registrations.create')
@@ -75,7 +87,7 @@ class RegistrationController extends Controller
                     'text' => 'Please select at least one major for registration.'
                 ]);
         }
-        
+
         // Check for duplicate majors
         if (count($majorIds) !== count(array_unique($majorIds))) {
             return redirect()->route('registrations.create')
@@ -92,55 +104,55 @@ class RegistrationController extends Controller
             $registration->student_id = $request->student_id;
             $registration->date = $request->date;
             $registration->pro = $request->pro;
-            
+
             // Get employee_id from session if user is logged in as employee
             $employeeId = null;
             $paymentStatus = 'pending'; // Default for student registrations
-            
+
             if (Session::has('user')) {
                 $userId = Session::get('user')['id'];
                 $user = User::with(['student', 'employee'])->find($userId);
-                
+
                 if ($user && $user->employee) {
                     $employeeId = $user->employee->id;
                     $registration->employee_id = $employeeId;
                     $paymentStatus = 'success'; // Admin-created registrations are auto-confirmed
                 }
             }
-            
+
             $registration->payment_status = $paymentStatus;
-            
+
             // Handle payment proof upload
             $paymentProofPath = null;
             if ($request->hasFile('payment_proof')) {
                 $paymentProofPath = $request->file('payment_proof')->store('registration_proofs', 'public');
                 $registration->payment_proof = $paymentProofPath;
             }
-            
+
             $registration->save();
-            
+
             $totalRegistrationPrice = 0;
-            
+
             // Generate a single bill number for all payments from this registration
             $billNumber = $this->generateBillNumber();
 
             // Create registration details for each selected major
             foreach ($majorIds as $majorId) {
-                $major = Major::findOrFail($majorId);
-                
+                $major = Major::with("tuition")->findOrFail($majorId);
+
                 $detail_price = $major->tuition->price;
-                
+
                 $registrationDetail = new RegistrationDetail();
                 $registrationDetail->registration_id = $registration->id;
                 $registrationDetail->major_id = $majorId;
                 $registrationDetail->detail_price = $detail_price;
-                
+
                 // Calculate discounted price
                 $discount = ($request->pro / 100) * $detail_price;
                 $registrationDetail->total_price = $detail_price - $discount;
-                
+
                 $registrationDetail->save();
-                
+
                 // Create corresponding payment record with the bill number
                 Payment::create([
                     'student_id' => $request->student_id,
@@ -154,7 +166,7 @@ class RegistrationController extends Controller
                     'status' => $paymentStatus,
                     'payment_proof' => $paymentProofPath
                 ]);
-                
+
                 $totalRegistrationPrice += $registrationDetail->total_price;
             }
 
@@ -168,7 +180,7 @@ class RegistrationController extends Controller
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()->route('registrations.create')
                 ->with('sweet_alert', [
                     'type' => 'error',
@@ -181,7 +193,7 @@ class RegistrationController extends Controller
     public function show(Registration $registration)
     {
         $registration->load(['student', 'employee', 'registrationDetails.major.semester', 'registrationDetails.major.term', 'registrationDetails.major.year']);
-        
+
         // For each major in the registration, check if it's been paid via a direct payment
         $majorPaymentStatuses = [];
         foreach ($registration->registrationDetails as $detail) {
@@ -189,14 +201,15 @@ class RegistrationController extends Controller
                 ->where('major_id', $detail->major_id)
                 ->where('status', 'success')
                 ->first();
-            
+
             $majorPaymentStatuses[$detail->major_id] = [
                 'paid_directly' => $payment ? true : false,
                 'payment_id' => $payment ? $payment->id : null
             ];
         }
-        
-        return view('Dashboard.registrations.show', 
+
+        return view(
+            'Dashboard.registrations.show',
             compact('registration', 'majorPaymentStatuses')
         );
     }
@@ -207,13 +220,13 @@ class RegistrationController extends Controller
         try {
             // Get majors from this registration for cleanup
             $majorIds = $registration->registrationDetails()->pluck('major_id')->toArray();
-            
+
             // Delete related registration details
             $registration->registrationDetails()->delete();
-            
+
             // Delete the registration
             $registration->delete();
-            
+
             // Only delete automatic payments that were created with the registration 
             // and still have the same status (avoid deleting payments that were updated separately)
             foreach ($majorIds as $majorId) {
@@ -221,7 +234,7 @@ class RegistrationController extends Controller
                     ->where('major_id', $majorId)
                     ->where('status', $registration->payment_status)
                     ->first();
-                
+
                 if ($payment) {
                     $payment->delete();
                 }
@@ -237,7 +250,7 @@ class RegistrationController extends Controller
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()->route('registrations.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
@@ -249,27 +262,32 @@ class RegistrationController extends Controller
 
     public function exportPDF(Registration $registration)
     {
-        $registration->load(['student', 'employee', 'registrationDetails.major.semester', 
-                            'registrationDetails.major.term', 'registrationDetails.major.year']);
-        
+        $registration->load([
+            'student',
+            'employee',
+            'registrationDetails.major.semester',
+            'registrationDetails.major.term',
+            'registrationDetails.major.year'
+        ]);
+
         $data = [
             'registration' => $registration,
             'date' => now()
         ];
-        
+
         $pdf = \PDF::loadView('pdfs.registration', $data);
-        return $pdf->download('registration-'.$registration->id.'.pdf');
+        return $pdf->download('registration-' . $registration->id . '.pdf');
     }
-    
+
     public function exportAllPDF()
     {
         $registrations = Registration::with(['student', 'employee', 'registrationDetails.major'])->get();
-        
+
         $data = [
             'registrations' => $registrations,
             'date' => now()
         ];
-        
+
         $pdf = \PDF::loadView('pdfs.registrations', $data);
         return $pdf->download('all-registrations.pdf');
     }
@@ -280,10 +298,10 @@ class RegistrationController extends Controller
         try {
             $registration->payment_status = 'success';
             $registration->save();
-            
+
             // Generate a single bill number for all payments
             $billNumber = $this->generateBillNumber();
-            
+
             // Update existing payment records for each major in this registration
             foreach ($registration->registrationDetails as $detail) {
                 // Find existing payment or create new one
@@ -302,7 +320,7 @@ class RegistrationController extends Controller
                         'payment_proof' => $registration->payment_proof
                     ]
                 );
-                
+
                 // Update payment status to success and ensure bill number is set
                 if ($payment->status !== 'success' || empty($payment->bill_number)) {
                     $payment->status = 'success';
@@ -310,7 +328,7 @@ class RegistrationController extends Controller
                     $payment->save();
                 }
             }
-            
+
             return redirect()->route('registrations.show', $registration->id)
                 ->with('sweet_alert', [
                     'type' => 'success',
@@ -332,67 +350,67 @@ class RegistrationController extends Controller
     public function studentRegistration(Request $request)
     {
 
-       
+
         $validatedData = $request->validate([
             'pro' => 'required|numeric|min:0|max:100',
             'major_ids' => 'required|string',
             'payment_proof' => 'nullable|image|max:2048',
         ]);
 
-  
+
 
         DB::beginTransaction();
         try {
 
             $stdController = new StudentController();
             $stdData = $stdController->register($request);
-    
+
             $registration = new Registration();
             $registration->student_id = $stdData->id;
             $registration->date = Carbon::parse($request->date)->format('Y-m-d H:i:s');
             $registration->pro = $request->pro;
-            
+
             // Get employee_id from session if user is logged in as employee
             $employeeId = null;
             $paymentStatus = 'pending'; // Default for student registrations
-            
-            
+
+
             $registration->payment_status = $paymentStatus;
-            
+
             // Handle payment proof upload
             $paymentProofPath = null;
             if ($request->hasFile('payment_proof')) {
                 $paymentProofPath = $request->file('payment_proof')->store('registration_proofs', 'public');
                 $registration->payment_proof = $paymentProofPath;
             }
-            
+
             $registration->save();
-            
+
             $totalRegistrationPrice = 0;
-            
+
             // Generate a single bill number for all payments from this registration
             $billNumber = $this->generateBillNumber();
 
-                  // Convert major_ids string to array
+            // Convert major_ids string to array
             $majorIds = array_filter(explode(',', $request->major_ids));
-        
+
             // Create registration details for each selected major
             foreach ($majorIds as $majorId) {
                 $major = Major::with('tuition')->findOrFail($majorId);
-                
+
                 $detail_price = $major->tuition->price;
-                
+
                 $registrationDetail = new RegistrationDetail();
                 $registrationDetail->registration_id = $registration->id;
                 $registrationDetail->major_id = $majorId;
                 $registrationDetail->detail_price = $detail_price;
-                
+
                 // Calculate discounted price
                 $discount = ($request->pro / 100) * $detail_price;
                 $registrationDetail->total_price = $detail_price - $discount;
-                
+
                 $registrationDetail->save();
-                
+
                 // Create corresponding payment record with the bill number
                 Payment::create([
                     'student_id' => $stdData->id,
@@ -406,7 +424,7 @@ class RegistrationController extends Controller
                     'status' => $paymentStatus,
                     'payment_proof' => $paymentProofPath
                 ]);
-                
+
                 $totalRegistrationPrice += $registrationDetail->total_price;
             }
 
@@ -420,7 +438,7 @@ class RegistrationController extends Controller
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
-            
+
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'error',

@@ -21,6 +21,18 @@ class StudentController extends Controller
 
     public function store(Request $request)
     {
+          // First validate the email existence
+          $existingUser = User::where('email', $request->email)->first();
+          if ($existingUser) {
+              return redirect()->back()
+                  ->with('sweet_alert', [
+                      'type' => 'error',
+                      'title' => 'ຜິດພາດ!',
+                      'text' => 'ອີເມວນີ້ຖືກນຳໃຊ້ແລ້ວ'
+                  ])
+                  ->withInput();
+          }
+          
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'sername' => 'required|string|max:255',
