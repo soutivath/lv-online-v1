@@ -274,11 +274,11 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="edit_password{{ $employee->id }}" class="form-label">Password {{ $employee->user ? '(Leave blank to keep current)' : '' }}</label>
-                                <input type="password" class="form-control" id="edit_password{{ $employee->id }}" name="password" {{ $employee->user ? '' : 'required' }}>
+                                <input type="password" class="form-control" id="edit_password{{ $employee->id }}" name="password" {{ $employee->user ? '' : 'required' }} minlength="8">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_password_confirmation{{ $employee->id }}" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="edit_password_confirmation{{ $employee->id }}" name="password_confirmation" {{ $employee->user ? '' : 'required' }}>
+                                <input type="password" class="form-control" id="edit_password_confirmation{{ $employee->id }}" name="password_confirmation" {{ $employee->user ? '' : 'required' }} minlength="8">
                             </div>
                         </div>
                     </div>
@@ -296,6 +296,41 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
+        // Add form submission debugging
+        $('form').on('submit', function(e) {
+            console.log('Form submitted', $(this).attr('action'));
+            
+            // Password validation - at least 8 characters
+            const passwordField = $(this).find('input[name="password"]');
+            if (passwordField.length && passwordField.val() && passwordField.val().length < 8) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Password Too Short',
+                    text: 'Password must be at least 8 characters long'
+                });
+                return false;
+            }
+            
+            // Check for file size - existing code
+            let isValid = true;
+            
+            $('input[type="file"]').each(function() {
+                if (this.files.length > 0 && this.files[0].size > 2 * 1024 * 1024) { // 2MB limit
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'File Too Large',
+                        text: 'File size should not exceed 2MB'
+                    });
+                    isValid = false;
+                    return false; // Break the loop
+                }
+            });
+            
+            return isValid;
+        });
+
         // Reset form and clear previews when any modal is closed
         $('.modal').on('hidden.bs.modal', function () {
             $(this).find('form').trigger('reset');

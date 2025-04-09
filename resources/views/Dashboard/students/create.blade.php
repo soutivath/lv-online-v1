@@ -143,7 +143,7 @@
     </div>
 </div>
 @endsection
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 @section('scripts')
 <script>
     // Image preview for profile picture

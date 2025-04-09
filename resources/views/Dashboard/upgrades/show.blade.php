@@ -34,7 +34,7 @@
                     </tr>
                     <tr>
                         <th>Employee</th>
-                        <td>{{ $upgrade->employee->name }} {{ $upgrade->employee->sername }}</td>
+                        <td>{{ $upgrade?->employee?->name }} {{ $upgrade?->employee?->sername }}</td>
                     </tr>
                     <tr>
                         <th>Payment Status</th>

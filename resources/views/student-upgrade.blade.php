@@ -327,114 +327,130 @@
         
         document.getElementById('total-price').textContent = formatNumber(totalPrice);
     }
-    
-    // Document ready
-    document.addEventListener('DOMContentLoaded', function() {
-        // Major select change handler
-        document.getElementById('major_id').addEventListener('change', function() {
-            const majorId = this.value;
-            
-            if (!majorId) return;
-            
-            // Reset selections
-            selectedSubjects = [];
-            subjectPrices = {};
-            updateSelectionSummary();
-            document.getElementById('next-btn').disabled = true;
-            
-            // Show loading indicator
-            const subjectList = document.getElementById('subject-list');
-            subjectList.innerHTML = `
-                <div class="list-group-item text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 mb-0">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
+
+    // Function to fetch subjects for a major
+    function fetchSubjectsForMajor(majorId) {
+        // Show loading indicator
+        const subjectList = document.getElementById('subject-list');
+        subjectList.innerHTML = `
+            <div class="list-group-item text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
-            `;
+                <p class="mt-2 mb-0">ກຳລັງໂຫຼດຂໍ້ມູນ...</p>
+            </div>
+        `;
+        
+        // Reset selections
+        selectedSubjects = [];
+        subjectPrices = {};
+        updateSelectionSummary();
+        document.getElementById('next-btn').disabled = true;
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        // Fetch subjects for this major
+        fetch(`/api/subjects-by-major/${majorId}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data received:', data);
             
-            // Add X-CSRF-TOKEN to all AJAX requests
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            if (!data || data.length === 0) {
+                subjectList.innerHTML = `
+                    <div class="list-group-item text-center py-5">
+                        <p class="text-muted mb-0">ບໍ່ພົບວິຊາສຳລັບສາຂານີ້</p>
+                    </div>
+                `;
+                return;
+            }
             
-            // Fetch subjects for this major
-            fetch(`/api/subjects-by-major/${majorId}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                credentials: 'same-origin'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Data received:', data);
-                
-                if (!data || data.length === 0) {
-                    subjectList.innerHTML = `
-                        <div class="list-group-item text-center py-5">
-                            <p class="text-muted mb-0">ບໍ່ພົບວິຊາສຳລັບສາຂານີ້</p>
-                        </div>
-                    `;
+            subjectList.innerHTML = '';
+            
+            data.forEach((subject, index) => {
+                // Check if subject has credit property
+                if (!subject.credit) {
+                    console.error('Subject missing credit data:', subject);
                     return;
                 }
                 
-                subjectList.innerHTML = '';
+                // Store price for later calculation - ensure it's stored as a number
+                subjectPrices[subject.id] = {
+                    price: +subject.credit.price, // Convert to number using unary plus
+                    name: subject.name
+                };
                 
-                data.forEach((subject, index) => {
-                    // Check if subject has credit property
-                    if (!subject.credit) {
-                        console.error('Subject missing credit data:', subject);
-                        return;
-                    }
-                    
-                    // Store price for later calculation - ensure it's stored as a number
-                    subjectPrices[subject.id] = {
-                        price: +subject.credit.price, // Convert to number using unary plus
-                        name: subject.name
-                    };
-                    
-                    const subjectItem = document.createElement('div');
-                    subjectItem.className = 'list-group-item subject-item';
-                    
-                    subjectItem.innerHTML = `
-                        <div class="row align-items-center">
-                            <div class="col-md-1 text-center">${index + 1}</div>
-                            <div class="col-md-5">${subject.name}</div>
-                            <div class="col-md-2 text-center">${subject.credit.qty}</div>
-                            <div class="col-md-2 text-end">${formatNumber(subject.credit.price)} ກີບ</div>
-                            <div class="col-md-2 text-center">
-                                <div class="form-check d-flex justify-content-center">
-                                    <input class="form-check-input" type="checkbox" value="${subject.id}" 
-                                        id="subject${subject.id}" onchange="toggleSubject(this, ${subject.id})">
-                                </div>
+                const subjectItem = document.createElement('div');
+                subjectItem.className = 'list-group-item subject-item';
+                
+                subjectItem.innerHTML = `
+                    <div class="row align-items-center">
+                        <div class="col-md-1 text-center">${index + 1}</div>
+                        <div class="col-md-5">${subject.name}</div>
+                        <div class="col-md-2 text-center">${subject.credit.qty}</div>
+                        <div class="col-md-2 text-end">${formatNumber(subject.credit.price)} ກີບ</div>
+                        <div class="col-md-2 text-center">
+                            <div class="form-check d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" value="${subject.id}" 
+                                    id="subject${subject.id}" onchange="toggleSubject(this, ${subject.id})">
                             </div>
                         </div>
-                    `;
-                    
-                    subjectList.appendChild(subjectItem);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching subjects:', error);
-                subjectList.innerHTML = `
-                    <div class="list-group-item text-center py-5">
-                        <p class="text-danger mb-0">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ: ${error.message}</p>
-                        <button class="btn btn-sm btn-outline-primary mt-2" onclick="retryFetchSubjects()">ລອງໃໝ່ອີກຄັ້ງ</button>
                     </div>
                 `;
+                
+                subjectList.appendChild(subjectItem);
             });
+        })
+        .catch(error => {
+            console.error('Error fetching subjects:', error);
+            subjectList.innerHTML = `
+                <div class="list-group-item text-center py-5">
+                    <p class="text-danger mb-0">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ: ${error.message}</p>
+                    <button class="btn btn-sm btn-outline-primary mt-2" onclick="retryFetchSubjects()">ລອງໃໝ່ອີກຄັ້ງ</button>
+                </div>
+            `;
+        });
+    }
+    
+    // Document ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-select major ID 1 and load its subjects when the page loads
+        const majorSelect = document.getElementById('major_id');
+        if (majorSelect) {
+            // Set the selected value to 1
+            majorSelect.value = '1';
+            
+            // If the option with value 1 doesn't exist, create it
+            if (!majorSelect.querySelector('option[value="1"]')) {
+                console.warn("Major with ID 1 not found in dropdown. The server might return an error.");
+            }
+            
+            // Trigger the fetch immediately with major ID 1
+            fetchSubjectsForMajor(1);
+        }
+        
+        // Major select change handler (keep existing functionality)
+        majorSelect.addEventListener('change', function() {
+            const majorId = this.value;
+            if (!majorId) return;
+            fetchSubjectsForMajor(majorId);
         });
         
-        // Form submission validation
+        // Form submission validation (existing code)
         document.getElementById('studentUpgradeForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
             // Ensure subjects are selected
             if (selectedSubjects.length === 0) {
                 alert('ກະລຸນາເລືອກຢ່າງໜ້ອຍ 1 ວິຊາ');
@@ -463,10 +479,8 @@
 
     // Function to retry loading subjects
     function retryFetchSubjects() {
-        const majorId = document.getElementById('major_id').value;
-        if (majorId) {
-            document.getElementById('major_id').dispatchEvent(new Event('change'));
-        }
+        const majorId = document.getElementById('major_id').value || '1'; // Default to 1 if not set
+        fetchSubjectsForMajor(majorId);
     }
 </script>
 

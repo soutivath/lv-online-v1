@@ -30,9 +30,21 @@
                         </div>
                     </div>
 
-                    <!-- Form -->
-                    <form id="studentRegistrationForm" action="{{ route('registrations.student') }}" method="POST" enctype="multipart/form-data">
+                    <!-- Form - IMPORTANT CHANGE: Add onSubmit handler -->
+                    <form id="studentRegistrationForm" action="{{ route('registrations.student') }}" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
                         @csrf
+                        <input type="hidden" name="form_submission_token" value="{{ uniqid() }}">
+                        
+                        <!-- Add this section to display validation errors from Laravel -->
+                        @if ($errors->any())
+                        <div class="alert alert-danger mb-4">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
 
                         <!-- Step 1: Student Information -->
                         <div class="step" id="step1">
@@ -91,6 +103,14 @@
                                     <label for="picture" class="form-label">ຮູບໂປຣໄຟລ໌ (3x4 ຊມ)</label>
                                     <input type="file" class="form-control" id="picture" name="picture" accept="image/*">
                                     <div class="form-text">ໄຟລ໌ຮູບຕ້ອງບໍ່ເກີນ 2MB</div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label for="score" class="form-label">ເອກະສານຄະແນນການສຶກສາ <span class="text-danger">*</span></label>
+                                    <input type="file" class="form-control" id="score" name="score" accept="image/*" required>
+                                    <div class="form-text">ອັບໂຫຼດຮູບຖ່າຍໃບຄະແນນ ຫຼື ໃບຢັ້ງຢືນການສຶກສາ (ໄຟລ໌ຕ້ອງບໍ່ເກີນ 2MB)</div>
                                 </div>
                             </div>
 
@@ -223,93 +243,6 @@
                                 </div>
                             </div>
 
-                            <!-- Program Type and Study Time -->
-                            <div class="mb-4">
-                                <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0">ຂໍ້ມູນການຮຽນ</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="education_level" class="form-label">ລະດັບການສຶກສາ <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="education_level" name="education_level" required>
-                                                    <option value="" selected>ເລືອກລະດັບການສຶກສາ</option>
-                                                    <option value="diploma">ຊັ້ນກາງ (ອະນຸປະລິນຍາ)</option>
-                                                    <option value="bachelor">ຊັ້ນສູງ (ປະລິນຍາຕີ)</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="study_time" class="form-label">ເວລາຮຽນ <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="study_time" name="study_time" required>
-                                                    <option value="" selected disabled>ເລືອກເວລາຮຽນ</option>
-                                                    <option value="morning">ພາກເຊົ້າ (8:00 - 11:30)</option>
-                                                    <option value="afternoon">ພາກບ່າຍ (13:30 - 16:30)</option>
-                                                    <option value="evening">ພາກຄ່ຳ (17:30 - 19:30)</option>
-                                                    <option value="weekend">ພາກວັນເສົາ-ອາທິດ</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Previous Education -->
-                            <div class="mb-4">
-                                <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0">ຂໍ້ມູນການສຶກສາທີ່ຜ່ານມາ</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="mb-3">
-                                            <label for="previous_school" class="form-label">ຊື່ໂຮງຮຽນທີ່ຮຽນຈົບມາ <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" id="previous_school" name="previous_school" required>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="graduation_year" class="form-label">ປີທີ່ຮຽນຈົບ <span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control" id="graduation_year" name="graduation_year" min="2000" max="2030" required>
-                                            </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="gpa" class="form-label">ຄະແນນສະເລ່ຍ</label>
-                                                <input type="number" class="form-control" id="gpa" name="gpa" min="0" max="10" step="0.01">
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="score" class="form-label">ໃບປະກາສະນີຍະບັດ <span class="text-danger">*</span></label>
-                                            <input type="file" class="form-control" id="score" name="score" accept="image/*" required>
-                                            <div class="form-text">ອັບໂຫລດໃບປະກາສະນີຍະບັດ ຫຼື ໃບຢັ້ງຢືນການສຶກສາ (ຮູບພາບ)</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Dormitory Option -->
-                            <div class="mb-4">
-                                <div class="card">
-                                    <div class="card-header bg-light">
-                                        <h6 class="mb-0">ຂໍ້ມູນທີ່ພັກ</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <label for="dormitory" class="form-label">ຕ້ອງການພັກຫໍພັກຂອງວິທະຍາໄລບໍ່?</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="dormitory" id="dormitory_yes" value="yes">
-                                            <label class="form-check-label" for="dormitory_yes">
-                                                ຕ້ອງການ
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="dormitory" id="dormitory_no" value="no" checked>
-                                            <label class="form-check-label" for="dormitory_no">
-                                                ບໍ່ຕ້ອງການ
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-outline-secondary px-4" onclick="prevStep(2)"><i class="bi bi-arrow-left me-2"></i> ກັບຄືນ</button>
                                 <button type="button" class="btn btn-primary px-4" onclick="nextStep(2)">ຕໍ່ໄປ <i class="bi bi-arrow-right ms-2"></i></button>
@@ -327,22 +260,22 @@
                                         <div class="card-body">
                                             <table class="table table-borderless">
                                                 <tbody>
-                                                    <tr>
+                                                    {{-- <tr>
                                                         <td>ຄ່າລົງທະບຽນ:</td>
                                                         <td class="text-end">500,000 ກີບ</td>
-                                                    </tr>
+                                                    </tr> --}}
                                                     <tr>
                                                         <td>ຄ່າຮຽນ (ຕໍ່ພາກຮຽນ):</td>
                                                         <td class="text-end"><span id="tuition_fee">1,500,000</span> ກີບ</td>
                                                     </tr>
-                                                    <tr>
+                                                    {{-- <tr>
                                                         <td>ຄ່າຊຸດນັກສຶກສາ:</td>
                                                         <td class="text-end">250,000 ກີບ</td>
-                                                    </tr>
-                                                    <tr class="dormitory-fee" style="display: none;">
+                                                    </tr> --}}
+                                                    {{-- <tr class="dormitory-fee" style="display: none;">
                                                         <td>ຄ່າຫໍພັກ (ຕໍ່ເດືອນ):</td>
                                                         <td class="text-end">400,000 ກີບ</td>
-                                                    </tr>
+                                                    </tr> --}}
                                                     <tr>
                                                         <td colspan="2">
                                                             <hr>
@@ -388,7 +321,7 @@
                                 <input type="date" class="form-control" id="registration_date" name="registration_date" value="{{ date('Y-m-d') }}" required>
                             </div>
 
-                            <div class="row mb-4">
+                            <div class="row mb-4" style="display: none;">
                                 <div class="col-md-6">
                                     <label for="pro" class="form-label">ສ່ວນຫຼຸດ (%)</label>
                                     <input type="number" class="form-control" id="pro" name="pro" min="0" max="100" value="0" step="0.01">
@@ -413,9 +346,10 @@
                             <input type="hidden" name="detail_price" id="detail_price">
                             <input type="hidden" name="total_price" id="total_price">
 
+                            <!-- Replace the submit button -->
                             <div class="d-flex justify-content-between mt-4">
                                 <button type="button" class="btn btn-outline-secondary px-4" onclick="prevStep(3)"><i class="bi bi-arrow-left me-2"></i> ກັບຄືນ</button>
-                                <button type="submit" class="btn btn-success px-5"><i class="bi bi-check-circle me-2"></i> ສົ່ງຂໍ້ມູນລົງທະບຽນ</button>
+                                <button type="submit" class="btn btn-success px-5" id="submit-registration-btn"><i class="bi bi-check-circle me-2"></i> ສົ່ງຂໍ້ມູນລົງທະບຽນ</button>
                             </div>
                         </div>
                     </form>
@@ -458,6 +392,11 @@
         // Update progress bar
         currentStep = step + 1;
         updateProgress();
+        
+        // If moving to payment step, update payment details with selected majors
+        if (step === 2) {
+            updatePaymentDetails();
+        }
 
         // Scroll to top
         window.scrollTo(0, 0);
@@ -563,80 +502,65 @@
 
         return isValid;
     }
-</script>
 
-<script>
+    // New function to update payment details based on selected majors
+    function updatePaymentDetails() {
+        const registrationFee = 500000; // Fixed registration fee
+        const uniformFee = 250000;     // Fixed uniform fee
+        
+        // Use the total price from selected majors
+        const tuitionFee = totalMajorPrice;
+        
+        // Update displayed tuition fee
+        document.getElementById('tuition_fee').textContent = formatNumber(tuitionFee);
+        
+        // Calculate total
+        // let total = registrationFee + tuitionFee + uniformFee;
+        let total =  tuitionFee;
+        
+        // Apply discount if any
+        // const discountPercent = parseFloat(document.getElementById('pro').value) || 0;
+        const discountPercent = 0;
+        const discountAmount = (total * discountPercent / 100);
+        const finalTotal = total - discountAmount;
+        
+        // Update displayed total
+        document.getElementById('total_amount').textContent = formatNumber(finalTotal) + ' ກີບ';
+        
+        // Update hidden fields
+        document.getElementById('detail_price').value = total;
+        document.getElementById('total_price').value = finalTotal;
+    }
+
     // Format number with commas
     function formatNumber(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     // Calculate total amount based on selections
+    function updateTotal() {
+        // This function now just calls updatePaymentDetails
+        updatePaymentDetails();
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
 
         // Initialize dropdowns with data from controller
         initializeDropdowns();
 
         const majorSelect = document.getElementById('major_id');
-        const educationLevelSelect = document.getElementById('education_level');
         const dormitoryYesRadio = document.getElementById('dormitory_yes');
         const dormitoryNoRadio = document.getElementById('dormitory_no');
         const proInput = document.getElementById('pro');
 
-        // Function to update total
-        function updateTotal() {
-            let baseFee = 500000; // Registration fee
-            let tuitionFee = 1500000; // Default tuition
-            const uniformFee = 250000;
-            let dormitoryFee = 0;
-
-            // Adjust tuition based on major and education level
-            if (majorSelect.value == '3' || majorSelect.value == '4') {
-                tuitionFee = 1700000;
-            }
-
-            if (educationLevelSelect.value === 'bachelor') {
-                tuitionFee += 300000;
-            }
-
-            // Update displayed tuition
-            document.getElementById('tuition_fee').textContent = formatNumber(tuitionFee);
-
-            // Check if dormitory is selected
-            if (dormitoryYesRadio.checked) {
-                dormitoryFee = 400000;
-                document.querySelector('.dormitory-fee').style.display = 'table-row';
-            } else {
-                document.querySelector('.dormitory-fee').style.display = 'none';
-            }
-
-            // Calculate and update total
-            let subtotal = baseFee + tuitionFee + uniformFee + dormitoryFee;
-
-            // Apply discount if any
-            let discount = 0;
-            if (proInput.value) {
-                discount = (parseFloat(proInput.value) / 100) * subtotal;
-            }
-
-            const total = subtotal - discount;
-
-            // Update the hidden fields
-            document.getElementById('detail_price').value = subtotal;
-            document.getElementById('total_price').value = total;
-
-            // Update displayed total
-            document.getElementById('total_amount').textContent = formatNumber(total) + ' ກີບ';
+        // Add change event listeners to update payment details
+        proInput.addEventListener('input', updatePaymentDetails);
+        
+        // Remove listeners that reference dormitory or education level if they don't exist
+        if (dormitoryYesRadio && dormitoryNoRadio) {
+            dormitoryYesRadio.addEventListener('change', updatePaymentDetails);
+            dormitoryNoRadio.addEventListener('change', updatePaymentDetails);
         }
-
-
-
-        // Add change event listeners
-        majorSelect.addEventListener('change', updateTotal);
-        educationLevelSelect.addEventListener('change', updateTotal);
-        dormitoryYesRadio.addEventListener('change', updateTotal);
-        dormitoryNoRadio.addEventListener('change', updateTotal);
-        proInput.addEventListener('input', updateTotal);
 
         // Initialize province-district selector
         const provinceSelect = document.getElementById('province');
@@ -871,7 +795,7 @@
                 const addButton = document.getElementById('add-major-btn');
                 if (addButton) {
                     // Keep button disabled until a major is selected
-                    addButton.disabled = true;
+                    addButton.disabled = !this.value;
                     majorSelect.addEventListener('change', function() {
                         addButton.disabled = !this.value;
                     });

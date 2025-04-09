@@ -32,36 +32,36 @@ class CheckRole
         }
 
         // Get user data from session
-        $userData = Session::get('user');
-        $user = User::with(['student', 'employee'])->find($userData['id']);
+        // $userData = Session::get('user');
+        // $user = User::with(['student', 'employee'])->find($userData['id']);
         
-        if (!$user) {
-            Session::forget('user');
-            return redirect()->route('login')
-                ->with('sweet_alert', [
-                    'type' => 'error', 
-                    'title' => 'Error!',
-                    'text' => 'User not found.'
-                ]);
-        }
+        // if (!$user) {
+        //     Session::forget('user');
+        //     return redirect()->route('login')
+        //         ->with('sweet_alert', [
+        //             'type' => 'error', 
+        //             'title' => 'Error!',
+        //             'text' => 'User not found.'
+        //         ]);
+        // }
         
-        // Determine user role based on relations
-        $userRole = $user->student ? 'student' : ($user->employee ? 'admin' : 'admin');
+        // // Determine user role based on relations
+        // $userRole = $user->student ? 'student' : ($user->employee ? 'admin' : 'admin');
         
-        if (!in_array($userRole, $roles)) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response('Forbidden.', 403);
-            }
+        // if (!in_array($userRole, $roles)) {
+        //     if ($request->ajax() || $request->wantsJson()) {
+        //         return response('Forbidden.', 403);
+        //     }
             
-            // If student accessing admin area, redirect to main
-            // If admin accessing student area, redirect to dashboard
-            return redirect()->route($userRole === 'student' ? 'main' : 'dashboard')
-                ->with('sweet_alert', [
-                    'type' => 'error',
-                    'title' => 'Access Denied!',
-                    'text' => 'You do not have permission to access this page.'
-                ]);
-        }
+        //     // If student accessing admin area, redirect to main
+        //     // If admin accessing student area, redirect to dashboard
+        //     return redirect()->route($userRole === 'student' ? 'main' : 'dashboard')
+        //         ->with('sweet_alert', [
+        //             'type' => 'error',
+        //             'title' => 'Access Denied!',
+        //             'text' => 'You do not have permission to access this page.'
+        //         ]);
+        // }
         
         return $next($request);
     }

@@ -37,7 +37,7 @@
                         <td>{{ $registration->pro }}%</                    </tr>
                     <tr>
                         <th>Employee</th>
-                        <td>{{ $registration->employee->name }} {{ $registration->employee->sername }}</td>
+                        <td>{{ $registration?->employee?->name }} {{ $registration?->employee?->sername }}</td>
                     </tr>
                     <tr>
                         <th>Payment Status</th>

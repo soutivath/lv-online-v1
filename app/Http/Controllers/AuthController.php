@@ -9,6 +9,7 @@ use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -132,15 +133,26 @@ class AuthController extends Controller
             ]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Session::forget('user');
+        // Clear all user session data
+        $request->session()->forget('user');
+        $request->session()->forget('auth_user');
         
-        return redirect()->route('login')
-            ->with('sweet_alert', [
-                'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'You have been logged out successfully.'
-            ]);
+        // If you're using Laravel's built-in authentication as well
+        Auth::logout();
+        
+        // Invalidate the session
+        $request->session()->invalidate();
+        
+        // Regenerate CSRF token
+        $request->session()->regenerateToken();
+        
+        // Redirect to home page with success message
+        return redirect('/')->with('sweet_alert', [
+            'type' => 'success',
+            'title' => 'ອອກຈາກລະບົບສຳເລັດ',
+            'text' => 'ທ່ານໄດ້ອອກຈາກລະບົບສຳເລັດແລ້ວ'
+        ]);
     }
 }

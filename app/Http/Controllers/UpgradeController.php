@@ -203,11 +203,15 @@ class UpgradeController extends Controller
             // Using major_id instead of department_id
             $major = Major::with(['subjects.credit'])->findOrFail($majorId);
             $subjects = $major->subjects;
+
+            //all subject
+            $allSubjects = Subject::with('credit')->get();
         
             
             \Log::info('Found subjects: ' . $subjects->count());
             
-            return response()->json($subjects);
+            return response()->json($allSubjects);
+            // return response()->json($subjects);
         } catch (\Exception $e) {
             \Log::error('Error fetching subjects: ' . $e->getMessage());
             

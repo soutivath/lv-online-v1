@@ -18,6 +18,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
 
+    {{-- Add auth check script - redirects if not logged in, but allows main page access --}}
+    <script>
+        // Check if user is logged in
+        @if(!session()->has('user') && !request()->is('login') && !request()->is('register') && !request()->is('/'))
+            window.location.href = "{{ url('/login') }}";
+        @endif
+    </script>
+
     {{-- bs icon --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -45,26 +53,27 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown" style="font-size: 25px">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">ໜ້າລັກ</a>
+                        <a class="nav-link {{ request()->is('/') ? 'active' : '' }}" aria-current="page" href="/">ໜ້າລັກ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('student.registration') }}">ລົງທະບຽນຮຽນ</a>
+                        <a class="nav-link {{ request()->routeIs('student.registration') ? 'active' : '' }}" href="{{ route('student.registration') }}">ລົງທະບຽນຮຽນ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('student.upgrade') }}">ອັບເກດ</a>
+                        <a class="nav-link {{ request()->routeIs('student.upgrade') ? 'active' : '' }}" href="{{ route('student.upgrade') }}">ອັບເກດ</a>
                     </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/showdata">ອັບເກດ</a>
                     </li> --}}
                     {{-- Use the request session to check user authentication state --}}
-                    @if(session()->has('auth_user'))
+                    {{-- @dd(session('user')); --}}
+                    @if(session()->has('user'))
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                <i class="bi bi-person-circle me-1"></i> {{ session('auth_user')['name'] }}
+                                <i class="bi bi-person-circle me-1"></i> {{ session('user')['name'] }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal"><i class="bi bi-person me-2"></i>ໂປຣໄຟລ໌</a></li>
+                                <li><a class="dropdown-item {{ request()->routeIs('main') ? 'active' : '' }}" href="{{ route('main') }}"><i class="bi bi-person me-2"></i>ໂປຣໄຟລ໌</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ url('/logout') }}" method="POST" id="logout-form">

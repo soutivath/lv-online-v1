@@ -31,7 +31,7 @@ use App\Http\Controllers\Auth\RegisterController;
 |
 */
 
-// Main routes
+// Home route - always redirect to main page
 Route::get('/', function () {
     return view('main-page');
 })->name('home');
@@ -80,12 +80,14 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', 'App\Http\Controllers\AuthController@logout')->name('logout');
 
 // Student main page route
-Route::get('/main', [MainController::class, 'index'])->name('main')->middleware('check.role:student');
+Route::get('/main', [MainController::class, 'index'])->name('main');
+//->middleware('check.role:student');
 
 // Protected admin routes that require authentication
-Route::middleware(['check.role:admin'])->group(function () {
+Route::middleware(['check.role:admin,student'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

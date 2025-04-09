@@ -18,6 +18,7 @@ class MainController extends Controller
         
         // Get user data and determine if student
         $userData = Session::get('user');
+       
         $user = User::with('student')->find($userData['id']);
         
         if (!$user || !$user->student) {

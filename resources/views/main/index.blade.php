@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Laovieng College</title>
+    
+    {{-- Admin/Employee Redirection Check - Using relationship check instead of role --}}
+    @if(isset($user) && $user->employee)
+        <script>
+            window.location.href = "{{ route('admin.dashboard') }}";
+        </script>
+    @endif
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -21,13 +29,30 @@
             max-width: 150px;
             margin-bottom: 15px;
         }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .logo-icon {
+            font-size: 1.8rem;
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('main') }}">
-                <i class="fas fa-school me-2"></i>
+            <a class="navbar-brand" href="/" title="Go to Home Page">
+                <i class="fas fa-school logo-icon"></i>
                 Laovieng College
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

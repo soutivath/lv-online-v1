@@ -4,6 +4,7 @@
 
 @section('page-title', 'New Grade Upgrade')
 
+
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endsection
@@ -88,13 +89,26 @@
 
             <div class="mb-3">
                 <label for="subjects" class="form-label">Select Subjects</label>
-                <select class="form-select select2" id="subjects" name="subjects[]" multiple required>
-                    @foreach($subjects as $subject)
-                        <option value="{{ $subject->id }}" data-price="{{ $subject->credit->price }}">
-                            {{ $subject->name }} ({{ $subject->credit->qty }} credits - {{ number_format($subject->credit->price, 2) }})
-                        </option>
-                    @endforeach
-                </select>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach($subjects as $subject)
+                            <div class="col-md-6 mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input subject-checkbox" type="checkbox" value="{{ $subject->id }}" 
+                                        id="subject_{{ $subject->id }}" name="subjects[]" 
+                                        data-name="{{ $subject->name }}" 
+                                        data-credits="{{ $subject->credit->qty }}" 
+                                        data-price="{{ $subject->credit->price }}">
+                                    <label class="form-check-label" for="subject_{{ $subject->id }}">
+                                        {{ $subject->name }} ({{ $subject->credit->qty }} credits - {{ number_format($subject->credit->price, 2) }})
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -141,13 +155,14 @@
     </div>
 </div>
 @endsection
-
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.select2').select2();
-
+    // Format number with commas
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
         // Filter change event handlers
         $('#year_filter, #term_filter, #semester_filter').on('change', function() {
             filterMajors();
@@ -201,35 +216,31 @@
                 }
             });
         }
-
-        $('#subjects').on('change', function() {
+        
+        // Handle subject checkbox changes
+        $('.subject-checkbox').on('change', function() {
             updateSelectedSubjectsTable();
         });
-
+        
         function updateSelectedSubjectsTable() {
-            let selectedOptions = $('#subjects option:selected');
+            let selectedCheckboxes = $('.subject-checkbox:checked');
             let tableBody = $('#selected-subjects-table tbody');
             let totalAmount = 0;
-
+            
             tableBody.empty();
-
-            if (selectedOptions.length === 0) {
-                tableBody.html('<tr><td colspan="3" class="text-center">No subjects selected</td></tr>');
+            
+            if (selectedCheckboxes.length === 0) {
+                tableBody.html('<tr id="no-subjects-row"><td colspan="3" class="text-center">No subjects selected</td></tr>');
             } else {
-                selectedOptions.each(function() {
-                    let option = $(this);
-                    let subjectId = option.val();
-                    let subjectText = option.text();
-                    let price = parseFloat(option.data('price'));
-                    totalAmount += price;
-
-                    // Extract credits from text (format: "Subject Name (X credits - Y.00)")
-                    let creditsMatch = subjectText.match(/\(([^)]+) credits/);
-                    let credits = creditsMatch ? creditsMatch[1] : '';
+                selectedCheckboxes.each(function() {
+                    let checkbox = $(this);
+                    let subjectName = checkbox.data('name');
+                    let credits = checkbox.data('credits');
+                    let price = parseFloat(checkbox.data('price'));
                     
-                    // Extract just the subject name
-                    let subjectName = subjectText.split(' (')[0];
-
+                    if (isNaN(price)) price = 0;
+                    totalAmount += price;
+                    
                     tableBody.append(`
                         <tr>
                             <td>${subjectName}</td>
@@ -239,9 +250,12 @@
                     `);
                 });
             }
-
+            
             $('#total-amount').text(totalAmount.toFixed(2));
         }
+        
+        // Initialize the table on page load
+        updateSelectedSubjectsTable();
         
         // File input preview
         $('#payment_proof').on('change', function() {
@@ -261,6 +275,13 @@
                 preview.empty().hide();
             }
         });
+    });
+</script>
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('.select2').select2();
     });
 </script>
 @endsection
