@@ -352,7 +352,7 @@ class RegistrationController extends Controller
 
 
         $validatedData = $request->validate([
-            'pro' => 'required|numeric|min:0|max:100',
+            // 'pro' => 'required|numeric|min:0|max:100',
             'major_ids' => 'required|string',
             'payment_proof' => 'nullable|image|max:2048',
         ]);
@@ -361,14 +361,17 @@ class RegistrationController extends Controller
 
         DB::beginTransaction();
         try {
-
+            $request->merge([
+                'pro'=>0
+            ]);
             $stdController = new StudentController();
             $stdData = $stdController->register($request);
 
             $registration = new Registration();
             $registration->student_id = $stdData->id;
             $registration->date = Carbon::parse($request->date)->format('Y-m-d H:i:s');
-            $registration->pro = $request->pro;
+            // $registration->pro = $request->pro;
+            $registration->pro = 0;
 
             // Get employee_id from session if user is logged in as employee
             $employeeId = null;
