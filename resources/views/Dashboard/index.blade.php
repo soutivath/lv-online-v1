@@ -80,6 +80,7 @@
         </div>
     </div> --}}
 
+    {{-- 
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
@@ -103,6 +104,75 @@
                                     <td>{{ number_format($payment->total_price, 2) }}</td>
                                 </tr>
                             @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    --}}
+
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Total Payment by Major</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Major</th>
+                                <th>Total Payment (₭)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($paymentTotalsByMajor as $majorName => $total)
+                                <tr>
+                                    <td>{{ $majorName }}</td>
+                                    <td>{{ number_format($total, 2) }}</td>
+                                </tr>
+                            @endforeach
+                            @if(count($paymentTotalsByMajor) == 0)
+                                <tr>
+                                    <td colspan="2" class="text-center">No payment data</td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Total Upgrade by Major</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Major</th>
+                                <th>Total Upgrade (₭)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($upgradeTotalsByMajor as $majorName => $total)
+                                <tr>
+                                    <td>{{ $majorName }}</td>
+                                    <td>{{ number_format($total, 2) }}</td>
+                                </tr>
+                            @endforeach
+                            @if(count($upgradeTotalsByMajor) == 0)
+                                <tr>
+                                    <td colspan="2" class="text-center">No upgrade data</td>
+                                </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>

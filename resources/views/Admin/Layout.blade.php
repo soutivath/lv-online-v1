@@ -61,6 +61,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('student.upgrade') ? 'active' : '' }}" href="{{ route('student.upgrade') }}">ອັບເກດ</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('student.payment') ? 'active' : '' }}" href="{{ route('student.payment') }}">ຊຳລະຄ່າຮຽນ</a>
+                    </li>
                     {{-- <li class="nav-item">
                         <a class="nav-link" href="/showdata">ອັບເກດ</a>
                     </li> --}}
@@ -106,7 +109,7 @@
     <div class="container-fluid" style="background-color:#1c37e1;">
         <div class="row">
             <div class="col py-3 text-center" >
-                <h1 class="text-light"> Online registration system of Laovieng College </h1>
+                <h1 class="text-light">ລະບົບລົງທະບຽນອອນລາຍ ວິທະຍາໄລ ລາວວຽງ</h1>
             </div>
         </div>
     </div>

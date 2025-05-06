@@ -40,6 +40,10 @@ Route::get('/', function () {
 Route::get('/student-registration', [App\Http\Controllers\StudentController::class, 'showRegistrationForm'])->name('student.registration');
 Route::post('/student-register', 'App\Http\Controllers\StudentController@register')->name('student.register');
 
+// Student Payment Route
+Route::get('/student-payment', 'App\Http\Controllers\PaymentController@showStudentPaymentForm')->name('student.payment');
+Route::post('/student-payment-submit', 'App\Http\Controllers\PaymentController@storeStudentPayment')->name('student.payment.submit');
+
 // Student Upgrade Routes
 Route::get('/student-upgrade', 'App\Http\Controllers\UpgradeController@showStudentUpgrade')->name('student.upgrade');
 Route::post('/student-upgrade-submit', 'App\Http\Controllers\UpgradeController@storeStudentUpgrade')->name('student.upgrade.submit');
@@ -59,21 +63,6 @@ Route::get('/api/terms-by-year/{yearId}', [App\Http\Controllers\TermController::
 Route::get('/api/semesters-by-year-term/{yearId}/{termId}', [App\Http\Controllers\SemesterController::class, 'getSemestersByYearTerm']);
 Route::get('/api/majors-by-year-term-semester/{yearId}/{termId}/{semesterId}', [App\Http\Controllers\MajorController::class, 'getMajorsByYearTermSemester']);
 
-// Check user type and redirect accordingly
-Route::get('/', function () {
-    // if (Session::has('user')) {
-    //     $userData = Session::get('user');
-    //     $user = \App\Models\User::with(['student', 'employee'])->find($userData['id']);
-        
-    //     if ($user && $user->student) {
-    //         return redirect()->route('main');
-    //     } else {
-    //         return redirect()->route('dashboard');
-    //     }
-    // }
-    return view('main-page');
-});
-
 // Auth routes (custom)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
@@ -84,7 +73,6 @@ Route::post('/logout', 'App\Http\Controllers\AuthController@logout')->name('logo
 
 // Student main page route
 Route::get('/main', [MainController::class, 'index'])->name('main');
-//->middleware('check.role:student');
 
 // Protected admin routes that require authentication
 Route::middleware(['check.role:admin,student'])->group(function () {
@@ -155,6 +143,9 @@ Route::middleware(['check.role:admin,student'])->group(function () {
     Route::get('upgrades/{upgrade}/export-pdf', [UpgradeController::class, 'exportPDF'])->name('upgrades.export-pdf');
     Route::get('upgrades-export-all', [UpgradeController::class, 'exportAllPDF'])->name('upgrades.export-all-pdf');
 });
+
+// Make sure the PDF export route is accessible without authentication
+Route::get('payments/{payment}/export-pdf', [PaymentController::class, 'exportPDF'])->name('payments.export-pdf');
 
 Route::get('test',function(){
     return view('main-page');

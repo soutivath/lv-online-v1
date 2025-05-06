@@ -77,7 +77,7 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md=6">
                                     <label for="tell" class="form-label">ເບີໂທລະສັບ <span class="text-danger">*</span></label>
                                     <input type="tel" class="form-control" id="tell" name="tell" required>
                                 </div>
@@ -336,11 +336,11 @@
                                 </label>
                             </div>
 
-                            <div class="mb-4">
+                            {{-- <div class="mb-4">
                                 <label for="password" class="form-label">ຕັ້ງລະຫັດຜ່ານເພື່ອເຂົ້າສູ່ລະບົບ <span class="text-danger">*</span></label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                                 <div class="form-text">ຕັ້ງລະຫັດຜ່ານທີ່ປອດໄພສຳລັບບັນຊີຂອງທ່ານ</div>
-                            </div>
+                            </div> --}}
 
                             <!-- Hidden input fields to store registration detail information -->
                             <input type="hidden" name="detail_price" id="detail_price">
@@ -989,7 +989,7 @@
         if (!majorId) {
             Swal.fire({
                 icon: 'warning',
-                title: 'ບໍ່ໄດ້ເລືອກສາຂາ',
+                title: 'ບໍ່ໄດເລືອກສາຂາ',
                 text: 'ກະລຸນາເລືອກສາຂາທີ່ຕ້ອງການກ່ອນ'
             });
             return;
@@ -1052,6 +1052,96 @@
             });
         @endif
     </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if we have a registration_id in the session
+        @if(Session::has('registration_id'))
+            // Get the ID from the session
+            const registrationId = {{ Session::get('registration_id') }};
+            
+            // Check if we already opened this PDF (to prevent opening multiple tabs)
+            if (!sessionStorage.getItem('pdf_opened_' + registrationId)) {
+                // Set a flag in sessionStorage so we don't open it again on page reload
+                sessionStorage.setItem('pdf_opened_' + registrationId, 'true');
+                
+                // Open the PDF in a new tab
+                window.open('{{ route('registrations.export-pdf', Session::get('registration_id')) }}', '_blank');
+            }
+        @endif
+        
+        // Reset flag when navigating away 
+        window.addEventListener('beforeunload', function() {
+            @if(Session::has('registration_id'))
+                sessionStorage.removeItem('pdf_opened_' + registrationId);
+            @endif
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if registration_id exists in session
+        @if(Session::has('registration_id'))
+            const registrationId = {{ Session::get('registration_id') }};
+            console.log('Registration ID found in session:', registrationId);
+            
+            // Open the PDF in a new tab
+            window.open('{{ route('registrations.export-pdf', Session::get('registration_id')) }}', '_blank');
+            
+            // Mark in session storage that we've handled this registration
+            sessionStorage.setItem('pdf_opened_' + registrationId, 'true');
+            
+            // Reset the form
+            resetRegistrationForm();
+        @endif
+        
+        // Also handle back navigation
+        window.addEventListener('pageshow', function(event) {
+            // If navigating back to this page
+            if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                console.log('Back navigation detected - resetting form');
+                resetRegistrationForm();
+            }
+        });
+        
+        // Function to reset the entire registration form
+        function resetRegistrationForm() {
+            console.log('Resetting registration form');
+            
+            // Reset all form fields
+            document.querySelectorAll('form input, form select, form textarea').forEach(el => {
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = false;
+                } else {
+                    el.value = '';
+                }
+            });
+            
+            // Reset step UI to step 1
+            currentStep = 1;
+            updateProgressBar();
+            updateStepIndicators();
+            
+            // Show step 1, hide others
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+            
+            // Reset selected majors
+            selectedMajors = [];
+            totalPrice = 0;
+            
+            // Update the table to reflect empty state
+            updateSelectedMajorsTable();
+            
+            // Reset any other custom states
+            // ...
+            
+            console.log('Form has been reset completely');
+        }
+    });
+</script>
 
 <style>
     .step-label {

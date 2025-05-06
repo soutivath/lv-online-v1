@@ -9,13 +9,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use PDF;
 
 class StudentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $students = Student::with('user')->get();
+        $query = Student::query();
+        
+        // Apply search if a search term is provided
+        if ($request->has('search') && !empty($request->search)) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('id', 'like', "%{$searchTerm}%")
+                  ->orWhere('name', 'like', "%{$searchTerm}%")
+                  ->orWhere('sername', 'like', "%{$searchTerm}%")
+                  ->orWhereHas('user', function($userQuery) use ($searchTerm) {
+                      $userQuery->where('email', 'like', "%{$searchTerm}%");
+                  });
+            });
+        }
+        
+        // Get the results with pagination
+        $students = $query->paginate(15);
+        
         return view('Dashboard.students.index', compact('students'));
     }
 
@@ -355,6 +373,97 @@ class StudentController extends Controller
             
             // Handle score upload if present
             if ($request->hasFile('score')) {
+                $student->score = $request->file('score')->store('student_scores', 'public');
+            }
+
+            $student->save();
+
+       
+
+            return $student;
+       
+    }
+
+
+    public function updatedRegistered(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'sername' => 'required|string|max:255',
+            'gender' => 'required|string|max:50',
+            'birthday' => 'required|date',
+            'nationality' => 'required|string|max:100',
+            'tell' => 'required|string|max:50',
+            'address' => 'required|string',
+            'picture' => 'nullable|image|max:2048',
+            'score' => 'nullable|image|max:2048', // Changed to only accept images
+        ]);
+
+    
+     
+            // Create user account first
+            $userData = Session::get('user');
+            if (!$userData) {
+                return redirect()->back()->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'Error!',
+                    'text' => 'User data not found. Please register first.'
+                ]);
+            }
+            $user = User::find($userData['id']);
+            if (!$user) {
+                return redirect()->back()->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'Error!',
+                    'text' => 'User not found in database.'
+                ]);
+            }
+
+            // Find existing student record or create new one
+            $student = Student::where('user_id', $user->id)->first();
+            if (!$student) {
+                $student = new Student();
+                $student->user_id = $user->id;
+            }
+
+            // Update student fields if provided and not null
+            if (!empty($validatedData['name'])) {
+                $student->name = $validatedData['name'];
+            }
+            if (!empty($validatedData['sername'])) {
+                $student->sername = $validatedData['sername'];
+            }
+            if (!empty($validatedData['gender'])) {
+                $student->gender = $validatedData['gender'];
+            }
+            if (!empty($validatedData['birthday'])) {
+                $student->birthday = $validatedData['birthday'];
+            }
+            if (!empty($validatedData['nationality'])) {
+                $student->nationality = $validatedData['nationality'];
+            }
+            if (!empty($validatedData['tell'])) {
+                $student->tell = $validatedData['tell'];
+            }
+            if (!empty($validatedData['address'])) {
+                $student->address = $validatedData['address'];
+            }
+
+            // Handle picture upload if present
+            if ($request->hasFile('picture')) {
+                // Delete old picture if exists
+                if ($student->picture) {
+                    Storage::disk('public')->delete($student->picture);
+                }
+                $student->picture = $request->file('picture')->store('student_pictures', 'public');
+            }
+
+            // Handle score upload if present
+            if ($request->hasFile('score')) {
+                // Delete old score if exists
+                if ($student->score) {
+                    Storage::disk('public')->delete($student->score);
+                }
                 $student->score = $request->file('score')->store('student_scores', 'public');
             }
 

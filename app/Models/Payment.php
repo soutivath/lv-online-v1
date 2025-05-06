@@ -22,7 +22,8 @@ class Payment extends Model
         'pro',
         'total_price',
         'status',
-        'payment_proof'
+        'payment_proof',
+        'note', // Add this if it doesn't exist
     ];
 
     protected $casts = [

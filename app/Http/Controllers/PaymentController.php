@@ -358,4 +358,257 @@ class PaymentController extends Controller
                 ]);
         }
     }
+
+    /**
+     * Display the student payment form.
+     */
+    public function showStudentPaymentForm()
+    {
+        try {
+            // Debug mode - log all steps to identify the issue
+            \Log::info('Starting showStudentPaymentForm method');
+            
+            // Check if user is logged in
+            if (!Session::has('user')) {
+                \Log::info('User not logged in - redirecting to login');
+                return redirect()->route('login')
+                    ->with('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'ບໍ່ສາມາດເຂົ້າເຖິງ!',
+                        'text' => 'ກະລຸນາເຂົ້າສູ່ລະບົບກ່ອນ'
+                    ]);
+            }
+            
+            // Get user data
+            $userData = Session::get('user');
+            \Log::info('User is logged in', ['user_id' => $userData['id']]);
+            
+            // Load user with student relationship
+            $user = User::with('student')->find($userData['id']);
+            
+            // Check if student profile exists
+            if (!$user || !$user->student) {
+                \Log::info('User is not a student', ['user_id' => $userData['id']]);
+                return redirect()->route('home')
+                    ->with('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາ!',
+                        'text' => 'ບັນຊີຂອງທ່ານບໍ່ແມ່ນບັນຊີນັກສຶກສາ'
+                    ]);
+            }
+            
+            // Get student information
+            $student = $user->student;
+            \Log::info('Found student profile', ['student_id' => $student->id]);
+            
+            // Check for registrations - THIS IS LIKELY THE ISSUE
+            try {
+                \Log::info('Getting registered major IDs');
+                $registeredMajorIds = $this->paymentStatusService->getRegisteredMajorIdsForStudent($student->id);
+                \Log::info('Got registered major IDs', ['count' => count($registeredMajorIds)]);
+                
+                \Log::info('Getting paid major IDs');
+                $paidMajorIds = $this->paymentStatusService->getPaidMajorIdsForStudent($student->id);
+                \Log::info('Got paid major IDs', ['count' => count($paidMajorIds)]);
+                
+                // Filter out already paid majors
+                $unpaidMajorIds = array_diff($registeredMajorIds, $paidMajorIds);
+                \Log::info('Unpaid major IDs', ['count' => count($unpaidMajorIds)]);
+            } catch (\Exception $e) {
+                \Log::error('Error getting registration data', ['error' => $e->getMessage()]);
+                throw $e; // Re-throw to be caught by outer try-catch
+            }
+            
+            // FOR TESTING: If no unpaid majors, show a test major instead of redirecting
+            if (empty($unpaidMajorIds)) {
+                \Log::info('No unpaid majors found');
+                
+                // TEMPORARY FIX: For testing, load all majors instead of redirecting
+                $majors = Major::with(['semester', 'term', 'year', 'tuition'])->take(5)->get();
+                
+                if ($majors->isEmpty()) {
+                    return redirect()->route('home')
+                        ->with('sweet_alert', [
+                            'type' => 'info',
+                            'title' => 'ບໍ່ມີສາຂາສຳລັບການຊຳລະເງິນ',
+                            'text' => 'ບໍ່ມີສາຂາທີ່ສາມາດຊຳລະເງິນໄດ້ໃນຂະນະນີ້'
+                        ]);
+                }
+                
+                \Log::info('Showing payment page with all majors instead');
+                return view('student-payment', compact('student', 'majors'));
+            }
+            
+            // Get the major details
+            $majors = Major::with(['semester', 'term', 'year', 'tuition'])
+                ->whereIn('id', $unpaidMajorIds)
+                ->get();
+            
+            \Log::info('Fetched majors', ['count' => $majors->count()]);
+            
+            if ($majors->isEmpty()) {
+                \Log::info('No majors found for unpaid major IDs');
+                return redirect()->route('home')
+                    ->with('sweet_alert', [
+                        'type' => 'info',
+                        'title' => 'ບໍ່ມີການລົງທະບຽນຄ້າງຊຳລະ',
+                        'text' => 'ທ່ານບໍ່ມີສາຂາທີ່ລົງທະບຽນແລ້ວຍັງບໍ່ໄດ້ຊຳລະເງິນ'
+                    ]);
+            }
+            
+            \Log::info('Rendering student-payment view');
+            return view('student-payment', compact('student', 'majors'));
+        } catch (\Exception $e) {
+            \Log::error('Exception in showStudentPaymentForm', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->route('home')
+                ->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'ເກີດຂໍ້ຜິດພາດ!',
+                    'text' => 'ບໍ່ສາມາດໂຫຼດຂໍ້ມູນການຊຳລະເງິນໄດ້: ' . $e->getMessage()
+                ]);
+        }
+    }
+
+    /**
+     * Process a student payment submission.
+     */
+    public function storeStudentPayment(Request $request)
+    {
+        // Log the request for debugging
+        \Log::info('Payment submission received', [
+            'request_data' => $request->all(),
+            'files' => $request->hasFile('payment_proof') ? 'Yes' : 'No'
+        ]);
+        
+        try {
+            // Validate the request data
+            $validatedData = $request->validate([
+                'major_ids' => 'required|string',
+                'date' => 'required|date',
+                'detail_price' => 'required|numeric|min:0',
+                'total_price' => 'required|numeric|min:0',
+                'payment_proof' => 'required|image|max:2048',
+                'terms_agreement' => 'required|accepted',
+                'bill_number' => 'required|string',
+            ]);
+            
+            // Get the currently logged in student
+            $userData = Session::get('user');
+            $user = User::with('student')->find($userData['id']);
+            
+            if (!$user || !$user->student) {
+                \Log::error('Student not found for user', ['user_id' => $userData['id']]);
+                return redirect()->back()->with('error', 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາ');
+            }
+          
+            // Get major IDs array from comma-separated string
+            $majorIds = explode(',', $request->major_ids);
+            
+            if (empty($majorIds)) {
+                return redirect()->back()->with('error', 'ກະລຸນາເລືອກຢ່າງນ້ອຍໜຶ່ງສາຂາ');
+            }
+            
+            // Use the provided bill number for group payments
+            $billNumber = $request->bill_number;
+            
+            // Check if payment for any of these majors already exists for this student
+            $existingPayments = Payment::where('student_id', $user->student->id)
+                                   ->whereIn('major_id', $majorIds)
+                                   ->where('status', 'success')
+                                   ->get();
+            
+            if ($existingPayments->isNotEmpty()) {
+                // Use eager loading to get the major details with their relationships
+                $existingMajorIds = $existingPayments->pluck('major_id')->toArray();
+                $existingMajors = Major::with(['semester', 'term', 'year'])
+                    ->whereIn('id', $existingMajorIds)
+                    ->get();
+                
+                // Format each major name with its related data
+                $existingMajorNames = $existingMajors
+                    ->map(function($major) {
+                        return "{$major->name} ({$major->semester->name} {$major->term->name} {$major->year->name})";
+                    })
+                    ->implode(', ');
+               
+                return redirect()->back()
+                    ->with('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'ການຊຳລະເງິນຊ້ຳຊ້ອນ!',
+                        'text' => "ທ່ານໄດ້ຊຳລະເງິນສຳລັບສາຂາ {$existingMajorNames} ແລ້ວ"
+                    ]);
+            }
+          
+            // Upload the payment proof
+            $paymentProofPath = null;
+            if ($request->hasFile('payment_proof')) {
+                $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+            }
+            
+            // Track the first payment we create for PDF generation
+            $firstPayment = null;
+            
+            // Create a payment record for each selected major
+            foreach ($majorIds as $majorId) {
+                $major = Major::with('tuition')->findOrFail($majorId);
+                
+                $payment = new Payment();
+                $payment->student_id = $user->student->id;
+                $payment->major_id = $majorId;
+                $payment->bill_number = $billNumber;
+                $payment->date = $request->date;
+                $payment->detail_price = $major->tuition->price;
+                $payment->pro = 0; // No discount for individual items in a group
+                $payment->total_price = $major->tuition->price;
+                $payment->status = 'pending';
+                $payment->payment_proof = $paymentProofPath;
+                
+                $payment->save();
+                \Log::info('Payment record created', ['payment_id' => $payment->id]);
+                
+                // Store first payment ID for PDF redirect
+                if (!$firstPayment) {
+                    $firstPayment = $payment;
+                }
+            }
+            
+            // Flash a success message to session that will be available after redirect
+            Session::flash('sweet_alert', [
+                'type' => 'success',
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ການຊຳລະເງິນຂອງທ່ານສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'
+            ]);
+            
+            // Redirect to PDF generation using the bill number
+            if ($firstPayment) {
+                return redirect()->route('payments.export-pdf', $firstPayment->id);
+            }
+            
+            // Fallback if for some reason no payments were created
+            return redirect()->route('main')
+                ->with('sweet_alert', [
+                    'type' => 'success',
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ການຊຳລະເງິນຂອງທ່ານສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'
+                ]);
+                
+        } catch (\Exception $e) {
+            \Log::error('Error in payment submission', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return redirect()->back()
+                ->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'ເກີດຂໍ້ຜິດພາດ!',
+                    'text' => 'ການຊຳລະເງິນບໍ່ສຳເລັດ: ' . $e->getMessage()
+                ])
+                ->withInput();
+        }
+    }
 }

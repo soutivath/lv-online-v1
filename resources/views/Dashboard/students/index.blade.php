@@ -16,6 +16,25 @@
 @endsection
 
 @section('content')
+<!-- Search Box -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form action="{{ route('students.index') }}" method="GET">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search by ID, name, surname or email..." name="search" value="{{ request('search') }}">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search"></i> Search
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('students.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Clear
+                    </a>
+                @endif
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">

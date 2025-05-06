@@ -55,6 +55,47 @@
                 </div>
             </div>
         </div>
+
+        <!-- Student Services Cards -->
+        <div class="row mt-4 mb-4">
+            <div class="col-12">
+                <h2 class="text-center mb-4">ບໍລິການສຳລັບນັກສຶກສາ</h2>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-person-plus-fill text-primary" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3">ລົງທະບຽນຮຽນ</h4>
+                        <p>ລົງທະບຽນຮຽນສຳລັບນັກສຶກສາໃໝ່</p>
+                        <a href="{{ route('student.registration') }}" class="btn btn-primary">ລົງທະບຽນຮຽນ</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-credit-card-fill text-success" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3">ຊຳລະຄ່າຮຽນ</h4>
+                        <p>ຊຳລະຄ່າຮຽນທີ່ທ່ານໄດ້ລົງທະບຽນແລ້ວ</p>
+                        <a href="{{ route('student.payment') }}" class="btn btn-success">ຊຳລະຄ່າຮຽນ</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-arrow-up-circle-fill text-warning" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3">ອັບເກຣດວິຊາຮຽນ</h4>
+                        <p>ອັບເກຣດວິຊາຮຽນ</p>
+                        <a href="{{ route('student.upgrade') }}" class="btn btn-warning">ອັບເກຣດວິຊາຮຽນ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         {{-- Row-2 --}}
         <footer class="text-center mt-4" style="font-size: 25px">
             <h3> <strong>💥ພິເສດ: ຟຣີ ຕຳລາຮຽນ</strong> </h3>

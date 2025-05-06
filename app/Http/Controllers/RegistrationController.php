@@ -98,6 +98,32 @@ class RegistrationController extends Controller
                 ]);
         }
 
+        // Check if student has ever registered for any of these majors before (first-year check)
+        $existingRegistrations = RegistrationDetail::whereHas('registration', function($query) use ($request) {
+            $query->where('student_id', $request->student_id);
+        })->whereIn('major_id', $majorIds)->get();
+
+        if ($existingRegistrations->isNotEmpty()) {
+            // Get the names of already registered majors for better error message
+            $existingMajorIds = $existingRegistrations->pluck('major_id')->toArray();
+            $existingMajors = Major::with(['semester', 'term', 'year'])
+                ->whereIn('id', $existingMajorIds)
+                ->get();
+            
+            // Format the major names nicely
+            $majorNames = $existingMajors->map(function($major) {
+                return "{$major->name} ({$major->semester->name} {$major->term->name} {$major->year->name})";
+            })->implode(', ');
+            
+            return redirect()->route('registrations.create')
+                ->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'ບໍ່ສາມາດລົງທະບຽນໄດ້',
+                    'text' => "ນັກສຶກສາໄດ້ລົງທະບຽນສາຂາ {$majorNames} ແລ້ວ. ການລົງທະບຽນນີ້ສະຫງວນໄວ້ສຳລັບນັກສຶກສາປີທຳອິດເທົ່ານັ້ນ."
+                ])
+                ->withInput();
+        }
+
         DB::beginTransaction();
         try {
             $registration = new Registration();
@@ -365,7 +391,9 @@ class RegistrationController extends Controller
                 'pro'=>0
             ]);
             $stdController = new StudentController();
-            $stdData = $stdController->register($request);
+            
+            $stdData = $stdController->updatedRegistered($request);
+          
 
             $registration = new Registration();
             $registration->student_id = $stdData->id;
@@ -396,6 +424,45 @@ class RegistrationController extends Controller
 
             // Convert major_ids string to array
             $majorIds = array_filter(explode(',', $request->major_ids));
+
+            // $majorIds = explode(',', $request->major_ids);
+            
+            if (empty($majorIds)) {
+                return redirect()->back()
+                    ->with('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'ກະລຸນາເລືອກສາຂາ',
+                        'text' => 'ກະລຸນາເລືອກຢ່າງນ້ອຍໜຶ່ງສາຂາສຳລັບການລົງທະບຽນ'
+                    ]);
+            }
+            
+            // Check if student already has registrations for any of these majors
+            $existingRegistrations = RegistrationDetail::whereHas('registration', function($query) use ($stdData) {
+                $query->where('student_id', $stdData->id);
+            })->whereIn('major_id', $majorIds)->get();
+            
+            if ($existingRegistrations->isNotEmpty()) {
+                // Get the names of already registered majors for better error message
+                $existingMajorIds = $existingRegistrations->pluck('major_id')->toArray();
+                $existingMajors = Major::with(['semester', 'term', 'year'])
+                    ->whereIn('id', $existingMajorIds)
+                    ->get();
+                
+                // Format the major names nicely
+                $majorNames = $existingMajors->map(function($major) {
+                    return "{$major->name} ({$major->semester->name} {$major->term->name} {$major->year->name})";
+                })->implode(', ');
+                
+                return redirect()->back()
+                    ->with('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'ທ່ານໄດ້ລົງທະບຽນແລ້ວ',
+                        'text' => "ທ່ານໄດ້ລົງທະບຽນສາຂາ {$majorNames} ແລ້ວ. ຟັງຊັນນີ້ສະຫງວນໄວ້ສຳລັບນັກສຶກສາປີທຳອິດເທົ່ານັ້ນ."
+                    ])
+                    ->withInput();
+            }
+
+
 
             // Create registration details for each selected major
             foreach ($majorIds as $majorId) {
@@ -432,13 +499,23 @@ class RegistrationController extends Controller
             }
 
             DB::commit();
-
-            return redirect()->back()
+            Session::flash('registration_completed', true);
+            Session::flash('registration_id', $registration->id);
+            
+            return redirect()->route('registrations.export-pdf', $registration->id)
                 ->with('sweet_alert', [
                     'type' => 'success',
                     'title' => 'Success!',
-                    'text' => 'Registration created successfully with ' . count($majorIds) . ' majors.'
+                    'text' => 'Registration created successfully.'
                 ]);
+            // return redirect()->route('registrations.export-pdf', $registration->id);
+
+            // return redirect()->back()
+            //     ->with('sweet_alert', [
+            //         'type' => 'success',
+            //         'title' => 'Success!',
+            //         'text' => 'Registration created successfully with ' . count($majorIds) . ' majors.'
+            //     ]);
         } catch (\Exception $e) {
             DB::rollback();
 
