@@ -38,7 +38,7 @@ Route::get('/', function () {
 
 // Student Registration Routes
 Route::get('/student-registration', [App\Http\Controllers\StudentController::class, 'showRegistrationForm'])->name('student.registration');
-Route::post('/student-register', 'App\Http\Controllers\StudentController@register')->name('student.register');
+// Route::post('/student-register', 'App\Http\Controllers\StudentController@register')->name('student.register');
 
 // Student Payment Route
 Route::get('/student-payment', 'App\Http\Controllers\PaymentController@showStudentPaymentForm')->name('student.payment');
@@ -127,7 +127,9 @@ Route::middleware(['check.role:admin,student'])->group(function () {
     Route::patch('registrations/{registration}/confirm-payment', [RegistrationController::class, 'confirmPayment'])->name('registrations.confirm-payment');
     Route::get('registrations/{registration}/export-pdf', [RegistrationController::class, 'exportPDF'])->name('registrations.export-pdf');
     Route::get('registrations-export-all', [RegistrationController::class, 'exportAllPDF'])->name('registrations.export-all-pdf');
-    Route::post('/student-register', [RegistrationController::class, 'studentRegistration'])->name('registrations.student');
+    Route::post('/student-register', [RegistrationController::class, 'studentRegistration'])
+    // ->name('registrations.student')
+    ->name('student.register');
 
     // Payments
     Route::resource('payments', PaymentController::class);

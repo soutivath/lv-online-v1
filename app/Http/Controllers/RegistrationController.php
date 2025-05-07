@@ -452,7 +452,7 @@ class RegistrationController extends Controller
                 $majorNames = $existingMajors->map(function($major) {
                     return "{$major->name} ({$major->semester->name} {$major->term->name} {$major->year->name})";
                 })->implode(', ');
-                
+              
                 return redirect()->back()
                     ->with('sweet_alert', [
                         'type' => 'error',
@@ -482,40 +482,40 @@ class RegistrationController extends Controller
                 $registrationDetail->save();
 
                 // Create corresponding payment record with the bill number
-                Payment::create([
-                    'student_id' => $stdData->id,
-                    'major_id' => $majorId,
-                    'employee_id' => $employeeId,
-                    'bill_number' => $billNumber, // Add bill number to link payments
-                    'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
-                    'detail_price' => $detail_price,
-                    'pro' => $request->pro,
-                    'total_price' => $detail_price - $discount,
-                    'status' => $paymentStatus,
-                    'payment_proof' => $paymentProofPath
-                ]);
+                // Payment::create([
+                //     'student_id' => $stdData->id,
+                //     'major_id' => $majorId,
+                //     'employee_id' => $employeeId,
+                //     'bill_number' => $billNumber, // Add bill number to link payments
+                //     'date' => Carbon::parse($request->date)->format('Y-m-d H:i:s'),
+                //     'detail_price' => $detail_price,
+                //     'pro' => $request->pro,
+                //     'total_price' => $detail_price - $discount,
+                //     'status' => $paymentStatus,
+                //     'payment_proof' => $paymentProofPath
+                // ]);
 
-                $totalRegistrationPrice += $registrationDetail->total_price;
+                // $totalRegistrationPrice += $registrationDetail->total_price;
             }
 
             DB::commit();
             Session::flash('registration_completed', true);
             Session::flash('registration_id', $registration->id);
             
-            return redirect()->route('registrations.export-pdf', $registration->id)
-                ->with('sweet_alert', [
-                    'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Registration created successfully.'
-                ]);
-            // return redirect()->route('registrations.export-pdf', $registration->id);
-
-            // return redirect()->back()
+            // return redirect()->route('registrations.export-pdf', $registration->id)
             //     ->with('sweet_alert', [
             //         'type' => 'success',
             //         'title' => 'Success!',
-            //         'text' => 'Registration created successfully with ' . count($majorIds) . ' majors.'
+            //         'text' => 'Registration created successfully.'
             //     ]);
+            // return redirect()->route('registrations.export-pdf', $registration->id);
+
+            return redirect()->back()
+                ->with('sweet_alert', [
+                    'type' => 'success',
+                    'title' => 'Success!',
+                    'text' => 'Registration created successfully with ' . count($majorIds) . ' majors.'
+                ]);
         } catch (\Exception $e) {
             DB::rollback();
 

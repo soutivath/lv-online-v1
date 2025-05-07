@@ -401,53 +401,36 @@ class PaymentController extends Controller
             $student = $user->student;
             \Log::info('Found student profile', ['student_id' => $student->id]);
             
-            // Check for registrations - THIS IS LIKELY THE ISSUE
-            try {
-                \Log::info('Getting registered major IDs');
-                $registeredMajorIds = $this->paymentStatusService->getRegisteredMajorIdsForStudent($student->id);
-                \Log::info('Got registered major IDs', ['count' => count($registeredMajorIds)]);
-                
-                \Log::info('Getting paid major IDs');
-                $paidMajorIds = $this->paymentStatusService->getPaidMajorIdsForStudent($student->id);
-                \Log::info('Got paid major IDs', ['count' => count($paidMajorIds)]);
-                
-                // Filter out already paid majors
-                $unpaidMajorIds = array_diff($registeredMajorIds, $paidMajorIds);
-                \Log::info('Unpaid major IDs', ['count' => count($unpaidMajorIds)]);
-            } catch (\Exception $e) {
-                \Log::error('Error getting registration data', ['error' => $e->getMessage()]);
-                throw $e; // Re-throw to be caught by outer try-catch
-            }
+            // Get registered major names from registration details
+            \Log::info('Getting registered major names');
+            $registeredMajorNames = DB::table('registrations')
+                ->join('registration_details', 'registrations.id', '=', 'registration_details.registration_id')
+                ->join('majors', 'registration_details.major_id', '=', 'majors.id')
+                ->where('registrations.student_id', $student->id)
+                ->pluck('majors.name')
+                ->unique()
+                ->toArray();
             
-            // FOR TESTING: If no unpaid majors, show a test major instead of redirecting
-            if (empty($unpaidMajorIds)) {
-                \Log::info('No unpaid majors found');
-                
-                // TEMPORARY FIX: For testing, load all majors instead of redirecting
-                $majors = Major::with(['semester', 'term', 'year', 'tuition'])->take(5)->get();
-                
-                if ($majors->isEmpty()) {
-                    return redirect()->route('home')
-                        ->with('sweet_alert', [
-                            'type' => 'info',
-                            'title' => 'ບໍ່ມີສາຂາສຳລັບການຊຳລະເງິນ',
-                            'text' => 'ບໍ່ມີສາຂາທີ່ສາມາດຊຳລະເງິນໄດ້ໃນຂະນະນີ້'
-                        ]);
-                }
-                
-                \Log::info('Showing payment page with all majors instead');
-                return view('student-payment', compact('student', 'majors'));
-            }
+            \Log::info('Found registered major names', ['names' => $registeredMajorNames]);
             
-            // Get the major details
+            // Get majors that have been paid by this student
+            $paidMajorIds = Payment::where('student_id', $student->id)
+                ->where('status', 'success')
+                ->pluck('major_id')
+                ->toArray();
+            
+            \Log::info('Found paid major IDs', ['ids' => $paidMajorIds]);
+            
+            // Get all majors matching the registered names, excluding already paid ones
             $majors = Major::with(['semester', 'term', 'year', 'tuition'])
-                ->whereIn('id', $unpaidMajorIds)
+                ->whereIn('name', $registeredMajorNames)
+                ->whereNotIn('id', $paidMajorIds)
                 ->get();
             
-            \Log::info('Fetched majors', ['count' => $majors->count()]);
+            \Log::info('Filtered majors for payment', ['count' => $majors->count()]);
             
             if ($majors->isEmpty()) {
-                \Log::info('No majors found for unpaid major IDs');
+                \Log::info('No available majors for payment');
                 return redirect()->route('home')
                     ->with('sweet_alert', [
                         'type' => 'info',
@@ -458,6 +441,7 @@ class PaymentController extends Controller
             
             \Log::info('Rendering student-payment view');
             return view('student-payment', compact('student', 'majors'));
+            
         } catch (\Exception $e) {
             \Log::error('Exception in showStudentPaymentForm', [
                 'error' => $e->getMessage(),
@@ -495,6 +479,7 @@ class PaymentController extends Controller
                 'terms_agreement' => 'required|accepted',
                 'bill_number' => 'required|string',
             ]);
+           
             
             // Get the currently logged in student
             $userData = Session::get('user');
@@ -510,6 +495,51 @@ class PaymentController extends Controller
             
             if (empty($majorIds)) {
                 return redirect()->back()->with('error', 'ກະລຸນາເລືອກຢ່າງນ້ອຍໜຶ່ງສາຂາ');
+            }
+            
+            // Check for duplicate payments - both pending and successful payments
+            $existingPayments = Payment::where('student_id', $user->student->id)
+                ->whereIn('major_id', $majorIds)
+                ->get();
+            
+            if ($existingPayments->isNotEmpty()) {
+                // Separate successful and pending payments
+                $successfulPayments = $existingPayments->where('status', 'success');
+                $pendingPayments = $existingPayments->where('status', 'pending');
+                
+                // Get the unique major IDs with existing payments
+                $paidMajorIds = $existingPayments->pluck('major_id')->unique()->toArray();
+                
+                // Get the major details for better error message
+                $paidMajors = Major::with(['semester', 'term', 'year'])
+                    ->whereIn('id', $paidMajorIds)
+                    ->get();
+                
+                // Format major names with their details
+                $paidMajorNames = $paidMajors
+                    ->map(function($major) {
+                        return "{$major->name} ({$major->semester->name})";
+                    })
+                    ->implode(', ');
+                
+                $messageType = 'warning';
+                $messageTitle = 'ການຊຳລະເງິນຊ້ຳຊ້ອນ!';
+                $messageText = '';
+                
+                if ($successfulPayments->isNotEmpty()) {
+                    $messageText = "ທ່ານໄດ້ຊຳລະເງິນສຳລັບສາຂາ {$paidMajorNames} ແລ້ວ";
+                    $messageType = 'error';
+                } elseif ($pendingPayments->isNotEmpty()) {
+                    $messageText = "ທ່ານໄດ້ສົ່ງຄຳຂໍຊຳລະເງິນສຳລັບສາຂາ {$paidMajorNames} ແລ້ວ ແລະ ຍັງລໍຖ້າການຢືນຢັນ";
+                }
+                
+                return redirect()->back()
+                    ->with('sweet_alert', [
+                        'type' => $messageType,
+                        'title' => $messageTitle,
+                        'text' => $messageText
+                    ])
+                    ->withInput();
             }
             
             // Use the provided bill number for group payments

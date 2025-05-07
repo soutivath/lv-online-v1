@@ -114,6 +114,64 @@
 
 </div>
 
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Students by Major</h5>
+            </div>
+            <div class="card-body">
+                @if($majorStudentCounts->count() > 0)
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Major</th>
+                                    <th class="text-center">Students</th>
+                                    <th class="text-end">Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $totalStudents = $majorStudentCounts->sum('student_count');
+                                @endphp
+                                @foreach($majorStudentCounts as $major)
+                                    <tr>
+                                        <td>{{ $major->major_name }}</td>
+                                        <td class="text-center">
+                                            <span class="badge bg-primary">{{ $major->student_count }}</span>
+                                        </td>
+                                        <td class="text-end">
+                                            @php 
+                                                $percentage = ($major->student_count / $totalStudents) * 100;
+                                            @endphp
+                                            <div class="progress" style="height: 10px;">
+                                                <div class="progress-bar bg-success" role="progressbar" 
+                                                     style="width: {{ $percentage }}%;" 
+                                                     aria-valuenow="{{ $percentage }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100"></div>
+                                            </div>
+                                            <small>{{ number_format($percentage, 1) }}%</small>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="alert alert-info mb-0">
+                        No student registration data available.
+                    </div>
+                @endif
+            </div>
+            <div class="card-footer text-end">
+                <a href="{{ route('majors.index') }}" class="btn btn-sm btn-outline-primary">View All Majors</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-md-6">
         <div class="card mb-4">
@@ -180,4 +238,12 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function() {
+        // Keep any existing dashboard initialization code here
+    });
+</script>
 @endsection

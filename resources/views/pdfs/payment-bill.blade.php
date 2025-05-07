@@ -105,10 +105,10 @@
             <p><strong>Total Amount: {{ number_format($payment->total_price, 2) }}</strong></p>
         </div>
         
-        <div class="qr-code">
+        {{-- <div class="qr-code">
             <img src="data:image/png;base64,{{ $qrCode }}" alt="Payment QR Code">
             <p>Scan to verify payment</p>
-        </div>
+        </div> --}}
         
       
         

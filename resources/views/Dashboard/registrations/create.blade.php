@@ -6,7 +6,6 @@
 
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 @endsection
 
 @section('content')
@@ -16,45 +15,13 @@
             @csrf
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label">Student</label>
-                    
-                    <!-- Inline-styled dropdown to ensure it works -->
-                    <div style="position: relative; width: 100%; margin-bottom: 1rem;">
-                        <!-- Display button -->
-                        <button type="button" onclick="toggleStudentList()" 
-                                style="width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; padding: 8px 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                            <span id="selectedStudentText">Select Student</span>
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                        
-                        <!-- Hidden dropdown content -->
-                        <div id="studentListContainer" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 9999; max-height: 300px; overflow: hidden;">
-                            <!-- Search input -->
-                            <div style="padding: 8px; border-bottom: 1px solid #eee;">
-                                <input type="text" id="studentSearchInput" placeholder="Search students..." 
-                                       onkeyup="filterStudents()" 
-                                       style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
-                            </div>
-                            
-                            <!-- Student list -->
-                            <div style="max-height: 250px; overflow-y: auto;">
-                                @foreach($students as $student)
-                                <div onclick="chooseStudent('{{ $student->id }}', '{{ $student->id }} - {{ $student->name }} {{ $student->sername }}')"
-                                     style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f5f5f5;">
-                                    <i class="fas fa-user-graduate" style="margin-right: 8px;"></i>
-                                    {{ $student->id }} - {{ $student->name }} {{ $student->sername }}
-                                </div>
-                                @endforeach
-                            </div>
-                            
-                            <!-- No results message -->
-                            <div id="noStudentsMsg" style="display: none; padding: 12px; text-align: center; font-style: italic; color: #6c757d;">
-                                No matching students found
-                            </div>
-                        </div>
-                        
-                        <input type="hidden" name="student_id" id="student_id" required>
-                    </div>
+                    <label for="student_id" class="form-label">Student</label>
+                    <select class="form-select select2" id="student_id" name="student_id" required>
+                        <option value="">Select Student</option>
+                        @foreach($students as $student)
+                        <option value="{{ $student->id }}">{{ $student->id }} - {{ $student->name }} {{ $student->sername }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-md-6">
                     <label for="date" class="form-label">Registration Date</label>
@@ -705,65 +672,6 @@
         discountElement.text(discountAmount.toFixed(2));
         finalTotalElement.text(finalTotal.toFixed(2));
     }
-
-    // Custom student dropdown functions
-    function toggleStudentList() {
-        var dropdown = document.getElementById('studentListContainer');
-        if (dropdown.style.display === 'none') {
-            dropdown.style.display = 'block';
-            document.getElementById('studentSearchInput').focus();
-        } else {
-            dropdown.style.display = 'none';
-        }
-    }
-    
-    function filterStudents() {
-        var input = document.getElementById('studentSearchInput');
-        var filter = input.value.toUpperCase();
-        
-        // Get only the student items, not including the search container
-        var studentItems = document.querySelectorAll('#studentListContainer > div:nth-child(2) > div');
-        var noResultsMsg = document.getElementById('noStudentsMsg');
-        var found = false;
-        
-        for (var i = 0; i < studentItems.length; i++) {
-            // Skip the no results message
-            if (studentItems[i].id === 'noStudentsMsg') continue;
-            
-            var txtValue = studentItems[i].textContent || studentItems[i].innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                studentItems[i].style.display = "";
-                found = true;
-            } else {
-                studentItems[i].style.display = "none";
-            }
-        }
-        
-        // Show/hide no results message
-        noResultsMsg.style.display = found ? 'none' : 'block';
-    }
-    
-    function chooseStudent(id, name) {
-        // Update hidden input value
-        document.getElementById('student_id').value = id;
-        
-        // Update the display text
-        document.getElementById('selectedStudentText').textContent = name;
-        
-        // Hide dropdown
-        document.getElementById('studentListContainer').style.display = 'none';
-    }
-    
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(event) {
-        var dropdown = document.getElementById('studentListContainer');
-        var button = document.querySelector('button[onclick="toggleStudentList()"]');
-        
-        if (dropdown && button && dropdown.style.display === 'block' && 
-            !dropdown.contains(event.target) && event.target !== button) {
-            dropdown.style.display = 'none';
-        }
-    });
 </script>
 
 @section('scripts')

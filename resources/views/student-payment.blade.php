@@ -51,21 +51,49 @@
                             
                             <div class="mb-4">
                                 <label class="form-label">ເລືອກສາຂາຮຽນ <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <select class="form-select" id="major_selector">
-                                        <option value="">ເລືອກສາຂາທີ່ທ່ານລົງທະບຽນແລ້ວ</option>
-                                        @foreach($majors as $major)
-                                            <option value="{{ $major->id }}" 
-                                                data-id="{{ $major->id }}"
-                                                data-name="{{ $major->name }}"
-                                                data-semester="{{ $major->semester->name }}"
-                                                data-term="{{ $major->term->name }}"
-                                                data-year="{{ $major->year->name }}"
-                                                data-price="{{ $major->tuition->price }}">
+                                <div style="position: relative; width: 100%;">
+                                    <!-- Display button -->
+                                    <button type="button" onclick="toggleMajorList()" 
+                                            style="width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; padding: 8px 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                                        <span id="selectedMajorText">ເລືອກສາຂາທີ່ທ່ານລົງທະບຽນແລ້ວ</span>
+                                        <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                    
+                                    <!-- Hidden dropdown content -->
+                                    <div id="majorListContainer" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 9999; max-height: 300px; overflow: hidden;">
+                                        <!-- Search input -->
+                                        <div style="padding: 8px; border-bottom: 1px solid #eee;">
+                                            <input type="text" id="majorSearchInput" placeholder="ຄົ້ນຫາສາຂາ..." 
+                                                   onkeyup="filterMajors()" 
+                                                   style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
+                                        </div>
+                                        
+                                        <!-- Major list -->
+                                        <div style="max-height: 250px; overflow-y: auto;" id="majorOptionsContainer">
+                                            @foreach($majors as $major)
+                                            <div onclick="chooseMajor('{{ $major->id }}', '{{ $major->name }}', '{{ $major->semester->name }}', '{{ $major->term->name }}', '{{ $major->year->name }}', '{{ $major->tuition->price }}')"
+                                                 data-id="{{ $major->id }}"
+                                                 data-name="{{ $major->name }}"
+                                                 data-semester="{{ $major->semester->name }}"
+                                                 data-term="{{ $major->term->name }}"
+                                                 data-year="{{ $major->year->name }}"
+                                                 data-price="{{ $major->tuition->price }}"
+                                                 class="major-option"
+                                                 style="padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f5f5f5;">
+                                                <i class="bi bi-book me-2"></i>
                                                 {{ $major->name }} | {{ $major->semester->name }} | {{ $major->term->name }} | {{ $major->year->name }} | ຄ່າຮຽນ: {{ number_format($major->tuition->price, 2) }} ກີບ
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                        
+                                        <!-- No results message -->
+                                        <div id="noMajorsMsg" style="display: none; padding: 12px; text-align: center; font-style: italic; color: #6c757d;">
+                                            ບໍ່ພົບສາຂາທີ່ຄົ້ນຫາ
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="selected_major_id" value="">
+                                </div>
+                                <div class="input-group mt-2">
                                     <button type="button" class="btn btn-primary" id="add-major-btn">
                                         <i class="bi bi-plus-circle me-1"></i> ເພີ່ມ
                                     </button>
@@ -330,29 +358,40 @@
     
     // Function to add a major to the selected list
     function addMajor() {
-        const majorSelect = document.getElementById('major_selector');
-        const selectedOption = majorSelect.options[majorSelect.selectedIndex];
+        const majorId = document.getElementById('selected_major_id').value;
+        console.log("Selected major ID:", majorId);
         
-        if (!majorSelect.value) {
+        if (!majorId) {
             alert('ກະລຸນາເລືອກສາຂາກ່ອນເພີ່ມ');
             return;
         }
         
         // Check if already selected
-        if (selectedMajors.some(major => major.id === majorSelect.value)) {
-            alert('ສາຂານີ້ຖືກເລືອກແລ້ວ');
+        if (selectedMajors.some(major => major.id === majorId)) {
+            alert('ສາຂານີ້ໄດ້ຖືກເລືອກແລ້ວ');
             return;
         }
         
-        // Get major data
+        // Find the selected major element to get its data
+        const selectedMajorElement = document.querySelector(`.major-option[data-id="${majorId}"]`);
+        
+        if (!selectedMajorElement) {
+            console.error("Could not find selected major element for ID:", majorId);
+            alert('ເກີດຂໍ້ຜິດພາດໃນການເພີ່ມສາຂາ');
+            return;
+        }
+        
+        // Get data from the selected element
         const majorData = {
-            id: majorSelect.value,
-            name: selectedOption.dataset.name,
-            semester: selectedOption.dataset.semester,
-            term: selectedOption.dataset.term,
-            year: selectedOption.dataset.year,
-            price: parseFloat(selectedOption.dataset.price)
+            id: majorId,
+            name: selectedMajorElement.getAttribute('data-name'),
+            semester: selectedMajorElement.getAttribute('data-semester'),
+            term: selectedMajorElement.getAttribute('data-term'),
+            year: selectedMajorElement.getAttribute('data-year'),
+            price: parseFloat(selectedMajorElement.getAttribute('data-price'))
         };
+        
+        console.log("Major data collected:", majorData);
         
         // Add to selected majors array
         selectedMajors.push(majorData);
@@ -361,7 +400,10 @@
         updateSelectedMajorsTable();
         
         // Reset select
-        majorSelect.value = '';
+        document.getElementById('selected_major_id').value = '';
+        document.getElementById('selectedMajorText').textContent = 'ເລືອກສາຂາທີ່ທ່ານລົງທະບຽນແລ້ວ';
+        
+        console.log("Major added, selectedMajors now:", selectedMajors);
     }
 
     // Function to remove a major from the selected list
@@ -854,6 +896,137 @@
                 console.log("- {{ $error }}");
             @endforeach
         @endif
+    });
+
+    // Custom major dropdown functions
+    function toggleMajorList() {
+        var dropdown = document.getElementById('majorListContainer');
+        if (dropdown.style.display === 'none') {
+            dropdown.style.display = 'block';
+            document.getElementById('majorSearchInput').focus();
+        } else {
+            dropdown.style.display = 'none';
+        }
+    }
+    
+    function filterMajors() {
+        var input = document.getElementById('majorSearchInput');
+        var filter = input.value.toUpperCase();
+        var options = document.getElementsByClassName('major-option');
+        var noResultsMsg = document.getElementById('noMajorsMsg');
+        var found = false;
+        
+        for (var i = 0; i < options.length; i++) {
+            var txtValue = options[i].textContent || options[i].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                options[i].style.display = "";
+                found = true;
+            } else {
+                options[i].style.display = "none";
+            }
+        }
+        
+        // Show/hide no results message
+        noResultsMsg.style.display = found ? 'none' : 'block';
+    }
+    
+    function chooseMajor(id, name, semester, term, year, price) {
+        console.log("Major selected: ID:", id, "Name:", name);
+        
+        // Get the hidden input element
+        const hiddenInput = document.getElementById('selected_major_id');
+        
+        // Set the value directly
+        hiddenInput.value = id;
+        
+        // Update the display text
+        document.getElementById('selectedMajorText').textContent = name + ' | ' + semester + ' | ' + term + ' | ' + year;
+        
+        // Store price for easy access
+        hiddenInput.setAttribute('data-price', price);
+        
+        // Hide dropdown
+        document.getElementById('majorListContainer').style.display = 'none';
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        var dropdown = document.getElementById('majorListContainer');
+        var button = document.querySelector('button[onclick="toggleMajorList()"]');
+        
+        if (dropdown && button && dropdown.style.display === 'block' && 
+            !dropdown.contains(event.target) && event.target !== button) {
+            dropdown.style.display = 'none';
+        }
+    });
+    
+    // Updated addMajor function to work with the new dropdown
+    function addMajor() {
+        console.log("addMajor function called");
+        
+        const majorId = document.getElementById('selected_major_id').value;
+        console.log("Selected major ID:", majorId);
+        
+        if (!majorId) {
+            alert('ກະລຸນາເລືອກສາຂາກ່ອນເພີ່ມ');
+            return;
+        }
+        
+        // Check if already selected
+        if (selectedMajors.some(major => major.id === majorId)) {
+            alert('ສາຂານີ້ໄດ້ຖືກເລືອກແລ້ວ');
+            return;
+        }
+        
+        // Find the selected major element to get its data
+        const selectedMajorElement = document.querySelector(`.major-option[data-id="${majorId}"]`);
+        
+        if (!selectedMajorElement) {
+            console.error("Could not find selected major element for ID:", majorId);
+            alert('ເກີດຂໍ້ຜິດພາດໃນການເພີ່ມສາຂາ');
+            return;
+        }
+        
+        // Get data from the selected element
+        const majorData = {
+            id: majorId,
+            name: selectedMajorElement.getAttribute('data-name'),
+            semester: selectedMajorElement.getAttribute('data-semester'),
+            term: selectedMajorElement.getAttribute('data-term'),
+            year: selectedMajorElement.getAttribute('data-year'),
+            price: parseFloat(selectedMajorElement.getAttribute('data-price'))
+        };
+        
+        console.log("Major data collected:", majorData);
+        
+        // Add to selected majors array
+        selectedMajors.push(majorData);
+        
+        // Update the table
+        updateSelectedMajorsTable();
+        
+        // Reset select
+        document.getElementById('selected_major_id').value = '';
+        document.getElementById('selectedMajorText').textContent = 'ເລືອກສາຂາທີ່ທ່ານລົງທະບຽນແລ້ວ';
+        
+        console.log("Major added, selectedMajors now:", selectedMajors);
+    }
+    
+    // Make sure the button uses the new function
+    document.addEventListener('DOMContentLoaded', function() {
+        const addMajorBtn = document.getElementById('add-major-btn');
+        if (addMajorBtn) {
+            // Remove any existing event listeners
+            const newBtn = addMajorBtn.cloneNode(true);
+            addMajorBtn.parentNode.replaceChild(newBtn, addMajorBtn);
+            
+            // Add a clean event listener
+            newBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                addMajor();
+            });
+        }
     });
 </script>
 
