@@ -19,6 +19,7 @@ class Year extends Model
     // Relationships
     public function majors()
     {
-        return $this->hasMany(Major::class, 'year_id')->cascadeOnDelete();
+        return $this->hasMany(Major::class, 'year_id');
+        //->cascadeOnDelete();
     }
 }

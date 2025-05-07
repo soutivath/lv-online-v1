@@ -2,10 +2,21 @@
 
 @section('title', 'Students')
 
-@section('page-title', 'Students')
+@section('page-title')
+    @if(isset($majorFilter))
+        Students in Major: {{ $majorFilter }}
+    @else
+        Students
+    @endif
+@endsection
 
 @section('page-actions')
     <div class="btn-group" role="group">
+        @if(isset($majorFilter))
+            <a href="{{ route('students.index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-times"></i> Clear Filter
+            </a>
+        @endif
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
             <i class="fas fa-plus"></i> Add Student
         </button>

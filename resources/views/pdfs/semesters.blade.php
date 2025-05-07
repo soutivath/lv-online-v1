@@ -5,7 +5,7 @@
     <title>All Semesters</title>
     <style>
         body {
-            font-family: 'Phetsarath OT', sans-serif;
+            font-family: 'Phetsarath', sans-serif;
             margin: 0;
             padding: 0;
         }

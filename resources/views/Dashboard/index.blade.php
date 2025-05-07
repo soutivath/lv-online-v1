@@ -137,7 +137,11 @@
                                 @endphp
                                 @foreach($majorStudentCounts as $major)
                                     <tr>
-                                        <td>{{ $major->major_name }}</td>
+                                        <td>
+                                            <a href="{{ route('students.index', ['major' => $major->major_name]) }}" class="text-decoration-none">
+                                                {{ $major->major_name }}
+                                            </a>
+                                        </td>
                                         <td class="text-center">
                                             <span class="badge bg-primary">{{ $major->student_count }}</span>
                                         </td>

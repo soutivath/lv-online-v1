@@ -19,6 +19,7 @@ class Semester extends Model
     // Relationships
     public function majors()
     {
-        return $this->hasMany(Major::class, 'semester_id')->onDelete('cascade');
+        return $this->hasMany(Major::class, 'semester_id');
+        //->onDelete('cascade');
     }
 }

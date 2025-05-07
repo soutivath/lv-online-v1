@@ -19,11 +19,12 @@ class MainController extends Controller
         // Get user data and determine if student
         $userData = Session::get('user');
        
-        $user = User::with('student')->find($userData['id']);
+        $user = User::with('employee')->find($userData['id']);
         
-        if (!$user || !$user->student) {
-            return redirect()->route('dashboard');
+        if (!$user || !$user->employee) {
+            return redirect()->route('home');
         }
+        
         
         // Get student data
         $student = Student::where('user_id', $user->id)->with([

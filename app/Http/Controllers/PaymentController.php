@@ -438,9 +438,11 @@ class PaymentController extends Controller
                         'text' => 'ທ່ານບໍ່ມີສາຂາທີ່ລົງທະບຽນແລ້ວຍັງບໍ່ໄດ້ຊຳລະເງິນ'
                     ]);
             }
+
+            $students = Student::all();
             
             \Log::info('Rendering student-payment view');
-            return view('student-payment', compact('student', 'majors'));
+            return view('student-payment', compact('student', 'majors','students'));
             
         } catch (\Exception $e) {
             \Log::error('Exception in showStudentPaymentForm', [
@@ -478,17 +480,19 @@ class PaymentController extends Controller
                 'payment_proof' => 'required|image|max:2048',
                 'terms_agreement' => 'required|accepted',
                 'bill_number' => 'required|string',
+                'student_id' => 'required|exists:students,id', // Add this validation rule
             ]);
            
             
             // Get the currently logged in student
-            $userData = Session::get('user');
-            $user = User::with('student')->find($userData['id']);
+            // $userData = Session::get('user');
+            // $user = User::with('student')->find($userData['id']);
             
-            if (!$user || !$user->student) {
-                \Log::error('Student not found for user', ['user_id' => $userData['id']]);
-                return redirect()->back()->with('error', 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາ');
-            }
+            // if (!$user || !$user->student) {
+            //     \Log::error('Student not found for user', ['user_id' => $userData['id']]);
+            //     return redirect()->back()->with('error', 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາ');
+            // }
+            $student = Student::findOrFail($request->student_id);
           
             // Get major IDs array from comma-separated string
             $majorIds = explode(',', $request->major_ids);
@@ -498,7 +502,11 @@ class PaymentController extends Controller
             }
             
             // Check for duplicate payments - both pending and successful payments
-            $existingPayments = Payment::where('student_id', $user->student->id)
+            // $existingPayments = Payment::where('student_id', $user->student->id)
+            //     ->whereIn('major_id', $majorIds)
+            //     ->get();
+            
+            $existingPayments = Payment::where('student_id', $student->id)
                 ->whereIn('major_id', $majorIds)
                 ->get();
             
@@ -546,7 +554,7 @@ class PaymentController extends Controller
             $billNumber = $request->bill_number;
             
             // Check if payment for any of these majors already exists for this student
-            $existingPayments = Payment::where('student_id', $user->student->id)
+            $existingPayments = Payment::where('student_id', $student->id)
                                    ->whereIn('major_id', $majorIds)
                                    ->where('status', 'success')
                                    ->get();
@@ -587,7 +595,7 @@ class PaymentController extends Controller
                 $major = Major::with('tuition')->findOrFail($majorId);
                 
                 $payment = new Payment();
-                $payment->student_id = $user->student->id;
+                $payment->student_id = $student->id;
                 $payment->major_id = $majorId;
                 $payment->bill_number = $billNumber;
                 $payment->date = $request->date;

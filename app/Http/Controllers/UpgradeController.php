@@ -228,7 +228,10 @@ class UpgradeController extends Controller
             // Get majors for the dropdown
             $majors = Major::with(['semester', 'term', 'year'])->get();
             
-            return view('student-upgrade', compact('majors'));
+            // Get all students for the student dropdown
+            $students = Student::all();
+            
+            return view('student-upgrade', compact('majors', 'students'));
         } catch (\Exception $e) {
             return redirect()->route('home')->with('sweet_alert', [
                 'type' => 'error',
@@ -245,6 +248,7 @@ class UpgradeController extends Controller
     {
         // Validate the request data
         $validatedData = $request->validate([
+            'student_id' => 'required|exists:students,id', // Add this validation rule
             'major_id' => 'required|exists:majors,id',
             'date' => 'required|date',
             'subjects' => 'required|array|min:1',
@@ -255,22 +259,12 @@ class UpgradeController extends Controller
         
         DB::beginTransaction();
         try {
-            // Get the currently logged in student via session
-            //$userId = session('user') ?? null;
-            $userData = Session::get('user');
-            $user = User::with('student')->find($userData['id']);
-            
-            if (!$user) {
-                return redirect()->back()->with('error', 'ທ່ານຕ້ອງເຂົ້າສູ່ລະບົບກ່ອນ');
-            }
-           
-            if (!$user || !$user->student) {
-                return redirect()->back()->with('error', 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາ');
-            }
+            // Get the student from request instead of session
+            $student = Student::findOrFail($request->student_id);
             
             // Create new upgrade record
             $upgrade = new Upgrade();
-            $upgrade->student_id = $user->student->id;
+            $upgrade->student_id = $student->id;
             $upgrade->date = Carbon::parse($request->date)->format('Y-m-d H:i:s');
             $upgrade->major_id = $request->major_id;
             $upgrade->payment_status = 'pending';
@@ -301,11 +295,15 @@ class UpgradeController extends Controller
             
             DB::commit();
             
-            return redirect()->back()->with('sweet_alert', [
+            // Store success message in session for use after redirect
+            Session::flash('sweet_alert', [
                 'type' => 'success',
                 'title' => 'ສຳເລັດ!',
-                'text' => 'ການລົງທະບຽນວິຊາເສີມຂອງທ່ານສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'
+                'text' => 'ການອັບເກຣດວິຊາຮຽນສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'
             ]);
+            
+            // Redirect to PDF receipt instead of going back to the form
+            return redirect()->route('upgrades.export-pdf', $upgrade->id);
             
         } catch (\Exception $e) {
             DB::rollback();

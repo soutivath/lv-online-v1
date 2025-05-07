@@ -19,12 +19,13 @@ class AuthController extends Controller
         if (Session::has('user')) {
             return $this->redirectBasedOnUserType(Session::get('user'));
         }
-        
+
         return view('auth.login');
     }
 
     public function login(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
@@ -46,7 +47,6 @@ class AuthController extends Controller
 
         // Load user relationships to determine role
         $user->load(['student', 'employee']);
-        
         $userData = [
             'id' => $user->id,
             'name' => $user->name,
@@ -69,22 +69,26 @@ class AuthController extends Controller
      */
     private function redirectBasedOnUserType($user)
     {
+        
         // If user is passed as array (from session), check if it contains student relation
         if (is_array($user)) {
             // We need to retrieve the actual user to check relationships
             $actualUser = User::with(['student', 'employee'])->find($user['id']);
-            if ($actualUser && $actualUser->student) {
-                return redirect()->route('main');
-            } else {
+            if ($actualUser && $actualUser->employee) {
                 return redirect()->route('dashboard');
+            } else {
+                return redirect()->route(
+                    'main');
             }
         }
-        
+      
         // If user is passed as model instance
         if ($user->student) {
             return redirect()->route('main');
-        } else {
+        } else if ($user->employee) {
             return redirect()->route('dashboard');
+        } else {
+            return redirect()->route('main');
         }
     }
 
@@ -94,7 +98,7 @@ class AuthController extends Controller
         if (Session::has('user')) {
             return $this->redirectBasedOnUserType(Session::get('user'));
         }
-        
+
         return view('auth.register');
     }
 
@@ -125,7 +129,7 @@ class AuthController extends Controller
             'email' => $user->email,
         ]);
 
-        return redirect()->route('dashboard')
+        return redirect()->route('home')
             ->with('sweet_alert', [
                 'type' => 'success',
                 'title' => 'Success!',
@@ -138,16 +142,16 @@ class AuthController extends Controller
         // Clear all user session data
         $request->session()->forget('user');
         $request->session()->forget('auth_user');
-        
+
         // If you're using Laravel's built-in authentication as well
         Auth::logout();
-        
+
         // Invalidate the session
         $request->session()->invalidate();
-        
+
         // Regenerate CSRF token
         $request->session()->regenerateToken();
-        
+
         // Redirect to home page with success message
         return redirect('/')->with('sweet_alert', [
             'type' => 'success',

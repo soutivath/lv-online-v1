@@ -69,6 +69,7 @@ class SemesterController extends Controller
 
     public function exportPDF()
     {
+       
         $semesters = Semester::with('majors')->get();
         
         $data = [

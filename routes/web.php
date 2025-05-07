@@ -89,25 +89,29 @@ Route::middleware(['check.role:admin,student'])->group(function () {
     Route::get('employees/{employee}/export-pdf', [EmployeeController::class, 'exportPDF'])->name('employees.export-pdf');
     Route::get('employees-export-all', [EmployeeController::class, 'exportAllPDF'])->name('employees.export-all-pdf');
 
+
+    Route::get('semesters/export-pdf', [SemesterController::class, 'exportPDF'])->name('semesters.export-pdf');
     // Semesters
     Route::resource('semesters', SemesterController::class);
-    Route::get('semesters/export-pdf', [SemesterController::class, 'exportPDF'])->name('semesters.export-pdf');
 
     // Terms
-    Route::resource('terms', TermController::class);
     Route::get('terms/export-pdf', [TermController::class, 'exportPDF'])->name('terms.export-pdf');
+    Route::resource('terms', TermController::class);
+  
 
     // Years
-    Route::resource('years', YearController::class);
     Route::get('years/export-pdf', [YearController::class, 'exportPDF'])->name('years.export-pdf');
+    Route::resource('years', YearController::class);
 
     // Tuitions
-    Route::resource('tuitions', TuitionController::class);
     Route::get('tuitions/export-pdf', [TuitionController::class, 'exportPDF'])->name('tuitions.export-pdf');
 
+    Route::resource('tuitions', TuitionController::class);
+
     // Credits
-    Route::resource('credits', CreditController::class);
     Route::get('credits/export-pdf', [CreditController::class, 'exportPDF'])->name('credits.export-pdf');
+
+    Route::resource('credits', CreditController::class);
 
     // Subjects
     Route::get('subjects/export-all-pdf', [SubjectController::class, 'exportAllPDF'])->name('subjects.export-all-pdf');

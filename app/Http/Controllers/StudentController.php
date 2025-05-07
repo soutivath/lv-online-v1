@@ -31,10 +31,23 @@ class StudentController extends Controller
             });
         }
         
+        // Filter by major if provided
+        if ($request->has('major') && !empty($request->major)) {
+            $majorName = $request->major;
+            $query->whereHas('registrations.registrationDetails.major', function($q) use ($majorName) {
+                $q->where('name', $majorName);
+            })->orWhereHas('payments.major', function($q) use ($majorName) {
+                $q->where('name', $majorName);
+            });
+        }
+        
         // Get the results with pagination
         $students = $query->paginate(15);
         
-        return view('Dashboard.students.index', compact('students'));
+        // Get the major name for display in the view
+        $majorFilter = $request->has('major') ? $request->major : null;
+        
+        return view('Dashboard.students.index', compact('students', 'majorFilter'));
     }
 
     public function store(Request $request)
