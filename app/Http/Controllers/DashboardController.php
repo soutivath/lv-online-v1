@@ -69,6 +69,34 @@ class DashboardController extends Controller
                 }, 0);
             });
 
+        // Get total payments
+        $totalPayments = Payment::where('status', 'success')->sum('total_price');
+        
+        // Get total payments by major
+        $paymentsByMajor = Payment::where('status', 'success')
+            ->select('major_id', DB::raw('SUM(total_price) as total_amount'), DB::raw('COUNT(distinct student_id) as student_count'))
+            ->groupBy('major_id')
+            ->with('major')
+            ->get();
+        
+        // Get total upgrades by major
+        $upgradesByMajor = DB::table('upgrades')
+            ->join('upgrade_details', 'upgrades.id', '=', 'upgrade_details.upgrade_id')
+            ->join('subjects', 'upgrade_details.subject_id', '=', 'subjects.id')
+            ->join('majors', 'upgrades.major_id', '=', 'majors.id')
+            ->where('upgrades.payment_status', 'success')
+            ->select('majors.id as major_id', 'majors.name as major_name', 
+                    DB::raw('SUM(upgrade_details.total_price) as total_amount'),
+                    DB::raw('COUNT(distinct upgrades.student_id) as student_count'))
+            ->groupBy('majors.id', 'majors.name')
+            ->get();
+        
+        // Recent payments and registrations
+        $recentPayments = Payment::with(['student', 'major'])
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+        
         return view('Dashboard.index', compact(
             'studentCount',
             'employeeCount',
@@ -79,7 +107,64 @@ class DashboardController extends Controller
             'pendingPayments',
             'paymentTotalsByMajor',
             'upgradeTotalsByMajor',
-            'majorStudentCounts'
+            'majorStudentCounts',
+            'totalPayments',
+            'paymentsByMajor',
+            'upgradesByMajor',
+            'recentPayments'
+        ));
+    }
+
+    /**
+     * Show detailed payments for a specific major
+     */
+    public function majorPaymentDetails($majorId)
+    {
+        $major = Major::findOrFail($majorId);
+        
+        $payments = Payment::where('major_id', $majorId)
+            ->where('status', 'success')
+            ->with(['student', 'major.semester', 'major.term', 'major.year'])
+            ->orderBy('date', 'desc')
+            ->get();
+        
+        $totalAmount = $payments->sum('total_price');
+        $studentCount = $payments->pluck('student_id')->unique()->count();
+        
+        return view('Dashboard.reports.major-payments', compact(
+            'major', 
+            'payments', 
+            'totalAmount', 
+            'studentCount'
+        ));
+    }
+
+    /**
+     * Show detailed upgrades for a specific major
+     */
+    public function majorUpgradeDetails($majorId)
+    {
+        $major = Major::findOrFail($majorId);
+        
+        $upgrades = Upgrade::where('major_id', $majorId)
+            ->where('payment_status', 'success')
+            ->with(['student', 'major.semester', 'major.term', 'major.year', 'upgradeDetails.subject'])
+            ->orderBy('date', 'desc')
+            ->get();
+        
+        // Calculate total amount from upgrade details
+        $totalAmount = 0;
+        foreach ($upgrades as $upgrade) {
+            $totalAmount += $upgrade->upgradeDetails->sum('price');
+        }
+        
+        $studentCount = $upgrades->pluck('student_id')->unique()->count();
+        
+        return view('Dashboard.reports.major-upgrades', compact(
+            'major', 
+            'upgrades', 
+            'totalAmount', 
+            'studentCount'
         ));
     }
 }

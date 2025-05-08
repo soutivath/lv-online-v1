@@ -78,6 +78,8 @@ Route::get('/main', [MainController::class, 'index'])->name('main');
 Route::middleware(['check.role:admin,student'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/major/{major}/payments', [DashboardController::class, 'majorPaymentDetails'])->name('dashboard.major-payments');
+    Route::get('/dashboard/major/{major}/upgrades', [DashboardController::class, 'majorUpgradeDetails'])->name('dashboard.major-upgrades');
 
     // Students
     Route::resource('students', StudentController::class);

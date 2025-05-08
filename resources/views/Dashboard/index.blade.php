@@ -175,7 +175,7 @@
         </div>
     </div>
 </div>
-
+{{-- 
 <div class="row">
     <div class="col-md-6">
         <div class="card mb-4">
@@ -235,6 +235,89 @@
                                     <td colspan="2" class="text-center">No upgrade data</td>
                                 </tr>
                             @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+<!-- Payment Statistics by Major -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Payment Statistics by Major</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Major</th>
+                                <th class="text-center">Students</th>
+                                <th class="text-end">Total Amount</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($paymentsByMajor as $payment)
+                            <tr>
+                                <td>{{ $payment->major->name }}</td>
+                                <td class="text-center">{{ $payment->student_count }}</td>
+                                <td class="text-end">{{ number_format($payment->total_amount, 2) }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('dashboard.major-payments', $payment->major_id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center">No payment data available</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-level-up-alt me-2"></i>Upgrade Statistics by Major</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Major</th>
+                                <th class="text-center">Students</th>
+                                <th class="text-end">Total Amount</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($upgradesByMajor as $upgrade)
+                            <tr>
+                                <td>{{ $upgrade->major_name }}</td>
+                                <td class="text-center">{{ $upgrade->student_count }}</td>
+                                <td class="text-end">{{ number_format($upgrade->total_amount, 2) }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('dashboard.major-upgrades', $upgrade->major_id) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="text-center">No upgrade data available</td>
+                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
