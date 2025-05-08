@@ -264,7 +264,7 @@
                         <tbody>
                             @forelse($paymentsByMajor as $payment)
                             <tr>
-                                <td>{{ $payment->major->name }}</td>
+                                <td>{{ $payment->major_name }}</td>
                                 <td class="text-center">{{ $payment->student_count }}</td>
                                 <td class="text-end">{{ number_format($payment->total_amount, 2) }}</td>
                                 <td class="text-center">

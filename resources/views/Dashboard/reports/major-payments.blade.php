@@ -27,6 +27,10 @@
                         <td>{{ $major->name }}</td>
                     </tr>
                     <tr>
+                        <th>Related Majors:</th>
+                        <td>{{ count($relatedMajorIds) }} major instances across different semesters/terms</td>
+                    </tr>
+                    <tr>
                         <th>Semester:</th>
                         <td>{{ $major->semester->name }}</td>
                     </tr>

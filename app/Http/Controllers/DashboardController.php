@@ -72,24 +72,40 @@ class DashboardController extends Controller
         // Get total payments
         $totalPayments = Payment::where('status', 'success')->sum('total_price');
         
-        // Get total payments by major
+        // Get total payments by major name (grouped)
         $paymentsByMajor = Payment::where('status', 'success')
-            ->select('major_id', DB::raw('SUM(total_price) as total_amount'), DB::raw('COUNT(distinct student_id) as student_count'))
-            ->groupBy('major_id')
-            ->with('major')
-            ->get();
+            ->join('majors', 'payments.major_id', '=', 'majors.id')
+            ->select('majors.name as major_name', 
+                    DB::raw('GROUP_CONCAT(DISTINCT majors.id) as major_ids'),
+                    DB::raw('SUM(payments.total_price) as total_amount'), 
+                    DB::raw('COUNT(distinct payments.student_id) as student_count'))
+            ->groupBy('majors.name')
+            ->get()
+            ->map(function($item) {
+                // Extract the first major_id to use for the view link
+                $majorIds = explode(',', $item->major_ids);
+                $item->major_id = $majorIds[0];
+                return $item;
+            });
         
-        // Get total upgrades by major
+        // Get total upgrades by major name (grouped)
         $upgradesByMajor = DB::table('upgrades')
             ->join('upgrade_details', 'upgrades.id', '=', 'upgrade_details.upgrade_id')
             ->join('subjects', 'upgrade_details.subject_id', '=', 'subjects.id')
             ->join('majors', 'upgrades.major_id', '=', 'majors.id')
             ->where('upgrades.payment_status', 'success')
-            ->select('majors.id as major_id', 'majors.name as major_name', 
+            ->select('majors.name as major_name', 
+                    DB::raw('GROUP_CONCAT(DISTINCT majors.id) as major_ids'),
                     DB::raw('SUM(upgrade_details.total_price) as total_amount'),
                     DB::raw('COUNT(distinct upgrades.student_id) as student_count'))
-            ->groupBy('majors.id', 'majors.name')
-            ->get();
+            ->groupBy('majors.name')
+            ->get()
+            ->map(function($item) {
+                // Extract the first major_id to use for the view link
+                $majorIds = explode(',', $item->major_ids);
+                $item->major_id = $majorIds[0];
+                return $item;
+            });
         
         // Recent payments and registrations
         $recentPayments = Payment::with(['student', 'major'])
@@ -122,7 +138,10 @@ class DashboardController extends Controller
     {
         $major = Major::findOrFail($majorId);
         
-        $payments = Payment::where('major_id', $majorId)
+        // Get all majors with the same name to include them in the report
+        $relatedMajorIds = Major::where('name', $major->name)->pluck('id')->toArray();
+        
+        $payments = Payment::whereIn('major_id', $relatedMajorIds)
             ->where('status', 'success')
             ->with(['student', 'major.semester', 'major.term', 'major.year'])
             ->orderBy('date', 'desc')
@@ -135,7 +154,8 @@ class DashboardController extends Controller
             'major', 
             'payments', 
             'totalAmount', 
-            'studentCount'
+            'studentCount',
+            'relatedMajorIds'
         ));
     }
 
@@ -146,7 +166,10 @@ class DashboardController extends Controller
     {
         $major = Major::findOrFail($majorId);
         
-        $upgrades = Upgrade::where('major_id', $majorId)
+        // Get all majors with the same name to include them in the report
+        $relatedMajorIds = Major::where('name', $major->name)->pluck('id')->toArray();
+        
+        $upgrades = Upgrade::whereIn('major_id', $relatedMajorIds)
             ->where('payment_status', 'success')
             ->with(['student', 'major.semester', 'major.term', 'major.year', 'upgradeDetails.subject'])
             ->orderBy('date', 'desc')
@@ -155,7 +178,7 @@ class DashboardController extends Controller
         // Calculate total amount from upgrade details
         $totalAmount = 0;
         foreach ($upgrades as $upgrade) {
-            $totalAmount += $upgrade->upgradeDetails->sum('total_price');
+            $totalAmount += $upgrade->upgradeDetails->sum('price');
         }
         
         $studentCount = $upgrades->pluck('student_id')->unique()->count();
@@ -164,7 +187,8 @@ class DashboardController extends Controller
             'major', 
             'upgrades', 
             'totalAmount', 
-            'studentCount'
+            'studentCount',
+            'relatedMajorIds'
         ));
     }
 }
