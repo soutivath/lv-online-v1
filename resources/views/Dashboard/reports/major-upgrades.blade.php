@@ -9,9 +9,9 @@
         <a href="{{ route('dashboard') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
-        <button onclick="window.print()" class="btn btn-primary">
+        {{-- <button onclick="window.print()" class="btn btn-primary">
             <i class="fas fa-print"></i> Print Report
-        </button>
+        </button> --}}
     </div>
 @endsection
 
@@ -88,7 +88,7 @@
                         <td>
                             <span class="badge bg-info">{{ $upgrade->upgradeDetails->count() }} subjects</span>
                         </td>
-                        <td>{{ number_format($upgrade->upgradeDetails->sum('price'), 2) }}</td>
+                        <td>{{ number_format($upgrade->upgradeDetails->sum('total_price'), 2) }}</td>
                         <td>
                             <span class="badge bg-{{ $upgrade->payment_status == 'success' ? 'success' : 'warning' }}">
                                 {{ ucfirst($upgrade->payment_status) }}

@@ -155,7 +155,7 @@ class DashboardController extends Controller
         // Calculate total amount from upgrade details
         $totalAmount = 0;
         foreach ($upgrades as $upgrade) {
-            $totalAmount += $upgrade->upgradeDetails->sum('price');
+            $totalAmount += $upgrade->upgradeDetails->sum('total_price');
         }
         
         $studentCount = $upgrades->pluck('student_id')->unique()->count();
