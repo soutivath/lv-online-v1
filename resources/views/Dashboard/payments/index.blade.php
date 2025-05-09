@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Payments')
+@section('title', 'ການຊຳລະເງິນ')
 
-@section('page-title', 'Student Payments')
+@section('page-title', 'ການຊຳລະເງິນຂອງນັກສຶກສາ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <a href="{{ route('payments.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> New Payment
+            <i class="fas fa-plus"></i> ເພີ່ມການຊຳລະເງິນ
         </a>
         <a href="{{ route('payments.export-all-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -19,20 +33,20 @@
 @if(count($groupedPayments) > 0)
 <div class="card mb-4">
     <div class="card-header bg-primary text-white">
-        <h5 class="mb-0"><i class="fas fa-layer-group me-2"></i>Grouped Payments</h5>
+        <h5 class="mb-0"><i class="fas fa-layer-group me-2"></i>ການຊຳລະເງິນກຸ່ມ</h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Bill #</th>
-                        <th>Student</th>
-                        <th>Date</th>
-                        <th>Items</th>
-                        <th>Total Amount</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>ເລກໃບບິນ</th>
+                        <th>ນັກສຶກສາ</th>
+                        <th>ວັນທີ</th>
+                        <th>ລາຍການ</th>
+                        <th>ຈຳນວນທັງໝົດ</th>
+                        <th>ສະຖານະ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,24 +56,24 @@
                             <td>{{ $group['payment']->student->name }} {{ $group['payment']->student->sername }}</td>
                             <td>{{ \Carbon\Carbon::parse($group['payment']->date)->format('d/m/Y') }}</td>
                             <td>
-                                <span class="badge bg-info">{{ $group['count'] }} items</span>
+                                <span class="badge bg-info">{{ $group['count'] }} ລາຍການ</span>
                             </td>
                             <td class="fw-bold">{{ number_format($group['total'], 2) }}</td>
                             <td>
                                 @if($group['all_success'])
-                                    <span class="badge bg-success">Success</span>
+                                    <span class="badge bg-success">ສຳເລັດ</span>
                                 @elseif($group['all_pending'])
-                                    <span class="badge bg-warning">Pending</span>
+                                    <span class="badge bg-warning">ລໍຖ້າ</span>
                                 @else
-                                    <span class="badge bg-info">Partial</span>
+                                    <span class="badge bg-info">ບາງສ່ວນ</span>
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('payments.show', $group['payment']->id) }}" class="btn btn-sm btn-info" title="View Details">
-                                    <i class="fas fa-eye"></i> View Group
+                                <a href="{{ route('payments.show', $group['payment']->id) }}" class="btn btn-sm btn-info" title="ເບິ່ງລາຍລະອຽດ">
+                                    <i class="fas fa-eye"></i> ເບິ່ງກຸ່ມ
                                 </a>
                                 
-                                <a href="{{ route('payments.export-pdf', $group['payment']->id) }}" class="btn btn-sm btn-success" target="_blank" title="Export PDF">
+                                <a href="{{ route('payments.export-pdf', $group['payment']->id) }}" class="btn btn-sm btn-success" target="_blank" title="ສົ່ງອອກ PDF">
                                     <i class="fas fa-file-invoice"></i>
                                 </a>
                                 
@@ -67,7 +81,7 @@
                                     <form action="{{ route('payments.confirm', $group['payment']->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-primary" title="Confirm All Payments">
+                                        <button type="submit" class="btn btn-sm btn-primary" title="ຢືນຢັນການຊຳລະເງິນທັງໝົດ">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
@@ -84,7 +98,7 @@
 
 <div class="card">
     <div class="card-header {{ count($groupedPayments) > 0 ? 'bg-secondary' : 'bg-primary' }} text-white">
-        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>Individual Payments</h5>
+        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i>ການຊຳລະເງິນເທື່ອລະລາຍການ</h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -92,12 +106,12 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Student</th>
-                        <th>Date</th>
-                        <th>Major</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>ນັກສຶກສາ</th>
+                        <th>ວັນທີ</th>
+                        <th>ສາຂາ</th>
+                        <th>ຈຳນວນເງິນ</th>
+                        <th>ສະຖານະ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,28 +124,28 @@
                             <td>{{ number_format($payment->total_price, 2) }}</td>
                             <td>
                                 @if($payment->status == 'pending')
-                                    <span class="badge bg-warning">Pending</span>
+                                    <span class="badge bg-warning">ລໍຖ້າ</span>
                                 @else
-                                    <span class="badge bg-success">Success</span>
+                                    <span class="badge bg-success">ສຳເລັດ</span>
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('payments.show', $payment->id) }}" class="btn btn-sm btn-info" title="View Details">
+                                <a href="{{ route('payments.show', $payment->id) }}" class="btn btn-sm btn-info" title="ເບິ່ງລາຍລະອຽດ">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                <a href="{{ route('payments.export-pdf', $payment->id) }}" class="btn btn-sm btn-success" target="_blank" title="Export PDF">
+                                <a href="{{ route('payments.export-pdf', $payment->id) }}" class="btn btn-sm btn-success" target="_blank" title="ສົ່ງອອກ PDF">
                                     <i class="fas fa-file-invoice"></i>
                                 </a>
                                 @if($payment->status == 'pending')
                                     <form action="{{ route('payments.confirm', $payment->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-primary" title="Confirm Payment">
+                                        <button type="submit" class="btn btn-sm btn-primary" title="ຢືນຢັນການຊຳລະເງິນ">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
                                 @endif
-                                <button class="btn btn-sm btn-danger" onclick="confirmDelete('delete-payment-form-{{ $payment->id }}')" title="Delete Payment">
+                                <button class="btn btn-sm btn-danger" onclick="confirmDelete('delete-payment-form-{{ $payment->id }}')" title="ລຶບການຊຳລະເງິນ">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 <form id="delete-payment-form-{{ $payment->id }}" action="{{ route('payments.destroy', $payment->id) }}" method="POST" class="d-none">
@@ -142,7 +156,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">No individual payments found</td>
+                            <td colspan="7" class="text-center">ບໍ່ພົບລາຍການການຊຳລະເງິນເທື່ອລະລາຍການ</td>
                         </tr>
                     @endforelse
                 </tbody>

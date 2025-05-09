@@ -1,9 +1,22 @@
 @extends('Dashboard.layout')
 
-@section('title', 'New Grade Upgrade')
+@section('title', 'ການອັບເກຣດໃໝ່')
 
-@section('page-title', 'New Grade Upgrade')
+@section('page-title', 'ການອັບເກຣດໃໝ່')
 
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -17,14 +30,14 @@
             @csrf
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label class="form-label">Student</label>
+                    <label class="form-label">ນັກສຶກສາ</label>
                     
                     <!-- Inline-styled dropdown to ensure it works -->
                     <div style="position: relative; width: 100%; margin-bottom: 1rem;">
                         <!-- Display button -->
                         <button type="button" onclick="toggleStudentList()" 
                                 style="width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; padding: 8px 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                            <span id="selectedStudentText">Select Student</span>
+                            <span id="selectedStudentText">ເລືອກນັກສຶກສາ</span>
                             <i class="fas fa-chevron-down"></i>
                         </button>
                         
@@ -32,7 +45,7 @@
                         <div id="studentListContainer" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 9999; max-height: 300px; overflow: hidden;">
                             <!-- Search input -->
                             <div style="padding: 8px; border-bottom: 1px solid #eee;">
-                                <input type="text" id="studentSearchInput" placeholder="Search students..." 
+                                <input type="text" id="studentSearchInput" placeholder="ຄົ້ນຫານັກສຶກສາ..." 
                                        onkeyup="filterStudents()" 
                                        style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
                             </div>
@@ -50,7 +63,7 @@
                             
                             <!-- No results message -->
                             <div id="noStudentsMsg" style="display: none; padding: 12px; text-align: center; font-style: italic; color: #6c757d;">
-                                No matching students found
+                                ບໍ່ພົບນັກສຶກສາທີ່ຄົ້ນຫາ
                             </div>
                         </div>
                         
@@ -58,7 +71,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <label for="date" class="form-label">Upgrade Date</label>
+                    <label for="date" class="form-label">ວັນທີອັບເກຣດ</label>
                     <input type="date" class="form-control" id="date" name="date" required value="{{ now()->format('Y-m-d') }}">
                 </div>
             </div>
@@ -66,32 +79,32 @@
             <!-- Major Filters Section -->
             <div class="card mb-3">
                 <div class="card-header bg-light">
-                    <h6 class="mb-0">Filter Majors</h6>
+                    <h6 class="mb-0">ການກັ່ນຕອງສາຂາ</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-2">
-                            <label for="year_filter" class="form-label">Academic Year</label>
+                            <label for="year_filter" class="form-label">ປີການສຶກສາ</label>
                             <select class="form-select select2" id="year_filter">
-                                <option value="">All Years</option>
+                                <option value="">ທຸກປີ</option>
                                 @foreach(App\Models\Year::all() as $year)
                                     <option value="{{ $year->id }}">{{ $year->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 mb-2">
-                            <label for="term_filter" class="form-label">Term</label>
+                            <label for="term_filter" class="form-label">ເທີມ</label>
                             <select class="form-select select2" id="term_filter">
-                                <option value="">All Terms</option>
+                                <option value="">ທຸກເທີມ</option>
                                 @foreach(App\Models\Term::all() as $term)
                                     <option value="{{ $term->id }}">{{ $term->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 mb-2">
-                            <label for="semester_filter" class="form-label">Semester</label>
+                            <label for="semester_filter" class="form-label">ພາກຮຽນ</label>
                             <select class="form-select select2" id="semester_filter">
-                                <option value="">All Semesters</option>
+                                <option value="">ທຸກພາກຮຽນ</option>
                                 @foreach(App\Models\Semester::all() as $semester)
                                     <option value="{{ $semester->id }}">{{ $semester->name }}</option>
                                 @endforeach
@@ -103,9 +116,9 @@
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="major_id" class="form-label">Major</label>
+                    <label for="major_id" class="form-label">ສາຂາ</label>
                     <select class="form-select select2" id="major_id" name="major_id" required>
-                        <option value="">Select Major</option>
+                        <option value="">ເລືອກສາຂາ</option>
                         @foreach($majors as $major)
                             <option value="{{ $major->id }}">
                                 {{ $major->name }} | {{ $major->semester->name }} | {{ $major->term->name }} | {{ $major->year->name }}
@@ -115,13 +128,13 @@
                 </div>
                 <div class="col-md-6">
                     <p class="form-text text-muted mt-4">
-                        <i class="fas fa-info-circle"></i> Upgrade will be recorded under your employee account.
+                        <i class="fas fa-info-circle"></i> ການອັບເກຣດຈະຖືກບັນທຶກພາຍໃຕ້ບັນຊີພະນັກງານຂອງທ່ານ.
                     </p>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="subjects" class="form-label">Select Subjects</label>
+                <label for="subjects" class="form-label">ເລືອກວິຊາ</label>
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -145,24 +158,24 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Selected Subjects</label>
+                <label class="form-label">ວິຊາທີ່ເລືອກ</label>
                 <div class="table-responsive">
                     <table class="table table-striped" id="selected-subjects-table">
                         <thead>
                             <tr>
-                                <th>Subject</th>
-                                <th>Credits</th>
-                                <th>Amount</th>
+                                <th>ວິຊາ</th>
+                                <th>ໜ່ວຍກິດ</th>
+                                <th>ຈຳນວນເງິນ</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr id="no-subjects-row">
-                                <td colspan="3" class="text-center">No subjects selected</td>
+                                <td colspan="3" class="text-center">ບໍ່ມີວິຊາທີ່ເລືອກ</td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="2" class="text-end">Total:</th>
+                                <th colspan="2" class="text-end">ລວມ:</th>
                                 <th id="total-amount">0.00</th>
                             </tr>
                         </tfoot>
@@ -172,17 +185,17 @@
             
             <!-- Add payment proof upload field -->
             <div class="mb-3">
-                <label for="payment_proof" class="form-label">Payment Proof (Optional)</label>
+                <label for="payment_proof" class="form-label">ຫຼັກຖານການຈ່າຍເງິນ (ຕາມຄວາມຕ້ອງການ)</label>
                 <input type="file" class="form-control" id="payment_proof" name="payment_proof" accept="image/*">
                 <div class="form-text text-muted">
-                    Upload a receipt or screenshot of your payment (max 2MB).
+                    ອັບໂຫລດໃບຮັບຫຼືຮູບພາບຂອງການຈ່າຍເງິນຂອງທ່ານ (ສູງສຸດ 2MB).
                 </div>
                 <div class="payment-proof-preview mt-2" style="display: none;"></div>
             </div>
 
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Create Upgrade</button>
-                <a href="{{ route('upgrades.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">ສ້າງການອັບເກຣດ</button>
+                <a href="{{ route('upgrades.index') }}" class="btn btn-secondary">ຍົກເລີກ</a>
             </div>
         </form>
     </div>
@@ -322,7 +335,7 @@
             tableBody.empty();
             
             if (selectedCheckboxes.length === 0) {
-                tableBody.html('<tr id="no-subjects-row"><td colspan="3" class="text-center">No subjects selected</td></tr>');
+                tableBody.html('<tr id="no-subjects-row"><td colspan="3" class="text-center">ບໍ່ມີວິຊາທີ່ເລືອກ</td></tr>');
             } else {
                 selectedCheckboxes.each(function() {
                     let checkbox = $(this);

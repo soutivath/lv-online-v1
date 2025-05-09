@@ -1,8 +1,22 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Dashboard')
+@section('title', 'ໜ້າຫຼັກ')
 
-@section('page-title', 'Dashboard')
+@section('page-title', 'ສະຫຼຸບຂໍ້ມູນລະບົບ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('content')
 <div class="row">
@@ -11,7 +25,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title">Total Students</h5>
+                        <h5 class="card-title">ນັກສຶກສາທັງໝົດ</h5>
                         <h2>{{ $studentCount }}</h2>
                     </div>
                     <i class="fas fa-user-graduate fa-3x"></i>
@@ -25,7 +39,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title">Total Employees</h5>
+                        <h5 class="card-title">ພະນັກງານທັງໝົດ</h5>
                         <h2>{{ $employeeCount }}</h2>
                     </div>
                     <i class="fas fa-user-tie fa-3x"></i>
@@ -39,7 +53,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h5 class="card-title">Total Registrations</h5>
+                        <h5 class="card-title">ການລົງທະບຽນທັງໝົດ</h5>
                         <h2>{{ $registrationCount }}</h2>
                     </div>
                     <i class="fas fa-clipboard-list fa-3x"></i>
@@ -118,7 +132,7 @@
     <div class="col-12">
         <div class="card h-100">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Students by Major</h5>
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>ນັກສຶກສາຕາມສາຂາ</h5>
             </div>
             <div class="card-body">
                 @if($majorStudentCounts->count() > 0)
@@ -126,9 +140,9 @@
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>Major</th>
-                                    <th class="text-center">Students</th>
-                                    <th class="text-end">Percentage</th>
+                                    <th>ສາຂາ</th>
+                                    <th class="text-center">ນັກສຶກສາ</th>
+                                    <th class="text-end">ເປີເຊັນ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -165,12 +179,12 @@
                     </div>
                 @else
                     <div class="alert alert-info mb-0">
-                        No student registration data available.
+                        ບໍ່ມີຂໍ້ມູນການລົງທະບຽນນັກສຶກສາ.
                     </div>
                 @endif
             </div>
             <div class="card-footer text-end">
-                <a href="{{ route('majors.index') }}" class="btn btn-sm btn-outline-primary">View All Majors</a>
+                <a href="{{ route('majors.index') }}" class="btn btn-sm btn-outline-primary">ເບິ່ງທັງໝົດຂອງສາຂາ</a>
             </div>
         </div>
     </div>
@@ -248,17 +262,17 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Payment Statistics by Major</h5>
+                <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>ສະຖິຕິການຊຳລະເງິນຕາມສາຂາ</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Major</th>
-                                <th class="text-center">Students</th>
-                                <th class="text-end">Total Amount</th>
-                                <th class="text-center">Action</th>
+                                <th>ສາຂາ</th>
+                                <th class="text-center">ນັກສຶກສາ</th>
+                                <th class="text-end">ຍອດເງິນລວມ</th>
+                                <th class="text-center">ຄຳສັ່ງ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -269,13 +283,13 @@
                                 <td class="text-end">{{ number_format($payment->total_amount, 2) }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('dashboard.major-payments', $payment->major_id) }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye"></i> View
+                                        <i class="fas fa-eye"></i> ເບິ່ງ
                                     </a>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center">No payment data available</td>
+                                <td colspan="4" class="text-center">ບໍ່ມີຂໍ້ມູນການຊຳລະເງິນ</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -288,17 +302,17 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="fas fa-level-up-alt me-2"></i>Upgrade Statistics by Major</h5>
+                <h5 class="mb-0"><i class="fas fa-level-up-alt me-2"></i>ສະຖິຕິການອັບເກຣດຕາມສາຂາ</h5>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Major</th>
-                                <th class="text-center">Students</th>
-                                <th class="text-end">Total Amount</th>
-                                <th class="text-center">Action</th>
+                                <th>ສາຂາ</th>
+                                <th class="text-center">ນັກສຶກສາ</th>
+                                <th class="text-end">ຍອດເງິນລວມ</th>
+                                <th class="text-center">ຄຳສັ່ງ</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -309,13 +323,13 @@
                                 <td class="text-end">{{ number_format($upgrade->total_amount, 2) }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('dashboard.major-upgrades', $upgrade->major_id) }}" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-eye"></i> View
+                                        <i class="fas fa-eye"></i> ເບິ່ງ
                                     </a>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="text-center">No upgrade data available</td>
+                                <td colspan="4" class="text-center">ບໍ່ມີຂໍ້ມູນການອັບເກຣດ</td>
                             </tr>
                             @endforelse
                         </tbody>

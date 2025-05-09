@@ -48,6 +48,9 @@ Route::post('/student-payment-submit', 'App\Http\Controllers\PaymentController@s
 Route::get('/student-upgrade', 'App\Http\Controllers\UpgradeController@showStudentUpgrade')->name('student.upgrade');
 Route::post('/student-upgrade-submit', 'App\Http\Controllers\UpgradeController@storeStudentUpgrade')->name('student.upgrade.submit');
 
+// Student Receipts - Add new route
+Route::get('/student-receipts', 'App\Http\Controllers\PaymentController@showStudentReceipts')->name('student.receipts');
+
 // Make sure the API route is outside middleware groups and accessible to all
 Route::get('/api/subjects-by-major/{major}', 'App\Http\Controllers\UpgradeController@getSubjectsByMajor');
 

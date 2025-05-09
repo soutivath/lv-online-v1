@@ -441,57 +441,57 @@ class RegistrationController extends Controller
                 $query->where('student_id', $stdData->id);
             })->whereIn('major_id', $majorIds)->get();
             
-            if ($existingRegistrations->isNotEmpty()) {
-                // Get the names of already registered majors for better error message
-                $existingMajorIds = $existingRegistrations->pluck('major_id')->toArray();
-                $existingMajors = Major::with(['semester', 'term', 'year'])
-                    ->whereIn('id', $existingMajorIds)
-                    ->get();
+            // if ($existingRegistrations->isNotEmpty()) {
+            //     // Get the names of already registered majors for better error message
+            //     $existingMajorIds = $existingRegistrations->pluck('major_id')->toArray();
+            //     $existingMajors = Major::with(['semester', 'term', 'year'])
+            //         ->whereIn('id', $existingMajorIds)
+            //         ->get();
                 
-                // Format the major names nicely
-                $majorNames = $existingMajors->map(function($major) {
-                    return "{$major->name} ({$major->semester->name} {$major->term->name} {$major->year->name})";
-                })->implode(', ');
+            //     // Format the major names nicely
+            //     $majorNames = $existingMajors->map(function($major) {
+            //         return "{$major->name} ({$major->semester->name} {$major->term->name} {$major->year->name})";
+            //     })->implode(', ');
               
-                return redirect()->back()
-                    ->with('sweet_alert', [
-                        'type' => 'error',
-                        'title' => 'ທ່ານໄດ້ລົງທະບຽນແລ້ວ',
-                        'text' => "ທ່ານໄດ້ລົງທະບຽນສາຂາ {$majorNames} ແລ້ວ. ຟັງຊັນນີ້ສະຫງວນໄວ້ສຳລັບນັກສຶກສາປີທຳອິດເທົ່ານັ້ນ."
-                    ])
-                    ->withInput();
-            }
+            //     return redirect()->back()
+            //         ->with('sweet_alert', [
+            //             'type' => 'error',
+            //             'title' => 'ທ່ານໄດ້ລົງທະບຽນແລ້ວ',
+            //             'text' => "ທ່ານໄດ້ລົງທະບຽນສາຂາ {$majorNames} ແລ້ວ. ຟັງຊັນນີ້ສະຫງວນໄວ້ສຳລັບນັກສຶກສາປີທຳອິດເທົ່ານັ້ນ."
+            //         ])
+            //         ->withInput();
+            // }
 
             //for rollback
             // Get registrations with their details and majors
-            $existingRegistrations = Registration::where('student_id', $stdData->id)
-                ->with('registrationDetails.major')
-                ->get();
+            // $existingRegistrations = Registration::where('student_id', $stdData->id)
+            //     ->with('registrationDetails.major')
+            //     ->get();
             
-            // Build the array of used majors manually
-            $usedToRegistredMajor = [];
-            foreach ($existingRegistrations as $registration) {
-                foreach ($registration->registrationDetails as $detail) {
-                    if ($detail->major) {
-                        $usedToRegistredMajor[$detail->major->semester_id] = $detail->major->name;
-                    }
-                }
-            }
+            // // Build the array of used majors manually
+            // $usedToRegistredMajor = [];
+            // foreach ($existingRegistrations as $registration) {
+            //     foreach ($registration->registrationDetails as $detail) {
+            //         if ($detail->major) {
+            //             $usedToRegistredMajor[$detail->major->semester_id] = $detail->major->name;
+            //         }
+            //     }
+            // }
             
-            $selectedMajors = Major::whereIn('id', $majorIds)->get();
-            foreach($selectedMajors as $selectedMajor){
-                $nameOfMajorInsemester = $usedToRegistredMajor[$selectedMajor->semester_id] ?? null;
-                if($nameOfMajorInsemester!= null && ($nameOfMajorInsemester != $selectedMajor->name)){
-                    $semesterName = Semester::find($selectedMajor->semester_id)->name;
-                    return redirect()->back()
-                    ->with('sweet_alert', [
-                        'type' => 'error',
-                        'title' => 'ບໍ່ສາມາດລົງທະບຽນໄດ້',
-                        'text' => "ນັກສຶກສາໄດ້ລົງທະບຽນໃນ {$semesterName} ສາຂາ {$nameOfMajorInsemester} ແລ້ວ."
-                    ])
-                    ->withInput();
-                }
-            }
+            // $selectedMajors = Major::whereIn('id', $majorIds)->get();
+            // foreach($selectedMajors as $selectedMajor){
+            //     $nameOfMajorInsemester = $usedToRegistredMajor[$selectedMajor->semester_id] ?? null;
+            //     if($nameOfMajorInsemester!= null && ($nameOfMajorInsemester != $selectedMajor->name)){
+            //         $semesterName = Semester::find($selectedMajor->semester_id)->name;
+            //         return redirect()->back()
+            //         ->with('sweet_alert', [
+            //             'type' => 'error',
+            //             'title' => 'ບໍ່ສາມາດລົງທະບຽນໄດ້',
+            //             'text' => "ນັກສຶກສາໄດ້ລົງທະບຽນໃນ {$semesterName} ສາຂາ {$nameOfMajorInsemester} ແລ້ວ."
+            //         ])
+            //         ->withInput();
+            //     }
+            // }
 
             //for rollback
 

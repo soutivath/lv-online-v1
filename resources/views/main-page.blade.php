@@ -62,7 +62,7 @@
                 <h2 class="text-center mb-4">ບໍລິການສຳລັບນັກສຶກສາ</h2>
             </div>
             
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body text-center">
                         <i class="bi bi-person-plus-fill text-primary" style="font-size: 3rem;"></i>
@@ -73,7 +73,7 @@
                 </div>
             </div>
             
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body text-center">
                         <i class="bi bi-credit-card-fill text-success" style="font-size: 3rem;"></i>
@@ -84,13 +84,24 @@
                 </div>
             </div>
             
-            <div class="col-md-4 mb-3">
+            <div class="col-md-3 mb-3">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body text-center">
                         <i class="bi bi-arrow-up-circle-fill text-warning" style="font-size: 3rem;"></i>
                         <h4 class="mt-3">ອັບເກຣດວິຊາຮຽນ</h4>
                         <p>ອັບເກຣດວິຊາຮຽນ</p>
                         <a href="{{ route('student.upgrade') }}" class="btn btn-warning">ອັບເກຣດວິຊາຮຽນ</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-receipt-cutoff text-info" style="font-size: 3rem;"></i>
+                        <h4 class="mt-3">ໃບຮັບເງິນຂອງຂ້ອຍ</h4>
+                        <p>ກວດເບິ່ງໃບຮັບເງິນແລະການຊຳລະເງິນ</p>
+                        <a href="{{ route('student.receipts') }}" class="btn btn-info">ເບິ່ງໃບຮັບເງິນ</a>
                     </div>
                 </div>
             </div>

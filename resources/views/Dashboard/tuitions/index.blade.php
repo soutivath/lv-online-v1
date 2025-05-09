@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Tuition Fees')
+@section('title', 'ຄ່າຮຽນ')
 
-@section('page-title', 'Tuition Fees')
+@section('page-title', 'ຄ່າຮຽນ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTuitionModal">
-            <i class="fas fa-plus"></i> Add Tuition Fee
+            <i class="fas fa-plus"></i> ເພີ່ມຄ່າຮຽນ
         </button>
         <a href="{{ route('tuitions.export-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -23,8 +37,8 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Price</th>
-                        <th>Actions</th>
+                        <th>ລາຄາ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,18 +73,18 @@
             <form action="{{ route('tuitions.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addTuitionModalLabel">Add New Tuition Fee</h5>
+                    <h5 class="modal-title" id="addTuitionModalLabel">ເພີ່ມຄ່າຮຽນໃໝ່</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
+                        <label for="price" class="form-label">ລາຄາ</label>
                         <input type="number" step="0.01" class="form-control" id="price" name="price" required min="0">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                    <button type="submit" class="btn btn-primary">ບັນທຶກ</button>
                 </div>
             </form>
         </div>
@@ -86,18 +100,18 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editTuitionModalLabel{{ $tuition->id }}">Edit Tuition Fee</h5>
+                        <h5 class="modal-title" id="editTuitionModalLabel{{ $tuition->id }}">ແກ້ໄຂຄ່າຮຽນ</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="edit_price{{ $tuition->id }}" class="form-label">Price</label>
+                            <label for="edit_price{{ $tuition->id }}" class="form-label">ລາຄາ</label>
                             <input type="number" step="0.01" class="form-control" id="edit_price{{ $tuition->id }}" name="price" value="{{ $tuition->price }}" required min="0">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                        <button type="submit" class="btn btn-primary">ອັບເດດ</button>
                     </div>
                 </form>
             </div>

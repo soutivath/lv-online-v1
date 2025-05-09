@@ -1,30 +1,44 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Subjects')
+@section('title', 'ວິຊາຮຽນ')
 
-@section('page-title', 'Subjects')
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
+
+@section('page-title', 'ວິຊາຮຽນ')
 
 @section('page-actions')
     {{-- <div class="btn-group" role="group">
         <button type="button" class="btn btn-primary" id="headerAddSubjectBtn">
-            <i class="fas fa-plus"></i> Add Subject
+            <i class="fas fa-plus"></i> ເພີ່ມວິຊາຮຽນ
         </button>
         <a href="{{ route('subjects.export-all-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export PDF
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກ PDF
         </a>
     </div> --}}
-@endsection
+@endsection 
 
 @section('content')
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">All Subjects</h5>
+        <h5 class="mb-0">ວິຊາຮຽນທັງໝົດ</h5>
         <div>
             <button type="button" class="btn btn-primary btn-sm btn-add-subject">
-                <i class="fas fa-plus"></i> Add New
+                <i class="fas fa-plus"></i> ເພີ່ມໃໝ່
             </button>
             <a href="{{ route('subjects.export-all-pdf') }}" class="btn btn-success btn-sm" target="_blank">
-                <i class="fas fa-file-pdf"></i> Export All
+                <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
             </a>
         </div>
     </div>
@@ -34,10 +48,10 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Credit</th>
-                        <th>Credit Price</th>
-                        <th>Actions</th>
+                        <th>ຊື່</th>
+                        <th>ໜ່ວຍກິດ</th>
+                        <th>ລາຄາໜ່ວຍກິດ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,27 +88,27 @@
             <form action="{{ route('subjects.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addSubjectModalLabel">Add New Subject</h5>
+                    <h5 class="modal-title" id="addSubjectModalLabel">ເພີ່ມວິຊາຮຽນໃໝ່</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Subject Name</label>
+                        <label for="name" class="form-label">ຊື່ວິຊາຮຽນ</label>
                         <input type="text" class="form-control" id="name" name="name" required maxlength="20">
                     </div>
                     <div class="mb-3">
-                        <label for="credit_id" class="form-label">Credit</label>
+                        <label for="credit_id" class="form-label">ໜ່ວຍກິດ</label>
                         <select class="form-select" id="credit_id" name="credit_id" required>
-                            <option value="">Select Credit</option>
+                            <option value="">ເລືອກໜ່ວຍກິດ</option>
                             @foreach($credits as $credit)
-                                <option value="{{ $credit->id }}">{{ $credit->qty }} Credits - Price: {{ number_format($credit->price, 2) }}</option>
+                                <option value="{{ $credit->id }}">{{ $credit->qty }} ໜ່ວຍກິດ - ລາຄາ: {{ number_format($credit->price, 2) }}</option>
                             @endforeach
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                    <button type="submit" class="btn btn-primary">ບັນທຶກ</button>
                 </div>
             </form>
         </div>
@@ -110,28 +124,28 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editSubjectModalLabel{{ $subject->id }}">Edit Subject</h5>
+                        <h5 class="modal-title" id="editSubjectModalLabel{{ $subject->id }}">ແກ້ໄຂວິຊາຮຽນ</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="edit_name{{ $subject->id }}" class="form-label">Subject Name</label>
+                            <label for="edit_name{{ $subject->id }}" class="form-label">ຊື່ວິຊາຮຽນ</label>
                             <input type="text" class="form-control" id="edit_name{{ $subject->id }}" name="name" value="{{ $subject->name }}" required maxlength="20">
                         </div>
                         <div class="mb-3">
-                            <label for="edit_credit_id{{ $subject->id }}" class="form-label">Credit</label>
+                            <label for="edit_credit_id{{ $subject->id }}" class="form-label">ໜ່ວຍກິດ</label>
                             <select class="form-select" id="edit_credit_id{{ $subject->id }}" name="credit_id" required>
                                 @foreach($credits as $credit)
                                     <option value="{{ $credit->id }}" {{ $subject->credit_id == $credit->id ? 'selected' : '' }}>
-                                        {{ $credit->qty }} Credits - Price: {{ number_format($credit->price, 2) }}
+                                        {{ $credit->qty }} ໜ່ວຍກິດ - ລາຄາ: {{ number_format($credit->price, 2) }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                        <button type="submit" class="btn btn-primary">ອັບເດດ</button>
                     </div>
                 </form>
             </div>

@@ -21,6 +21,7 @@ class Employee extends Model
         'address',
         'tell',
         'picture',
+        'role',
         'user_id'
     ];
 

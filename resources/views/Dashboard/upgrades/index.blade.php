@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Grade Upgrades')
+@section('title', 'ການອັບເກຣດ')
 
-@section('page-title', 'Grade Upgrades')
+@section('page-title', 'ການອັບເກຣດ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <a href="{{ route('upgrades.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> New Upgrade
+            <i class="fas fa-plus"></i> ເພີ່ມການອັບເກຣດ
         </a>
         <a href="{{ route('upgrades.export-all-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -23,13 +37,13 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Student</th>
-                        <th>Date</th>
-                        <th>Major</th>
-                        <th>Subjects</th>
-                        <th>Total Amount</th>
-                        <th>Payment Status</th>
-                        <th>Actions</th>
+                        <th>ນັກສຶກສາ</th>
+                        <th>ວັນທີ</th>
+                        <th>ສາຂາ</th>
+                        <th>ວິຊາ</th>
+                        <th>ຈຳນວນທັງໝົດ</th>
+                        <th>ສະຖານະການຊຳລະ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,9 +57,9 @@
                             <td>{{ number_format($upgrade->upgradeDetails->sum('total_price'), 2) }}</td>
                             <td>
                                 @if($upgrade->payment_status == 'pending')
-                                    <span class="badge bg-warning">Pending</span>
+                                    <span class="badge bg-warning">ລໍຖ້າ</span>
                                 @else
-                                    <span class="badge bg-success">Success</span>
+                                    <span class="badge bg-success">ສຳເລັດ</span>
                                 @endif
                             </td>
                             <td>
@@ -59,7 +73,7 @@
                                     <form action="{{ route('upgrades.confirm-payment', $upgrade->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-primary" title="Confirm Payment">
+                                        <button type="submit" class="btn btn-sm btn-primary" title="ຢືນຢັນການຊຳລະເງິນ">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>

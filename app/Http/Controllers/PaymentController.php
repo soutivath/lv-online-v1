@@ -15,6 +15,7 @@ use PDF;
 use App\Services\PaymentStatusService;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -580,7 +581,7 @@ class PaymentController extends Controller
                         // ->with('sweet_alert', [
                         //     'type' => 'error',
                         //     'title' => 'ຂໍ້ຜິດພາດ!',
-                        //     'text' => "ທ່ານໄດ້ຊຳລະເງິນ {$nameBySemesterBelongToMajor} ສຳລັບພາກຮຽນ {$semester} ແລ້ວ. ບໍ່ສາມາດຊຳລະຊ້ຳໄດ້."
+                        //     'text' => "ທ່ານໄດ້ຊຳລະເງິນ {$nameBySemesterBelongToMajor} ສຳລັບພາກຮຽນ {$semester} ແລ້ວ. ບໍ່ສາມາດຊໍາລະຊ້ຳໄດ້."
                         // ])
                         ->withInput();
                    }
@@ -686,5 +687,58 @@ class PaymentController extends Controller
                 ])
                 ->withInput();
         }
+    }
+
+    /**
+     * Display a listing of the receipts for the logged-in student.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showStudentReceipts()
+    {
+        // Check if user is logged in
+        if (!Session::has('user')) {
+            return redirect()->route('login')
+                ->with('sweet_alert', [
+                    'type' => 'warning',
+                    'title' => 'ກະລຸນາເຂົ້າສູ່ລະບົບ',
+                    'text' => 'ທ່ານຕ້ອງເຂົ້າສູ່ລະບົບເພື່ອເບິ່ງໃບຮັບເງິນຂອງທ່ານ'
+                ]);
+        }
+
+        // Get user ID from session
+        $userId = Session::get('user')['id'];
+
+        // Find the student associated with this user
+        $student = \App\Models\Student::where('user_id', $userId)->first();
+
+        if (!$student) {
+            return redirect()->route('home')
+                ->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'ບໍ່ພົບນັກສຶກສາ',
+                    'text' => 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາທີ່ກ່ຽວຂ້ອງກັບບັນຊີຂອງທ່ານ'
+                ]);
+        }
+
+        // Get all payments for this student
+        $payments = \App\Models\Payment::where('student_id', $student->id)
+            ->with(['major.semester', 'major.term', 'major.year'])
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // Get all registrations for this student
+        $registrations = \App\Models\Registration::where('student_id', $student->id)
+            ->with(['registrationDetails.major.semester', 'registrationDetails.major.term', 'registrationDetails.major.year'])
+            ->orderBy('date', 'desc')
+            ->get();
+
+        // Get all upgrades for this student
+        $upgrades = \App\Models\Upgrade::where('student_id', $student->id)
+            ->with(['major.semester', 'major.term', 'major.year', 'upgradeDetails.subject'])
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('student-receipts', compact('student', 'payments', 'registrations', 'upgrades'));
     }
 }

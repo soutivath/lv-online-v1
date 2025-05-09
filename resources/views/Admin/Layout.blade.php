@@ -64,9 +64,9 @@
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('student.payment') ? 'active' : '' }}" href="{{ route('student.payment') }}">ຊຳລະຄ່າຮຽນ</a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a class="nav-link" href="/showdata">ອັບເກດ</a>
-                    </li> --}}
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('student.receipts') ? 'active' : '' }}" href="{{ route('student.receipts') }}">ໃບຮັບເງິນຂອງຂ້ອຍ</a>
+                    </li>
                     {{-- Use the request session to check user authentication state --}}
                     {{-- @dd(session('user')); --}}
                     @if(session()->has('user'))

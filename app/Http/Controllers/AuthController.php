@@ -53,6 +53,11 @@ class AuthController extends Controller
             'email' => $user->email
         ];
 
+        // Add role to session if user is an employee
+        if ($user->employee) {
+            $userData['role'] = $user->employee->role ?? 'admin'; // Default to admin if role is not set
+        }
+
         // Store user data in session
         Session::put('user', $userData);
 

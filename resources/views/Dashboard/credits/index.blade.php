@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Credits')
+@section('title', 'ໜ່ວຍກິດ')
 
-@section('page-title', 'Credits')
+@section('page-title', 'ໜ່ວຍກິດ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCreditModal">
-            <i class="fas fa-plus"></i> Add Credit
+            <i class="fas fa-plus"></i> ເພີ່ມໜ່ວຍກິດ
         </button>
         <a href="{{ route('credits.export-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -22,10 +36,10 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Credit Quantity</th>
-                        <th>Price</th>
-                        <th>Actions</th>
+                        <th>ລະຫັດ</th>
+                        <th>ຈຳນວນໜ່ວຍກິດ</th>
+                        <th>ລາຄາ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,22 +75,22 @@
             <form action="{{ route('credits.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addCreditModalLabel">Add New Credit</h5>
+                    <h5 class="modal-title" id="addCreditModalLabel">ເພີ່ມໜ່ວຍກິດໃໝ່</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="qty" class="form-label">Credit Quantity</label>
+                        <label for="qty" class="form-label">ຈຳນວນໜ່ວຍກິດ</label>
                         <input type="text" class="form-control" id="qty" name="qty" required maxlength="5">
                     </div>
                     <div class="mb-3">
-                        <label for="price" class="form-label">Price</label>
+                        <label for="price" class="form-label">ລາຄາ</label>
                         <input type="number" step="0.01" class="form-control" id="price" name="price" required min="0">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                    <button type="submit" class="btn btn-primary">ບັນທຶກ</button>
                 </div>
             </form>
         </div>
@@ -92,22 +106,22 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editCreditModalLabel{{ $credit->id }}">Edit Credit</h5>
+                        <h5 class="modal-title" id="editCreditModalLabel{{ $credit->id }}">ແກ້ໄຂໜ່ວຍກິດ</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="edit_qty{{ $credit->id }}" class="form-label">Credit Quantity</label>
+                            <label for="edit_qty{{ $credit->id }}" class="form-label">ຈຳນວນໜ່ວຍກິດ</label>
                             <input type="text" class="form-control" id="edit_qty{{ $credit->id }}" name="qty" value="{{ $credit->qty }}" required maxlength="5">
                         </div>
                         <div class="mb-3">
-                            <label for="edit_price{{ $credit->id }}" class="form-label">Price</label>
+                            <label for="edit_price{{ $credit->id }}" class="form-label">ລາຄາ</label>
                             <input type="number" step="0.01" class="form-control" id="edit_price{{ $credit->id }}" name="price" value="{{ $credit->price }}" required min="0">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                        <button type="submit" class="btn btn-primary">ອັບເດດ</button>
                     </div>
                 </form>
             </div>

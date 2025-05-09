@@ -1,8 +1,22 @@
 @extends('Dashboard.layout')
 
-@section('title', 'New Registration')
+@section('title', 'ການລົງທະບຽນໃໝ່')
 
-@section('page-title', 'New Registration')
+@section('page-title', 'ການລົງທະບຽນໃໝ່')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -15,28 +29,28 @@
             @csrf
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="student_id" class="form-label">Student</label>
+                    <label for="student_id" class="form-label">ນັກສຶກສາ</label>
                     <select class="form-select select2" id="student_id" name="student_id" required>
-                        <option value="">Select Student</option>
+                        <option value="">ເລືອກນັກສຶກສາ</option>
                         @foreach($students as $student)
                         <option value="{{ $student->id }}">{{ $student->id }} - {{ $student->name }} {{ $student->sername }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="date" class="form-label">Registration Date</label>
+                    <label for="date" class="form-label">ວັນທີລົງທະບຽນ</label>
                     <input type="datetime-local" class="form-control" id="date" name="date" required value="{{ now()->format('Y-m-d\TH:i') }}">
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="pro" class="form-label">Discount (%)</label>
+                    <label for="pro" class="form-label">ສ່ວນຫຼຸດ (%)</label>
                     <input type="number" class="form-control" id="pro" name="pro" min="0" max="100" value="0" step="0.01" required>
                 </div>
                 <div class="col-md-6">
                     <p class="form-text text-muted mt-4">
-                        <i class="fas fa-info-circle"></i> Registration will be recorded under your employee account.
+                        <i class="fas fa-info-circle"></i> ການລົງທະບຽນຈະຖືກບັນທຶກພາຍໃຕ້ບັນຊີພະນັກງານຂອງທ່ານ.
                     </p>
                 </div>
             </div>
@@ -44,32 +58,32 @@
             <!-- Major Filters Section -->
             <div class="card mb-3">
                 <div class="card-header bg-light">
-                    <h6 class="mb-0">Filter Majors</h6>
+                    <h6 class="mb-0">ຕົວກອງສາຂາ</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-2">
-                            <label for="year_filter" class="form-label">Academic Year</label>
+                            <label for="year_filter" class="form-label">ປີການສຶກສາ</label>
                             <select class="form-select select2" id="year_filter">
-                                <option value="">All Years</option>
+                                <option value="">ທຸກປີ</option>
                                 @foreach(App\Models\Year::all() as $year)
                                 <option value="{{ $year->id }}">{{ $year->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 mb-2">
-                            <label for="term_filter" class="form-label">Term</label>
+                            <label for="term_filter" class="form-label">ເທີມ</label>
                             <select class="form-select select2" id="term_filter">
-                                <option value="">All Terms</option>
+                                <option value="">ທຸກເທີມ</option>
                                 @foreach(App\Models\Term::all() as $term)
                                 <option value="{{ $term->id }}">{{ $term->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 mb-2">
-                            <label for="semester_filter" class="form-label">Semester</label>
+                            <label for="semester_filter" class="form-label">ພາກຮຽນ</label>
                             <select class="form-select select2" id="semester_filter">
-                                <option value="">All Semesters</option>
+                                <option value="">ທຸກພາກຮຽນ</option>
                                 @foreach(App\Models\Semester::all() as $semester)
                                 <option value="{{ $semester->id }}">{{ $semester->name }}</option>
                                 @endforeach
@@ -80,10 +94,10 @@
             </div>
 
             <div class="mb-3">
-                <label for="major_selector" class="form-label">Add Majors</label>
+                <label for="major_selector" class="form-label">ເພີ່ມສາຂາ</label>
                 <div class="input-group">
                     <select class="form-select select2" id="major_selector">
-                        <option value="">Select Major</option>
+                        <option value="">ເລືອກສາຂາ</option>
                         @foreach($majors as $major)
                         <option value="{{ $major->id }}"
                             data-id="{{ $major->id }}"
@@ -100,44 +114,44 @@
                         @endforeach
                     </select>
                     <button type="button" class="btn btn-primary" id="add-major-btn">
-                        <i class="fas fa-plus"></i> Add Major
+                        <i class="fas fa-plus"></i> ເພີ່ມສາຂາ
                     </button>
                 </div>
-                <small class="form-text text-muted">Select majors to register, then click "Add Major" button</small>
+                <small class="form-text text-muted">ເລືອກສາຂາທີ່ຈະລົງທະບຽນ, ແລ້ວຄິກປຸ່ມ "ເພີ່ມສາຂາ"</small>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Selected Majors</label>
+                <label class="form-label">ສາຂາທີ່ເລືອກ</label>
                 <div class="table-responsive">
                     <table class="table table-striped" id="selected-majors-table">
                         <thead>
                             <tr>
-                                <th>Major</th>
-                                <th>Semester</th>
-                                <th>Term</th>
-                                <th>Year</th>
-                                <th>Price</th>
-                                <th>Action</th>
+                                <th>ສາຂາ</th>
+                                <th>ພາກຮຽນ</th>
+                                <th>ເທີມ</th>
+                                <th>ປີ</th>
+                                <th>ລາຄາ</th>
+                                <th>ການກະທຳ</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr id="no-majors-row">
-                                <td colspan="6" class="text-center">No majors selected</td>
+                                <td colspan="6" class="text-center">ຍັງບໍ່ມີສາຂາທີ່ເລືອກ</td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th colspan="4" class="text-end">Total:</th>
+                                <th colspan="4" class="text-end">ລວມ:</th>
                                 <th id="majors-total">0.00</th>
                                 <th></th>
                             </tr>
                             <tr>
-                                <th colspan="4" class="text-end">Discount:</th>
+                                <th colspan="4" class="text-end">ສ່ວນຫຼຸດ:</th>
                                 <th id="discount-amount">0.00</th>
                                 <th></th>
                             </tr>
                             <tr>
-                                <th colspan="4" class="text-end">Final Total:</th>
+                                <th colspan="4" class="text-end">ລວມທັງໝົດ:</th>
                                 <th id="final-total">0.00</th>
                                 <th></th>
                             </tr>
@@ -150,17 +164,17 @@
 
             <!-- Add payment proof upload field -->
             <div class="mb-3">
-                <label for="payment_proof" class="form-label">Payment Proof (Optional)</label>
+                <label for="payment_proof" class="form-label">ຫຼັກຖານການຈ່າຍເງິນ (ຕາມຄວາມຕ້ອງການ)</label>
                 <input type="file" class="form-control" id="payment_proof" name="payment_proof" accept="image/*">
                 <div class="form-text text-muted">
-                    Upload a receipt or screenshot of your payment (max 2MB).
+                    ອັບໂຫລດໃບຮັບຫຼືຮູບພາບຂອງການຈ່າຍເງິນ (ສູງສຸດ 2MB).
                 </div>
                 <div class="payment-proof-preview mt-2" style="display: none;"></div>
             </div>
 
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Register Student</button>
-                <a href="{{ route('registrations.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary" id="submit-btn" disabled>ລົງທະບຽນນັກສຶກສາ</button>
+                <a href="{{ route('registrations.index') }}" class="btn btn-secondary">ຍົກເລີກ</a>
             </div>
         </form>
     </div>

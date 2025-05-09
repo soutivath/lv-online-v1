@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Registrations')
+@section('title', 'ການລົງທະບຽນ')
 
-@section('page-title', 'Student Registrations')
+@section('page-title', 'ການລົງທະບຽນຂອງນັກສຶກສາ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <a href="{{ route('registrations.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> New Registration
+            <i class="fas fa-plus"></i> ເພີ່ມການລົງທະບຽນ
         </a>
         <a href="{{ route('registrations.export-all-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -23,13 +37,13 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Student</th>
-                        <th>Date</th>
-                        <th>Major(s)</th>
-                        <th>Discount</th>
-                        <th>Total</th>
-                        <th>Payment Status</th>
-                        <th>Actions</th>
+                        <th>ນັກສຶກສາ</th>
+                        <th>ວັນທີ</th>
+                        <th>ສາຂາ</th>
+                        <th>ສ່ວນຫຼຸດ</th>
+                        <th>ລວມ</th>
+                        <th>ສະຖານະການຊຳລະ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,12 +59,12 @@
                                             @if($index < 2)
                                                 <span class="badge bg-info">{{ $detail->major->name }}</span>
                                             @elseif($index == 2)
-                                                <span class="badge bg-secondary">+{{ $registration->registrationDetails->count() - 2 }} more</span>
+                                                <span class="badge bg-secondary">+{{ $registration->registrationDetails->count() - 2 }} ເພີ່ມເຕີມ</span>
                                             @endif
                                         @endforeach
                                     </div>
                                 @else
-                                    <span class="badge bg-secondary">None</span>
+                                    <span class="badge bg-secondary">ບໍ່ມີ</span>
                                 @endif
                             </td>
                             <td>{{ $registration->pro }}%</td>
@@ -59,9 +73,9 @@
                             </td>
                             <td>
                                 @if($registration->payment_status == 'pending')
-                                    <span class="badge bg-warning">Pending</span>
+                                    <span class="badge bg-warning">ລໍຖ້າ</span>
                                 @else
-                                    <span class="badge bg-success">Success</span>
+                                    <span class="badge bg-success">ສຳເລັດ</span>
                                 @endif
                             </td>
                             <td>
@@ -75,7 +89,7 @@
                                     <form action="{{ route('registrations.confirm-payment', $registration->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-primary" title="Confirm Payment">
+                                        <button type="submit" class="btn btn-sm btn-primary" title="ຢືນຢັນການຊຳລະເງິນ">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lo">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Laovieng College</title>
+    <title>ເຂົ້າສູ່ລະບົບ - ວິທະຍາໄລ ລາວວຽງ</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -11,6 +11,16 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
     <style>
+        body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+            font-family: 'Phetsarath OT', sans-serif !important;
+        }
+        .btn {
+            font-family: 'Phetsarath OT', sans-serif !important;
+        }
+        ::placeholder {
+            font-family: 'Phetsarath OT', sans-serif !important;
+        }
+        
         body {
             background-color: #f8f9fa;
         }
@@ -49,8 +59,8 @@
                 <i class="fas fa-school"></i>
             </div>
             <div class="login-title">
-                <h2>Laovieng College</h2>
-                <p class="text-muted">Sign in to your account</p>
+                <h2>ວິທະຍາໄລ ລາວວຽງ</h2>
+                <p class="text-muted">ເຂົ້າສູ່ລະບົບ</p>
             </div>
             
             @if($errors->any())
@@ -66,14 +76,14 @@
             <form method="POST" action="{{ route('login.submit') }}">
                 @csrf
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
+                    <label for="email" class="form-label">ອີເມວ</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label">ລະຫັດຜ່ານ</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control" id="password" name="password" required>
@@ -81,13 +91,13 @@
                 </div>
                 <div class="mb-3 form-check">
                     <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                    <label class="form-check-label" for="remember">Remember me</label>
+                    <label class="form-check-label" for="remember">ຈົດຈຳການເຂົ້າສູ່ລະບົບ</label>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Sign In</button>
+                <button type="submit" class="btn btn-primary w-100">ເຂົ້າສູ່ລະບົບ</button>
             </form>
             
             <div class="mt-3 text-center">
-                <p>Don't have an account? <a href="{{ route('register') }}">Register here</a></p>
+                <p>ຍັງບໍ່ມີບັນຊີບໍ? <a href="{{ route('register') }}">ລົງທະບຽນ</a></p>
             </div>
         </div>
     </div>

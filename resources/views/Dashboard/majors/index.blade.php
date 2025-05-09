@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Majors')
+@section('title', 'ສາຂາວິຊາ')
 
-@section('page-title', 'Manage Majors')
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
+
+@section('page-title', 'ຈັດການສາຂາວິຊາ')
 
 @section('page-actions')
     {{-- <div class="btn-group" role="group">
         <a href="{{ route('majors.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add Major
+            <i class="fas fa-plus"></i> ເພີ່ມສາຂາວິຊາ
         </a>
         <a href="{{ route('majors.export-all-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export PDF
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກ PDF
         </a>
     </div> --}}
 @endsection
@@ -18,13 +32,13 @@
 @section('content')
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">All Majors</h5>
+        <h5 class="mb-0">ສາຂາວິຊາທັງໝົດ</h5>
         <div>
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createMajorModal">
-                <i class="fas fa-plus"></i> Add New
+                <i class="fas fa-plus"></i> ເພີ່ມໃໝ່
             </button>
             <a href="{{ route('majors.export-all-pdf') }}" class="btn btn-success btn-sm" target="_blank">
-                <i class="fas fa-file-pdf"></i> Export All
+                <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
             </a>
         </div>
     </div>
@@ -34,13 +48,13 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Semester</th>
-                        <th>Term</th>
-                        <th>Year</th>
-                        <th>Tuition Fee</th>
-                        <th>Sokhn</th>
-                        <th>Actions</th>
+                        <th>ຊື່</th>
+                        <th>ພາກຮຽນ</th>
+                        <th>ເທີມ</th>
+                        <th>ປີ</th>
+                        <th>ຄ່າຮຽນ</th>
+                        <th>ລະຫັດ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,58 +102,58 @@
             <form action="{{ route('majors.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addMajorModalLabel">Add New Major</h5>
+                    <h5 class="modal-title" id="addMajorModalLabel">ເພີ່ມສາຂາວິຊາໃໝ່</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label">ຊື່</label>
                         <input type="text" class="form-control" id="name" name="name" required maxlength="15">
                     </div>
                     <div class="mb-3">
-                        <label for="semester_id" class="form-label">Semester</label>
+                        <label for="semester_id" class="form-label">ພາກຮຽນ</label>
                         <select class="form-select" id="semester_id" name="semester_id" required>
-                            <option value="">Select Semester</option>
+                            <option value="">ເລືອກພາກຮຽນ</option>
                             @foreach($semesters as $semester)
                                 <option value="{{ $semester->id }}">{{ $semester->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="term_id" class="form-label">Term</label>
+                        <label for="term_id" class="form-label">ເທີມ</label>
                         <select class="form-select" id="term_id" name="term_id" required>
-                            <option value="">Select Term</option>
+                            <option value="">ເລືອກເທີມ</option>
                             @foreach($terms as $term)
                                 <option value="{{ $term->id }}">{{ $term->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="year_id" class="form-label">Year</label>
+                        <label for="year_id" class="form-label">ປີ</label>
                         <select class="form-select" id="year_id" name="year_id" required>
-                            <option value="">Select Year</option>
+                            <option value="">ເລືອກປີ</option>
                             @foreach($years as $year)
                                 <option value="{{ $year->id }}">{{ $year->name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="tuition_id" class="form-label">Tuition</label>
+                        <label for="tuition_id" class="form-label">ຄ່າຮຽນ</label>
                         <select class="form-select" id="tuition_id" name="tuition_id" required>
-                            <option value="">Select Tuition</option>
+                            <option value="">ເລືອກຄ່າຮຽນ</option>
                             @foreach($tuitions as $tuition)
                                 <option value="{{ $tuition->id }}">{{ number_format($tuition->price, 2) }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="sokhn" class="form-label">Sokhn</label>
+                        <label for="sokhn" class="form-label">ລະຫັດ</label>
                         <input type="text" class="form-control" id="sokhn" name="sokhn" required maxlength="12">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                    <button type="submit" class="btn btn-primary">ບັນທຶກ</button>
                 </div>
             </form>
         </div>
@@ -151,7 +165,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createMajorModalLabel">Create New Major</h5>
+                <h5 class="modal-title" id="createMajorModalLabel">ສ້າງສາຂາວິຊາໃໝ່</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -160,21 +174,21 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="name" class="form-label">Major Name</label>
+                            <label for="name" class="form-label">ຊື່ສາຂາວິຊາ</label>
                             <input type="text" class="form-control" id="name" name="name" required maxlength="15">
                         </div>
                         
                         <div class="col-md-6 mb-3">
-                            <label for="sokhn" class="form-label">Major Code</label>
+                            <label for="sokhn" class="form-label">ລະຫັດສາຂາວິຊາ</label>
                             <input type="text" class="form-control" id="sokhn" name="sokhn" required maxlength="12">
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="semester_id" class="form-label">Semester</label>
+                            <label for="semester_id" class="form-label">ພາກຮຽນ</label>
                             <select class="form-select" id="semester_id" name="semester_id" required>
-                                <option value="">Select Semester</option>
+                                <option value="">ເລືອກພາກຮຽນ</option>
                                 @foreach(\App\Models\Semester::all() as $semester)
                                     <option value="{{ $semester->id }}">{{ $semester->name }}</option>
                                 @endforeach
@@ -182,9 +196,9 @@
                         </div>
                         
                         <div class="col-md-4 mb-3">
-                            <label for="term_id" class="form-label">Term</label>
+                            <label for="term_id" class="form-label">ເທີມ</label>
                             <select class="form-select" id="term_id" name="term_id" required>
-                                <option value="">Select Term</option>
+                                <option value="">ເລືອກເທີມ</option>
                                 @foreach(\App\Models\Term::all() as $term)
                                     <option value="{{ $term->id }}">{{ $term->name }}</option>
                                 @endforeach
@@ -192,9 +206,9 @@
                         </div>
                         
                         <div class="col-md-4 mb-3">
-                            <label for="year_id" class="form-label">Academic Year</label>
+                            <label for="year_id" class="form-label">ປີການສຶກສາ</label>
                             <select class="form-select" id="year_id" name="year_id" required>
-                                <option value="">Select Year</option>
+                                <option value="">ເລືອກປີ</option>
                                 @foreach(\App\Models\Year::all() as $year)
                                     <option value="{{ $year->id }}">{{ $year->name }}</option>
                                 @endforeach
@@ -204,9 +218,9 @@
                     
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="tuition_id" class="form-label">Tuition Fee</label>
+                            <label for="tuition_id" class="form-label">ຄ່າຮຽນ</label>
                             <select class="form-select" id="tuition_id" name="tuition_id" required>
-                                <option value="">Select Tuition Fee</option>
+                                <option value="">ເລືອກຄ່າຮຽນ</option>
                                 @foreach(\App\Models\Tuition::all() as $tuition)
                                     <option value="{{ $tuition->id }}">{{ number_format($tuition->price, 2) }}</option>
                                 @endforeach
@@ -216,8 +230,8 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submitMajorBtn">Create Major</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                <button type="button" class="btn btn-primary" id="submitMajorBtn">ສ້າງສາຂາວິຊາ</button>
             </div>
         </div>
     </div>
@@ -232,25 +246,25 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editMajorModalLabel{{ $major->id }}">Edit Major</h5>
+                        <h5 class="modal-title" id="editMajorModalLabel{{ $major->id }}">ແກ້ໄຂສາຂາວິຊາ</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="edit_name{{ $major->id }}" class="form-label">Major Name</label>
+                                <label for="edit_name{{ $major->id }}" class="form-label">ຊື່ສາຂາວິຊາ</label>
                                 <input type="text" class="form-control" id="edit_name{{ $major->id }}" name="name" value="{{ $major->name }}" required maxlength="15">
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label for="edit_sokhn{{ $major->id }}" class="form-label">Major Code</label>
+                                <label for="edit_sokhn{{ $major->id }}" class="form-label">ລະຫັດສາຂາວິຊາ</label>
                                 <input type="text" class="form-control" id="edit_sokhn{{ $major->id }}" name="sokhn" value="{{ $major->sokhn }}" required maxlength="12">
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="edit_semester_id{{ $major->id }}" class="form-label">Semester</label>
+                                <label for="edit_semester_id{{ $major->id }}" class="form-label">ພາກຮຽນ</label>
                                 <select class="form-select" id="edit_semester_id{{ $major->id }}" name="semester_id" required>
                                     @foreach($semesters as $semester)
                                         <option value="{{ $semester->id }}" {{ $major->semester_id == $semester->id ? 'selected' : '' }}>
@@ -261,7 +275,7 @@
                             </div>
                             
                             <div class="col-md-4 mb-3">
-                                <label for="edit_term_id{{ $major->id }}" class="form-label">Term</label>
+                                <label for="edit_term_id{{ $major->id }}" class="form-label">ເທີມ</label>
                                 <select class="form-select" id="edit_term_id{{ $major->id }}" name="term_id" required>
                                     @foreach($terms as $term)
                                         <option value="{{ $term->id }}" {{ $major->term_id == $term->id ? 'selected' : '' }}>
@@ -272,7 +286,7 @@
                             </div>
                             
                             <div class="col-md-4 mb-3">
-                                <label for="edit_year_id{{ $major->id }}" class="form-label">Academic Year</label>
+                                <label for="edit_year_id{{ $major->id }}" class="form-label">ປີການສຶກສາ</label>
                                 <select class="form-select" id="edit_year_id{{ $major->id }}" name="year_id" required>
                                     @foreach($years as $year)
                                         <option value="{{ $year->id }}" {{ $major->year_id == $year->id ? 'selected' : '' }}>
@@ -285,7 +299,7 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="edit_tuition_id{{ $major->id }}" class="form-label">Tuition Fee</label>
+                                <label for="edit_tuition_id{{ $major->id }}" class="form-label">ຄ່າຮຽນ</label>
                                 <select class="form-select" id="edit_tuition_id{{ $major->id }}" name="tuition_id" required>
                                     @foreach($tuitions as $tuition)
                                         <option value="{{ $tuition->id }}" {{ $major->tuition_id == $tuition->id ? 'selected' : '' }}>
@@ -297,8 +311,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                        <button type="submit" class="btn btn-primary">ອັບເດດ</button>
                     </div>
                 </form>
             </div>
@@ -313,7 +327,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     function confirmDelete(formId) {
-        if (confirm('Are you sure you want to delete this major?')) {
+        if (confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບສາຂາວິຊານີ້?')) {
             document.getElementById(formId).submit();
         }
     }

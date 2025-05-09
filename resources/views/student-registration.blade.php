@@ -68,13 +68,11 @@
                             </div>
                             
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label">ອີເມວ <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-12 mb-3">
                                     <label for="tell" class="form-label">ເບີໂທ <span class="text-danger">*</span></label>
-                                    <input type="tel" class="form-control" id="tell" name="tell" value="{{ old('tell') }}" required>
+                                    <input type="tel" class="form-control" id="tell" name="tell" value="{{ old('tell') }}" 
+                                           pattern="[0-9]+" inputmode="numeric" required>
+                                    <div class="form-text">ປ້ອນຕົວເລກເທົ່ານັ້ນ</div>
                                 </div>
                             </div>
                             
@@ -194,6 +192,29 @@
     function formatNumber(num) {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+    
+    // Phone number validation - only allow numbers
+    document.addEventListener('DOMContentLoaded', function() {
+        const tellField = document.getElementById('tell');
+        if (tellField) {
+            tellField.addEventListener('input', function(e) {
+                // Remove any non-numeric characters
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+            
+            tellField.addEventListener('keypress', function(e) {
+                // Allow only numeric input (0-9)
+                const charCode = (e.which) ? e.which : e.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            });
+        }
+        
+        // ...existing code...
+    });
     
     // Function to update selected majors table
     function updateSelectedMajorsTable() {

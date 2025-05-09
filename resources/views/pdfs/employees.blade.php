@@ -60,6 +60,7 @@
                     <th>Surname</th>
                     <th>Gender</th>
                     <th>Join Date</th>
+                    <th>Role</th>
                     <th>Phone</th>
                     <th>Email</th>
                 </tr>
@@ -72,6 +73,7 @@
                     <td>{{ $employee->sername }}</td>
                     <td>{{ $employee->gender }}</td>
                     <td>{{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</td>
+                    <td>{{ $employee->role == 'admin' ? 'Administrator' : 'Teacher' }}</td>
                     <td>{{ $employee->tell }}</td>
                     <td>{{ $employee->user ? $employee->user->email : 'No account' }}</td>
                 </tr>

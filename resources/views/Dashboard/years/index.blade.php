@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Academic Years')
+@section('title', 'ສົກຮຽນ')
 
-@section('page-title', 'Academic Years')
+@section('page-title', 'ສົກຮຽນ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addYearModal">
-            <i class="fas fa-plus"></i> Add Academic Year
+            <i class="fas fa-plus"></i> ເພີ່ມສົກຮຽນ
         </button>
         <a href="{{ route('years.export-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -22,9 +36,9 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Actions</th>
+                        <th>ລະຫັດ</th>
+                        <th>ຊື່</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,18 +73,18 @@
             <form action="{{ route('years.store') }}" method="POST">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addYearModalLabel">Add New Academic Year</h5>
+                    <h5 class="modal-title" id="addYearModalLabel">ເພີ່ມສົກຮຽນໃໝ່</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" required maxlength="10" placeholder="e.g. 2023-2024">
+                        <label for="name" class="form-label">ຊື່</label>
+                        <input type="text" class="form-control" id="name" name="name" required maxlength="10" placeholder="ຕົວຢ່າງ 2023-2024">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                    <button type="submit" class="btn btn-primary">ບັນທຶກ</button>
                 </div>
             </form>
         </div>
@@ -86,18 +100,18 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editYearModalLabel{{ $year->id }}">Edit Academic Year</h5>
+                        <h5 class="modal-title" id="editYearModalLabel{{ $year->id }}">ແກ້ໄຂສົກຮຽນ</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="edit_name{{ $year->id }}" class="form-label">Name</label>
+                            <label for="edit_name{{ $year->id }}" class="form-label">ຊື່</label>
                             <input type="text" class="form-control" id="edit_name{{ $year->id }}" name="name" value="{{ $year->name }}" required maxlength="10">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                        <button type="submit" class="btn btn-primary">ອັບເດດ</button>
                     </div>
                 </form>
             </div>

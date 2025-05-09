@@ -96,6 +96,10 @@
                     <td>{{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</td>
                 </tr>
                 <tr>
+                    <th>Role</th>
+                    <td>{{ $employee->role == 'admin' ? 'Administrator' : 'Teacher' }}</td>
+                </tr>
+                <tr>
                     <th>Phone</th>
                     <td>{{ $employee->tell }}</td>
                 </tr>

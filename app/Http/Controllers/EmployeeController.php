@@ -44,6 +44,7 @@ class EmployeeController extends Controller
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
+            'role' => 'required|string|in:admin,teacher',
         ]);
 
         DB::beginTransaction();
@@ -65,6 +66,7 @@ class EmployeeController extends Controller
             $employee->gender = $request->gender;
             $employee->address = $request->address;
             $employee->tell = $request->tell;
+            $employee->role = $request->role;
             $employee->user_id = $user->id;
             
             if ($request->hasFile('picture')) {
@@ -113,6 +115,7 @@ class EmployeeController extends Controller
             'address' => 'required|string|max:50',
             'tell' => 'required|numeric',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'role' => 'required|string|in:admin,teacher',
         ];
         
         // Add email validation if user exists
@@ -162,6 +165,7 @@ class EmployeeController extends Controller
             $employee->gender = $request->gender;
             $employee->address = $request->address;
             $employee->tell = $request->tell;
+            $employee->role = $request->role;
             
             if ($request->hasFile('picture')) {
                 if ($employee->picture) {

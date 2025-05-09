@@ -1,12 +1,26 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Students')
+@section('title', 'ນັກສຶກສາ')
+
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
 
 @section('page-title')
     @if(isset($majorFilter))
-        Students in Major: {{ $majorFilter }}
+        ນັກສຶກສາໃນສາຂາ: {{ $majorFilter }}
     @else
-        Students
+        ນັກສຶກສາ
     @endif
 @endsection
 
@@ -14,14 +28,14 @@
     <div class="btn-group" role="group">
         @if(isset($majorFilter))
             <a href="{{ route('students.index') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-times"></i> Clear Filter
+                <i class="fas fa-times"></i> ລ້າງຕົວກອງ
             </a>
         @endif
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-            <i class="fas fa-plus"></i> Add Student
+            <i class="fas fa-plus"></i> ເພີ່ມນັກສຶກສາ
         </button>
         <a href="{{ route('students.export-all-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -32,13 +46,13 @@
     <div class="card-body">
         <form action="{{ route('students.index') }}" method="GET">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search by ID, name, surname or email..." name="search" value="{{ request('search') }}">
+                <input type="text" class="form-control" placeholder="ຄົ້ນຫາດ້ວຍ ID, ຊື່, ນາມສະກຸນ ຫຼື ອີເມລ..." name="search" value="{{ request('search') }}">
                 <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search"></i> Search
+                    <i class="fas fa-search"></i> ຄົ້ນຫາ
                 </button>
                 @if(request('search'))
                     <a href="{{ route('students.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Clear
+                        <i class="fas fa-times"></i> ລ້າງ
                     </a>
                 @endif
             </div>
@@ -53,14 +67,14 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Surname</th>
-                        <th>Email</th>
-                        <th>Birthday</th>
-                        <th>Gender</th>
-                        <th>Nationality</th>
-                        <th>Phone</th>
-                        <th>Actions</th>
+                        <th>ຊື່</th>
+                        <th>ນາມສະກຸນ</th>
+                        <th>ອີເມລ</th>
+                        <th>ວັນເດືອນປີເກີດ</th>
+                        <th>ເພດ</th>
+                        <th>ສັນຊາດ</th>
+                        <th>ເບີໂທ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,7 +83,7 @@
                             <td>{{ $student->id }}</td>
                             <td>{{ $student->name }}</td>
                             <td>{{ $student->sername }}</td>
-                            <td>{{ $student->user ? $student->user->email : 'No account' }}</td>
+                            <td>{{ $student->user ? $student->user->email : 'ບໍ່ມີບັນຊີ' }}</td>
                             <td>{{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</td>
                             <td>{{ $student->gender }}</td>
                             <td>{{ $student->nationality }}</td>
@@ -107,57 +121,57 @@
             <form action="{{ route('students.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
+                    <h5 class="modal-title" id="addStudentModalLabel">ເພີ່ມນັກສຶກສາໃໝ່</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h6 class="mb-3">Personal Information</h6>
+                    <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">ຊື່</label>
                             <input type="text" class="form-control" id="name" name="name" required maxlength="20">
                         </div>
                         <div class="col-md-6">
-                            <label for="sername" class="form-label">Surname</label>
+                            <label for="sername" class="form-label">ນາມສະກຸນ</label>
                             <input type="text" class="form-control" id="sername" name="sername" required maxlength="20">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="birthday" class="form-label">Birthday</label>
+                            <label for="birthday" class="form-label">ວັນເດືອນປີເກີດ</label>
                             <input type="date" class="form-control" id="birthday" name="birthday" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="gender" class="form-label">Gender</label>
+                            <label for="gender" class="form-label">ເພດ</label>
                             <select class="form-select" id="gender" name="gender" required>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="Male">ຊາຍ</option>
+                                <option value="Female">ຍິງ</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="nationality" class="form-label">Nationality</label>
+                            <label for="nationality" class="form-label">ສັນຊາດ</label>
                             <input type="text" class="form-control" id="nationality" name="nationality" required maxlength="10">
                         </div>
                         <div class="col-md-6">
-                            <label for="tell" class="form-label">Phone Number</label>
+                            <label for="tell" class="form-label">ເບີໂທລະສັບ</label>
                             <input type="number" class="form-control" id="tell" name="tell" required>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
+                        <label for="address" class="form-label">ທີ່ຢູ່</label>
                         <textarea class="form-control" id="address" name="address" rows="3" required maxlength="50"></textarea>
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="add_picture" class="form-label">Profile Picture</label>
+                            <label for="add_picture" class="form-label">ຮູບໂປຣໄຟລ</label>
                             <input type="file" class="form-control" id="add_picture" name="picture" accept="image/*">
                             <div class="file-name mt-1 text-muted small"></div>
                             <div class="picture-preview mt-2" style="display: none;"></div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="add_scope_document" class="form-label">Score Document</label>
+                            <label for="add_scope_document" class="form-label">ເອກະສານຄະແນນ</label>
                             <input type="file" class="form-control" id="add_scope_document" name="score" accept="image/*">
                             <div class="file-name mt-1 text-muted small"></div>
                             <div class="document-preview mt-2" style="display: none;"></div>
@@ -165,25 +179,25 @@
                     </div>
                     
                     <hr>
-                    <h6 class="mb-3">Login Account</h6>
+                    <h6 class="mb-3">ບັນຊີເຂົ້າສູ່ລະບົບ</h6>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
+                        <label for="email" class="form-label">ທີ່ຢູ່ອີເມລ</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">ລະຫັດຜ່ານ</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="password_confirmation" class="form-label">Confirm Password</label>
+                            <label for="password_confirmation" class="form-label">ຢືນຢັນລະຫັດຜ່ານ</label>
                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                    <button type="submit" class="btn btn-primary">ບັນທຶກ</button>
                 </div>
             </form>
         </div>
@@ -197,7 +211,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewStudentModalLabel{{ $student->id }}">View Student</h5>
+                    <h5 class="modal-title" id="viewStudentModalLabel{{ $student->id }}">ເບິ່ງນັກສຶກສາ</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -208,7 +222,7 @@
                             @else
                                 <div class="border p-3 text-center">
                                     <i class="fas fa-user fa-5x text-secondary"></i>
-                                    <p class="mt-2">No picture available</p>
+                                    <p class="mt-2">ບໍ່ມີຮູບພາບ</p>
                                 </div>
                             @endif
                         </div>
@@ -218,34 +232,34 @@
                             @else
                                 <div class="border p-3 text-center">
                                     <i class="fas fa-file fa-5x text-secondary"></i>
-                                    <p class="mt-2">No score document available</p>
+                                    <p class="mt-2">ບໍ່ມີເອກະສານຄະແນນ</p>
                                 </div>
                             @endif
                         </div>
                     </div>
                     
-                    <h6 class="mb-3">Personal Information</h6>
+                    <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <p><strong>ID:</strong> {{ $student->id }}</p>
-                            <p><strong>Name:</strong> {{ $student->name }}</p>
-                            <p><strong>Surname:</strong> {{ $student->sername }}</p>
-                            <p><strong>Birthday:</strong> {{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</p>
+                            <p><strong>ຊື່:</strong> {{ $student->name }}</p>
+                            <p><strong>ນາມສະກຸນ:</strong> {{ $student->sername }}</p>
+                            <p><strong>ວັນເດືອນປີເກີດ:</strong> {{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong>Gender:</strong> {{ $student->gender }}</p>
-                            <p><strong>Nationality:</strong> {{ $student->nationality }}</p>
-                            <p><strong>Phone:</strong> {{ $student->tell }}</p>
-                            <p><strong>Address:</strong> {{ $student->address }}</p>
+                            <p><strong>ເພດ:</strong> {{ $student->gender }}</p>
+                            <p><strong>ສັນຊາດ:</strong> {{ $student->nationality }}</p>
+                            <p><strong>ເບີໂທ:</strong> {{ $student->tell }}</p>
+                            <p><strong>ທີ່ຢູ່:</strong> {{ $student->address }}</p>
                         </div>
                     </div>
                     
                     <hr>
-                    <h6 class="mb-3">Login Account</h6>
-                    <p><strong>Email:</strong> {{ $student->user ? $student->user->email : 'No account' }}</p>
+                    <h6 class="mb-3">ບັນຊີເຂົ້າສູ່ລະບົບ</h6>
+                    <p><strong>ອີເມລ:</strong> {{ $student->user ? $student->user->email : 'ບໍ່ມີບັນຊີ' }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
                 </div>
             </div>
         </div>
@@ -259,94 +273,94 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editStudentModalLabel{{ $student->id }}">Edit Student</h5>
+                        <h5 class="modal-title" id="editStudentModalLabel{{ $student->id }}">ແກ້ໄຂນັກສຶກສາ</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h6 class="mb-3">Personal Information</h6>
+                        <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_name{{ $student->id }}" class="form-label">Name</label>
+                                <label for="edit_name{{ $student->id }}" class="form-label">ຊື່</label>
                                 <input type="text" class="form-control" id="edit_name{{ $student->id }}" name="name" value="{{ $student->name }}" required maxlength="20">
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_sername{{ $student->id }}" class="form-label">Surname</label>
+                                <label for="edit_sername{{ $student->id }}" class="form-label">ນາມສະກຸນ</label>
                                 <input type="text" class="form-control" id="edit_sername{{ $student->id }}" name="sername" value="{{ $student->sername }}" required maxlength="20">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_birthday{{ $student->id }}" class="form-label">Birthday</label>
+                                <label for="edit_birthday{{ $student->id }}" class="form-label">ວັນເດືອນປີເກີດ</label>
                                 <input type="date" class="form-control" id="edit_birthday{{ $student->id }}" name="birthday" value="{{ $student->birthday }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_gender{{ $student->id }}" class="form-label">Gender</label>
+                                <label for="edit_gender{{ $student->id }}" class="form-label">ເພດ</label>
                                 <select class="form-select" id="edit_gender{{ $student->id }}" name="gender" required>
-                                    <option value="Male" {{ $student->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                                    <option value="Female" {{ $student->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                                    <option value="Male" {{ $student->gender == 'Male' ? 'selected' : '' }}>ຊາຍ</option>
+                                    <option value="Female" {{ $student->gender == 'Female' ? 'selected' : '' }}>ຍິງ</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_nationality{{ $student->id }}" class="form-label">Nationality</label>
+                                <label for="edit_nationality{{ $student->id }}" class="form-label">ສັນຊາດ</label>
                                 <input type="text" class="form-control" id="edit_nationality{{ $student->id }}" name="nationality" value="{{ $student->nationality }}" required maxlength="10">
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_tell{{ $student->id }}" class="form-label">Phone Number</label>
+                                <label for="edit_tell{{ $student->id }}" class="form-label">ເບີໂທລະສັບ</label>
                                 <input type="number" class="form-control" id="edit_tell{{ $student->id }}" name="tell" value="{{ $student->tell }}" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_address{{ $student->id }}" class="form-label">Address</label>
+                            <label for="edit_address{{ $student->id }}" class="form-label">ທີ່ຢູ່</label>
                             <textarea class="form-control" id="edit_address{{ $student->id }}" name="address" rows="3" required maxlength="50">{{ $student->address }}</textarea>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="edit_picture{{ $student->id }}" class="form-label">Profile Picture</label>
+                                <label for="edit_picture{{ $student->id }}" class="form-label">ຮູບໂປຣໄຟລ</label>
                                 <input type="file" class="form-control" id="edit_picture{{ $student->id }}" name="picture" accept="image/*">
                                 <div class="file-name mt-1 text-muted small"></div>
                                 <div class="picture-preview mt-2" style="display: none;"></div>
                                 @if($student->picture)
                                     <div class="mt-2 current-image">
                                         <img src="{{ asset('storage/' . $student->picture) }}" alt="Current Picture" class="img-thumbnail" style="max-height: 100px;">
-                                        <span class="text-muted small d-block">Current picture</span>
+                                        <span class="text-muted small d-block">ຮູບປັດຈຸບັນ</span>
                                     </div>
                                 @endif
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="edit_scope_document{{ $student->id }}" class="form-label">Score Document</label>
+                                <label for="edit_scope_document{{ $student->id }}" class="form-label">ເອກະສານຄະແນນ</label>
                                 <input type="file" class="form-control" id="edit_scope_document{{ $student->id }}" name="score" accept="image/*">
                                 <div class="file-name mt-1 text-muted small"></div>
                             <div class="document-preview mt-2" style="display: none;"></div>
                                 @if($student->score)
                                 <div class="mt-2 current-score-document">
                                     <img src="{{ asset('storage/' . $student->score) }}" alt="Current score image" class="img-thumbnail" style="max-height: 100px;">
-                                    <span class="text-muted small d-block">Current score image</span>
+                                    <span class="text-muted small d-block">ຮູບຄະແນນປັດຈຸບັນ</span>
                                 </div>
                                 @endif
                             </div>
                         </div>
                         <hr>
-                        <h6 class="mb-3">Login Account</h6>
+                        <h6 class="mb-3">ບັນຊີເຂົ້າສູ່ລະບົບ</h6>
                         <div class="mb-3">
-                            <label for="edit_email{{ $student->id }}" class="form-label">Email Address</label>
+                            <label for="edit_email{{ $student->id }}" class="form-label">ທີ່ຢູ່ອີເມລ</label>
                             <input type="email" class="form-control" id="edit_email{{ $student->id }}" name="email" value="{{ $student->user ? $student->user->email : '' }}" required>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_password{{ $student->id }}" class="form-label">Password {{ $student->user ? '(Leave blank to keep current)' : '' }}</label>
+                                <label for="edit_password{{ $student->id }}" class="form-label">ລະຫັດຜ່ານ {{ $student->user ? '(ປະໄວ້ຫວ່າງເພື່ອຮັກສາຄ່າປັດຈຸບັນ)' : '' }}</label>
                                 <input type="password" class="form-control" id="edit_password{{ $student->id }}" name="password" {{ $student->user ? '' : 'required' }}>
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_password_confirmation{{ $student->id }}" class="form-label">Confirm Password</label>
+                                <label for="edit_password_confirmation{{ $student->id }}" class="form-label">ຢືນຢັນລະຫັດຜ່ານ</label>
                                 <input type="password" class="form-control" id="edit_password_confirmation{{ $student->id }}" name="password_confirmation" {{ $student->user ? '' : 'required' }}>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                        <button type="submit" class="btn btn-primary">ອັບເດດ</button>
                     </div>
                 </form>
             </div>
@@ -359,14 +373,14 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="documentPreviewModalLabel">Document Preview</h5>
+                <h5 class="modal-title" id="documentPreviewModalLabel">ຕົວຢ່າງເອກະສານ</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <img id="previewImage" src="" alt="Document Preview" class="img-fluid">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
             </div>
         </div>
     </div>

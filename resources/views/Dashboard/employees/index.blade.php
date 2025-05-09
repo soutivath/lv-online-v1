@@ -1,16 +1,30 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Employees')
+@section('title', 'ພະນັກງານ')
 
-@section('page-title', 'Employees')
+@push('styles')
+<style>
+    body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    .btn {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+    ::placeholder {
+        font-family: 'Phetsarath OT', sans-serif !important;
+    }
+</style>
+@endpush
+
+@section('page-title', 'ພະນັກງານ')
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
-            <i class="fas fa-plus"></i> Add Employee
+            <i class="fas fa-plus"></i> ເພີ່ມພະນັກງານ
         </button>
         <a href="{{ route('employees.export-all-pdf') }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export All
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກທັງໝົດ
         </a>
     </div>
 @endsection
@@ -23,13 +37,14 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Surname</th>
-                        <th>Email</th>
-                        <th>Gender</th>
-                        <th>Phone</th>
-                        <th>Join Date</th>
-                        <th>Actions</th>
+                        <th>ຊື່</th>
+                        <th>ນາມສະກຸນ</th>
+                        <th>ອີເມລ</th>
+                        <th>ເພດ</th>
+                        <th>ເບີໂທ</th>
+                        <th>ວັນທີເຂົ້າຮ່ວມ</th>
+                        <th>ບົດບາດ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,10 +53,15 @@
                             <td>{{ $employee->id }}</td>
                             <td>{{ $employee->name }}</td>
                             <td>{{ $employee->sername }}</td>
-                            <td>{{ $employee->user ? $employee->user->email : 'No account' }}</td>
+                            <td>{{ $employee->user ? $employee->user->email : 'ບໍ່ມີບັນຊີ' }}</td>
                             <td>{{ $employee->gender }}</td>
                             <td>{{ $employee->tell }}</td>
                             <td>{{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</td>
+                            <td>
+                                <span class="badge {{ $employee->role == 'admin' ? 'bg-primary' : 'bg-info' }}">
+                                    {{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ' : 'ອາຈານ' }}
+                                </span>
+                            </td>
                             <td>
                                 <button class="btn btn-sm btn-info view-btn" data-bs-toggle="modal" data-bs-target="#viewEmployeeModal{{ $employee->id }}">
                                     <i class="fas fa-eye"></i>
@@ -75,75 +95,83 @@
             <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addEmployeeModalLabel">Add New Employee</h5>
+                    <h5 class="modal-title" id="addEmployeeModalLabel">ເພີ່ມພະນັກງານໃໝ່</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h6 class="mb-3">Personal Information</h6>
+                    <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="name" class="form-label">Name</label>
+                            <label for="name" class="form-label">ຊື່</label>
                             <input type="text" class="form-control" id="name" name="name" required maxlength="20">
                         </div>
                         <div class="col-md-6">
-                            <label for="sername" class="form-label">Surname</label>
+                            <label for="sername" class="form-label">ນາມສະກຸນ</label>
                             <input type="text" class="form-control" id="sername" name="sername" required maxlength="20">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="birthday" class="form-label">Birthday</label>
+                            <label for="birthday" class="form-label">ວັນເດືອນປີເກີດ</label>
                             <input type="date" class="form-control" id="birthday" name="birthday" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="date" class="form-label">Join Date</label>
+                            <label for="date" class="form-label">ວັນທີເຂົ້າຮ່ວມ</label>
                             <input type="date" class="form-control" id="date" name="date" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="gender" class="form-label">Gender</label>
+                            <label for="gender" class="form-label">ເພດ</label>
                             <select class="form-select" id="gender" name="gender" required>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="Male">ຊາຍ</option>
+                                <option value="Female">ຍິງ</option>
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="tell" class="form-label">Phone Number</label>
+                            <label for="tell" class="form-label">ເບີໂທລະສັບ</label>
                             <input type="number" class="form-control" id="tell" name="tell" required>
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
+                        <label for="address" class="form-label">ທີ່ຢູ່</label>
                         <textarea class="form-control" id="address" name="address" rows="3" required maxlength="50"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="picture" class="form-label">Picture</label>
+                        <label for="picture" class="form-label">ຮູບພາບ</label>
                         <input type="file" class="form-control" id="picture" name="picture" accept="image/*">
                         <small class="text-muted file-name"></small>
                         <div class="image-preview" style="display: none;"></div>
                     </div>
                     
-                    <hr>
-                    <h6 class="mb-3">Login Account</h6>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email Address</label>
+                        <label for="role" class="form-label">ບົດບາດ</label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="admin">ຜູ້ບໍລິຫານ</option>
+                            <option value="teacher">ອາຈານ</option>
+                        </select>
+                    </div>
+                    
+                    <hr>
+                    <h6 class="mb-3">ບັນຊີເຂົ້າສູ່ລະບົບ</h6>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">ທີ່ຢູ່ອີເມລ</label>
                         <input type="email" class="form-control" id="email" name="email" required>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label">ລະຫັດຜ່ານ</label>
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="password_confirmation" class="form-label">Confirm Password</label>
+                            <label for="password_confirmation" class="form-label">ຢືນຢັນລະຫັດຜ່ານ</label>
                             <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                    <button type="submit" class="btn btn-primary">ບັນທຶກ</button>
                 </div>
             </form>
         </div>
@@ -157,7 +185,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="viewEmployeeModalLabel{{ $employee->id }}">View Employee</h5>
+                    <h5 class="modal-title" id="viewEmployeeModalLabel{{ $employee->id }}">ເບິ່ງພະນັກງານ</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -168,34 +196,35 @@
                             @else
                                 <div class="border p-3 text-center">
                                     <i class="fas fa-user-tie fa-5x text-secondary"></i>
-                                    <p class="mt-2">No picture available</p>
+                                    <p class="mt-2">ບໍ່ມີຮູບພາບ</p>
                                 </div>
                             @endif
                         </div>
                     </div>
                     
-                    <h6 class="mb-3">Personal Information</h6>
+                    <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <p><strong>ID:</strong> {{ $employee->id }}</p>
-                            <p><strong>Name:</strong> {{ $employee->name }}</p>
-                            <p><strong>Surname:</strong> {{ $employee->sername }}</p>
-                            <p><strong>Birthday:</strong> {{ \Carbon\Carbon::parse($employee->birthday)->format('d/m/Y') }}</p>
+                            <p><strong>ຊື່:</strong> {{ $employee->name }}</p>
+                            <p><strong>ນາມສະກຸນ:</strong> {{ $employee->sername }}</p>
+                            <p><strong>ວັນເດືອນປີເກີດ:</strong> {{ \Carbon\Carbon::parse($employee->birthday)->format('d/m/Y') }}</p>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <p><strong>Gender:</strong> {{ $employee->gender }}</p>
-                            <p><strong>Join Date:</strong> {{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</p>
-                            <p><strong>Phone:</strong> {{ $employee->tell }}</p>
-                            <p><strong>Address:</strong> {{ $employee->address }}</p>
+                            <p><strong>ເພດ:</strong> {{ $employee->gender }}</p>
+                            <p><strong>ວັນທີເຂົ້າຮ່ວມ:</strong> {{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</p>
+                            <p><strong>ເບີໂທ:</strong> {{ $employee->tell }}</p>
+                            <p><strong>ທີ່ຢູ່:</strong> {{ $employee->address }}</p>
+                            <p><strong>ບົດບາດ:</strong> {{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ' : 'ອາຈານ' }}</p>
                         </div>
                     </div>
                     
                     <hr>
-                    <h6 class="mb-3">Login Account</h6>
-                    <p><strong>Email:</strong> {{ $employee->user ? $employee->user->email : 'No account' }}</p>
+                    <h6 class="mb-3">ບັນຊີເຂົ້າສູ່ລະບົບ</h6>
+                    <p><strong>ອີເມລ:</strong> {{ $employee->user ? $employee->user->email : 'ບໍ່ມີບັນຊີ' }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
                 </div>
             </div>
         </div>
@@ -209,82 +238,90 @@
                     @csrf
                     @method('PUT')
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editEmployeeModalLabel{{ $employee->id }}">Edit Employee</h5>
+                        <h5 class="modal-title" id="editEmployeeModalLabel{{ $employee->id }}">ແກ້ໄຂພະນັກງານ</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h6 class="mb-3">Personal Information</h6>
+                        <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_name{{ $employee->id }}" class="form-label">Name</label>
+                                <label for="edit_name{{ $employee->id }}" class="form-label">ຊື່</label>
                                 <input type="text" class="form-control" id="edit_name{{ $employee->id }}" name="name" value="{{ $employee->name }}" required maxlength="20">
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_sername{{ $employee->id }}" class="form-label">Surname</label>
+                                <label for="edit_sername{{ $employee->id }}" class="form-label">ນາມສະກຸນ</label>
                                 <input type="text" class="form-control" id="edit_sername{{ $employee->id }}" name="sername" value="{{ $employee->sername }}" required maxlength="20">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_birthday{{ $employee->id }}" class="form-label">Birthday</label>
+                                <label for="edit_birthday{{ $employee->id }}" class="form-label">ວັນເດືອນປີເກີດ</label>
                                 <input type="date" class="form-control" id="edit_birthday{{ $employee->id }}" name="birthday" value="{{ $employee->birthday }}" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_date{{ $employee->id }}" class="form-label">Join Date</label>
+                                <label for="edit_date{{ $employee->id }}" class="form-label">ວັນທີເຂົ້າຮ່ວມ</label>
                                 <input type="date" class="form-control" id="edit_date{{ $employee->id }}" name="date" value="{{ $employee->date }}" required>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_gender{{ $employee->id }}" class="form-label">Gender</label>
+                                <label for="edit_gender{{ $employee->id }}" class="form-label">ເພດ</label>
                                 <select class="form-select" id="edit_gender{{ $employee->id }}" name="gender" required>
-                                    <option value="Male" {{ $employee->gender == 'Male' ? 'selected' : '' }}>Male</option>
-                                    <option value="Female" {{ $employee->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                                    <option value="Male" {{ $employee->gender == 'Male' ? 'selected' : '' }}>ຊາຍ</option>
+                                    <option value="Female" {{ $employee->gender == 'Female' ? 'selected' : '' }}>ຍິງ</option>
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_tell{{ $employee->id }}" class="form-label">Phone Number</label>
+                                <label for="edit_tell{{ $employee->id }}" class="form-label">ເບີໂທລະສັບ</label>
                                 <input type="number" class="form-control" id="edit_tell{{ $employee->id }}" name="tell" value="{{ $employee->tell }}" required>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_address{{ $employee->id }}" class="form-label">Address</label>
+                            <label for="edit_address{{ $employee->id }}" class="form-label">ທີ່ຢູ່</label>
                             <textarea class="form-control" id="edit_address{{ $employee->id }}" name="address" rows="3" required maxlength="50">{{ $employee->address }}</textarea>
                         </div>
                         
                         <div class="mb-3">
-                            <label for="edit_picture{{ $employee->id }}" class="form-label">Picture</label>
+                            <label for="edit_picture{{ $employee->id }}" class="form-label">ຮູບພາບ</label>
                             <input type="file" class="form-control" id="edit_picture{{ $employee->id }}" name="picture" accept="image/*">
                             <small class="text-muted file-name"></small>
                             <div class="image-preview" style="display: none;"></div>
                             @if($employee->picture)
                                 <div class="mt-2 current-image">
-                                    <small>Current picture:</small>
+                                    <small>ຮູບປັດຈຸບັນ:</small>
                                     <img src="{{ asset('storage/' . $employee->picture) }}" alt="Employee Picture" class="img-thumbnail mt-1" style="max-height: 100px">
                                 </div>
                             @endif
                         </div>
                         
-                        <hr>
-                        <h6 class="mb-3">Login Account</h6>
                         <div class="mb-3">
-                            <label for="edit_email{{ $employee->id }}" class="form-label">Email Address</label>
+                            <label for="edit_role{{ $employee->id }}" class="form-label">ບົດບາດ</label>
+                            <select class="form-select" id="edit_role{{ $employee->id }}" name="role" required>
+                                <option value="admin" {{ $employee->role == 'admin' ? 'selected' : '' }}>ຜູ້ບໍລິຫານ</option>
+                                <option value="teacher" {{ $employee->role == 'teacher' ? 'selected' : '' }}>ອາຈານ</option>
+                            </select>
+                        </div>
+                        
+                        <hr>
+                        <h6 class="mb-3">ບັນຊີເຂົ້າສູ່ລະບົບ</h6>
+                        <div class="mb-3">
+                            <label for="edit_email{{ $employee->id }}" class="form-label">ທີ່ຢູ່ອີເມລ</label>
                             <input type="email" class="form-control" id="edit_email{{ $employee->id }}" name="email" value="{{ $employee->user ? $employee->user->email : '' }}" required>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="edit_password{{ $employee->id }}" class="form-label">Password {{ $employee->user ? '(Leave blank to keep current)' : '' }}</label>
+                                <label for="edit_password{{ $employee->id }}" class="form-label">ລະຫັດຜ່ານ {{ $employee->user ? '(ປະໄວ້ຫວ່າງເພື່ອຮັກສາຄ່າປັດຈຸບັນ)' : '' }}</label>
                                 <input type="password" class="form-control" id="edit_password{{ $employee->id }}" name="password" {{ $employee->user ? '' : 'required' }} minlength="8">
                             </div>
                             <div class="col-md-6">
-                                <label for="edit_password_confirmation{{ $employee->id }}" class="form-label">Confirm Password</label>
+                                <label for="edit_password_confirmation{{ $employee->id }}" class="form-label">ຢືນຢັນລະຫັດຜ່ານ</label>
                                 <input type="password" class="form-control" id="edit_password_confirmation{{ $employee->id }}" name="password_confirmation" {{ $employee->user ? '' : 'required' }} minlength="8">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
+                        <button type="submit" class="btn btn-primary">ອັບເດດ</button>
                     </div>
                 </form>
             </div>

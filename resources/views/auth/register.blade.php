@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lo">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Laovieng College</title>
+    <title>ລົງທະບຽນ - ວິທະຍາໄລ ລາວວຽງ</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -11,6 +11,16 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
     <style>
+        body, h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea, label, a, th, td {
+            font-family: 'Phetsarath OT', sans-serif !important;
+        }
+        .btn {
+            font-family: 'Phetsarath OT', sans-serif !important;
+        }
+        ::placeholder {
+            font-family: 'Phetsarath OT', sans-serif !important;
+        }
+        
         body {
             background-color: #f8f9fa;
         }
@@ -50,8 +60,8 @@
                 <i class="fas fa-school"></i>
             </div>
             <div class="register-title">
-                <h2>Laovieng College</h2>
-                <p class="text-muted">Create a new account</p>
+                <h2>ວິທະຍາໄລ ລາວວຽງ</h2>
+                <p class="text-muted">ສ້າງບັນຊີໃໝ່</p>
             </div>
             
             @if($errors->any())
@@ -67,38 +77,38 @@
             <form method="POST" action="{{ route('register.submit') }}">
                 @csrf
                 <div class="mb-3">
-                    <label for="name" class="form-label">Name</label>
+                    <label for="name" class="form-label">ຊື່</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-user"></i></span>
                         <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email address</label>
+                    <label for="email" class="form-label">ອີເມວ</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label">ລະຫັດຜ່ານ</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="password_confirmation" class="form-label">Confirm Password</label>
+                    <label for="password_confirmation" class="form-label">ຢືນຢັນລະຫັດຜ່ານ</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Register</button>
+                <button type="submit" class="btn btn-primary w-100">ລົງທະບຽນ</button>
             </form>
             
             <div class="mt-3 text-center">
-                <p>Already have an account? <a href="{{ route('login') }}">Login here</a></p>
+                <p>ມີບັນຊີແລ້ວບໍ? <a href="{{ route('login') }}">ເຂົ້າສູ່ລະບົບ</a></p>
             </div>
         </div>
     </div>
