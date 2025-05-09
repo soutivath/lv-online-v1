@@ -794,6 +794,7 @@
             
             return false; // Prevent default behavior
         } catch (error) {
+            
             console.error("Error in forceSavePayment:", error);
             alert("ເກີດຂໍ້ຜິດພາດ: " + error.message);
             
@@ -879,6 +880,7 @@
                     document.getElementById('statusMessage').textContent = 'ກຳລັງສົ່ງຂໍ້ມູນແລະສ້າງໃບບິນ...';
                     
                     form.submit();
+                    selectedMajors = []; // Clear selected majors after submission
                     
                     // For debugging, make the modal dismissable after 15 seconds even if no response
                     // (but browser should navigate away to PDF download)
@@ -1133,7 +1135,61 @@
         }
     });
 
-
+    // Make an AJAX request to handle the form submission
+    fetch('{{ route('student.payment.submit') }}', {
+        method: 'POST',
+        body: formDataObj,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('loadingSpinner').classList.add('d-none');
+        document.getElementById('successIcon').classList.remove('d-none');
+        document.getElementById('statusMessage').textContent = 'ການຊຳລະເງິນຂອງທ່ານສຳເລັດແລ້ວ';
+        
+        // Show modal footer
+        document.getElementById('modalFooter').classList.remove('d-none');
+        
+        // Reset form completely
+        resetPaymentForm();
+        
+        // Open the PDF in a new tab with proper window features
+        if (data.pdf_url) {
+            // Force new tab with window features specification
+            const newWindow = window.open(
+                data.pdf_url,
+                '_blank',
+                'noopener,noreferrer,resizable=yes,status=yes,toolbar=yes,menubar=yes,scrollbars=yes'
+            );
+            
+            if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+                // Popup was blocked
+                console.warn('PDF popup was blocked. Adding direct link instead.');
+                document.getElementById('statusMessage').textContent = 'ການຊຳລະເງິນຂອງທ່ານສຳເລັດແລ້ວ. ກະລຸນາກົດປຸ່ມລິ້ງໄປຫາ PDF.';
+                
+                // Add a direct link to the PDF in the modal
+                const pdfLink = document.createElement('a');
+                pdfLink.href = data.pdf_url;
+                pdfLink.target = '_blank';
+                pdfLink.rel = 'noopener noreferrer';
+                pdfLink.className = 'btn btn-info mt-3';
+                pdfLink.innerHTML = '<i class="bi bi-file-pdf me-2"></i> ເປີດໃບບິນ PDF';
+                
+                // Add the link to the modal body
+                document.querySelector('.modal-body').appendChild(pdfLink);
+            }
+        }
+    })
+    .catch(error => {
+        // ...existing error handling code...
+    });
 
 </script>
 

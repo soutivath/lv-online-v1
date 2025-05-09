@@ -462,6 +462,38 @@ class RegistrationController extends Controller
                     ->withInput();
             }
 
+            //for rollback
+            // Get registrations with their details and majors
+            $existingRegistrations = Registration::where('student_id', $stdData->id)
+                ->with('registrationDetails.major')
+                ->get();
+            
+            // Build the array of used majors manually
+            $usedToRegistredMajor = [];
+            foreach ($existingRegistrations as $registration) {
+                foreach ($registration->registrationDetails as $detail) {
+                    if ($detail->major) {
+                        $usedToRegistredMajor[$detail->major->semester_id] = $detail->major->name;
+                    }
+                }
+            }
+            
+            $selectedMajors = Major::whereIn('id', $majorIds)->get();
+            foreach($selectedMajors as $selectedMajor){
+                $nameOfMajorInsemester = $usedToRegistredMajor[$selectedMajor->semester_id] ?? null;
+                if($nameOfMajorInsemester!= null && ($nameOfMajorInsemester != $selectedMajor->name)){
+                    $semesterName = Semester::find($selectedMajor->semester_id)->name;
+                    return redirect()->back()
+                    ->with('sweet_alert', [
+                        'type' => 'error',
+                        'title' => 'ບໍ່ສາມາດລົງທະບຽນໄດ້',
+                        'text' => "ນັກສຶກສາໄດ້ລົງທະບຽນໃນ {$semesterName} ສາຂາ {$nameOfMajorInsemester} ແລ້ວ."
+                    ])
+                    ->withInput();
+                }
+            }
+
+            //for rollback
 
 
             // Create registration details for each selected major
