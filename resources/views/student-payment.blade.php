@@ -831,7 +831,7 @@
         }
         
         if (!termsAgreement.checked) {
-            alert('ກະລຸນາຍອມຮັບເງື່ອນໄຂແລະນະໂຍບາຍຂອງວິທະຍາໄລ');
+            alert('ກະລຸນາຍອມຮັບເງືອນໄຂແລະນະໂຍບາຍຂອງວິທະຍາໄລ');
             return;
         }
         
@@ -1204,4 +1204,19 @@
         margin-left: -35px;
     }
 </style>
+
+<!-- Make sure there's a section for SweetAlert messages -->
+@if(session('sweet_alert'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: '{{ session('sweet_alert.type') }}',
+            title: '{{ session('sweet_alert.title') }}',
+            text: '{{ session('sweet_alert.text') }}',
+            confirmButtonText: 'ຕົກລົງ'
+        });
+    });
+</script>
+@endif
+
 @endsection

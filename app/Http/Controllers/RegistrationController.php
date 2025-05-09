@@ -29,10 +29,45 @@ class RegistrationController extends Controller
         $this->paymentStatusService = $paymentStatusService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $registrations = Registration::with(['student', 'employee', 'registrationDetails'])->get();
-        return view('Dashboard.registrations.index', compact('registrations'));
+        // Get the selected major name from the request
+        $majorName = $request->input('major_name');
+        
+        // Get all available majors and group them by name
+        $majors = Major::select('id', 'name')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('name')
+            ->map(function($group) {
+                // For each group, take the first major's ID as the representative
+                $firstMajor = $group->first();
+                return [
+                    'id' => $firstMajor->id,
+                    'name' => $firstMajor->name,
+                    'count' => $group->count()
+                ];
+            })
+            ->values();
+            
+        // Base query for registrations with eager loading
+        $registrationsQuery = Registration::with(['student', 'registrationDetails.major']);
+        
+        // Apply major filter if provided
+        if ($majorName) {
+            // Find all majors with the selected name
+            $majorIds = Major::where('name', $majorName)->pluck('id')->toArray();
+            
+            // Find registrations that have any registration detail with a major ID in our list
+            $registrationsQuery->whereHas('registrationDetails', function($query) use ($majorIds) {
+                $query->whereIn('major_id', $majorIds);
+            });
+        }
+        
+        // Get the registrations
+        $registrations = $registrationsQuery->get();
+        
+        return view('Dashboard.registrations.index', compact('registrations', 'majors', 'majorName'));
     }
 
     public function create()

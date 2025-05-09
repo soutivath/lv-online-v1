@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Get counts for dashboard stats
         $studentCount = Student::count();
@@ -21,6 +21,61 @@ class DashboardController extends Controller
         $majorCount = Major::count();
         $registrationCount = Registration::count();
         $paymentCount = Payment::count();
+        
+        // Student payment search functionality
+        $studentPayments = collect();
+        $searchedStudent = null;
+        $studentPaymentTotal = 0;
+     
+        if ($request->has('student_payment_search')) {
+           
+            $searchTerm = $request->input('student_payment_search');
+            
+            // Find student by name, ID or student_id
+            $searchedStudent = Student::where('name', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('sername', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('id', 'LIKE', "%{$searchTerm}%")
+                ->first();
+             
+            if ($searchedStudent) {
+                // Get all payments for this student
+                $studentPayments = Payment::where('student_id', $searchedStudent->id)
+                    ->with(['major'])
+                    ->orderBy('date', 'desc')
+                    ->get();
+                    
+                // Calculate total payments
+                $studentPaymentTotal = $studentPayments->sum('total_price');
+            }
+        }
+        
+        // Student upgrade search functionality
+        $studentUpgrades = collect();
+        $searchedUpgradeStudent = null;
+        $studentUpgradeTotal = 0;
+        
+        if ($request->has('student_upgrade_search')) {
+            $searchTerm = $request->input('student_upgrade_search');
+            
+            // Find student by name, ID or student_id
+            $searchedUpgradeStudent = Student::where('name', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('sername', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('id', 'LIKE', "%{$searchTerm}%")
+                ->first();
+                
+            if ($searchedUpgradeStudent) {
+                // Get all upgrades for this student
+                $studentUpgrades = Upgrade::where('student_id', $searchedUpgradeStudent->id)
+                    ->with(['major', 'upgradeDetails.subject'])
+                    ->orderBy('date', 'desc')
+                    ->get();
+                    
+                // Calculate total from upgrade details
+                $studentUpgradeTotal = $studentUpgrades->sum(function ($upgrade) {
+                    return $upgrade->upgradeDetails->sum('total_price');
+                });
+            }
+        }
         
         // Get student count by major
         $majorStudentCounts = DB::table('registration_details')
@@ -127,7 +182,13 @@ class DashboardController extends Controller
             'totalPayments',
             'paymentsByMajor',
             'upgradesByMajor',
-            'recentPayments'
+            'recentPayments',
+            'searchedStudent',
+            'studentPayments',
+            'studentPaymentTotal',
+            'searchedUpgradeStudent',
+            'studentUpgrades',
+            'studentUpgradeTotal'
         ));
     }
 

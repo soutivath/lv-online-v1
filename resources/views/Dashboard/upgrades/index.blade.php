@@ -30,6 +30,32 @@
 @endsection
 
 @section('content')
+<!-- Filter Card -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ route('upgrades.index') }}" class="row g-3">
+            <div class="col-md-6">
+                <label for="major_name" class="form-label">ກັ່ນຕອງຕາມສາຂາ</label>
+                <div class="input-group">
+                    <select class="form-select" id="major_name" name="major_name" onchange="this.form.submit()">
+                        <option value="">ທັງໝົດ</option>
+                        @foreach($majors as $major)
+                            <option value="{{ $major['name'] }}" {{ $majorName == $major['name'] ? 'selected' : '' }}>
+                                {{ $major['name'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($majorName)
+                        <a href="{{ route('upgrades.index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> ລ້າງຕົວກອງ
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">

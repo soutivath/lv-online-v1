@@ -30,6 +30,32 @@
 @endsection
 
 @section('content')
+<!-- Filter Card -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ route('payments.index') }}" class="row g-3">
+            <div class="col-md-6">
+                <label for="major_name" class="form-label">ກັ່ນຕອງຕາມສາຂາ</label>
+                <div class="input-group">
+                    <select class="form-select" id="major_name" name="major_name" onchange="this.form.submit()">
+                        <option value="">ທັງໝົດ</option>
+                        @foreach($majors as $major)
+                            <option value="{{ $major['name'] }}" {{ $majorName == $major['name'] ? 'selected' : '' }}>
+                                {{ $major['name'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($majorName)
+                        <a href="{{ route('payments.index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> ລ້າງຕົວກອງ
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 @if(count($groupedPayments) > 0)
 <div class="card mb-4">
     <div class="card-header bg-primary text-white">

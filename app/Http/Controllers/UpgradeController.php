@@ -17,10 +17,43 @@ use PDF;
 
 class UpgradeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $upgrades = Upgrade::with(['student', 'major', 'employee', 'upgradeDetails'])->get();
-        return view('Dashboard.upgrades.index', compact('upgrades'));
+        // Get the selected major name from the request
+        $majorName = $request->input('major_name');
+        
+        // Get all available majors and group them by name
+        $majors = Major::select('id', 'name')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('name')
+            ->map(function($group) {
+                // For each group, take the first major's ID as the representative
+                $firstMajor = $group->first();
+                return [
+                    'id' => $firstMajor->id,
+                    'name' => $firstMajor->name,
+                    'count' => $group->count()
+                ];
+            })
+            ->values();
+            
+        // Base query for upgrades with eager loading
+        $upgradesQuery = Upgrade::with(['student', 'major', 'employee', 'upgradeDetails']);
+        
+        // Apply major filter if provided
+        if ($majorName) {
+            // Find all majors with the selected name
+            $majorIds = Major::where('name', $majorName)->pluck('id')->toArray();
+            
+            // Filter upgrades by those major IDs
+            $upgradesQuery->whereIn('major_id', $majorIds);
+        }
+        
+        // Get upgrades
+        $upgrades = $upgradesQuery->get();
+        
+        return view('Dashboard.upgrades.index', compact('upgrades', 'majors', 'majorName'));
     }
 
     public function create()
@@ -295,15 +328,13 @@ class UpgradeController extends Controller
             
             DB::commit();
             
-            // Store success message in session for use after redirect
-            Session::flash('sweet_alert', [
-                'type' => 'success',
-                'title' => 'ສຳເລັດ!',
-                'text' => 'ການອັບເກຣດວິຊາຮຽນສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'
-            ]);
-            
-            // Redirect to PDF receipt instead of going back to the form
-            return redirect()->route('upgrades.export-pdf', $upgrade->id);
+            // Instead of redirecting to PDF, return to the student upgrade page with success message
+            return redirect()->route('student.upgrade')
+                ->with('sweet_alert', [
+                    'type' => 'success',
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ການອັບເກຣດວິຊາຮຽນສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'
+                ]);
             
         } catch (\Exception $e) {
             DB::rollback();

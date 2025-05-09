@@ -26,57 +26,59 @@ class PaymentController extends Controller
         $this->paymentStatusService = $paymentStatusService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        // Get all payments and their relationships
-        $allPayments = Payment::with(['student', 'major.semester', 'major.term', 'major.year', 'employee'])->get();
-
-        // Prepare data structures
-        $groupedPayments = [];
-        $individualPayments = [];
-        $handledBillNumbers = [];
-
-        // First pass: identify bills with multiple payments and compute their totals
-        foreach ($allPayments as $payment) {
-            if ($payment->bill_number) {
-                // If this bill hasn't been processed yet
-                if (!isset($handledBillNumbers[$payment->bill_number])) {
-                    // Get all payments with this bill number
-                    $paymentsInGroup = $allPayments->where('bill_number', $payment->bill_number);
-
-                    if ($paymentsInGroup->count() > 1) {
-                        // Calculate group total
-                        $groupTotal = $paymentsInGroup->sum('total_price');
-
-                        // Check payment statuses
-                        $allPending = $paymentsInGroup->where('status', 'pending')->count() === $paymentsInGroup->count();
-                        $allSuccess = $paymentsInGroup->where('status', 'success')->count() === $paymentsInGroup->count();
-
-                        // Store this bill's data using the first payment as representative
-                        $groupedPayments[] = [
-                            'payment' => $payment,
-                            'count' => $paymentsInGroup->count(),
-                            'total' => $groupTotal,
-                            'all_pending' => $allPending,
-                            'all_success' => $allSuccess,
-                            'mixed_status' => !$allPending && !$allSuccess
-                        ];
-
-                        // Mark this bill as handled
-                        $handledBillNumbers[$payment->bill_number] = true;
-                    } else {
-                        // Single payment bill, treat as individual payment
-                        $individualPayments[] = $payment;
-                        $handledBillNumbers[$payment->bill_number] = true;
-                    }
-                }
-            } else {
-                // No bill number, so it's individual
-                $individualPayments[] = $payment;
-            }
+        // Get the selected major name from the request
+        $majorName = $request->input('major_name');
+        
+        // Get all available majors and group them by name
+        $majors = Major::select('id', 'name')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('name')
+            ->map(function($group) {
+                // For each group, take the first major's ID as the representative
+                $firstMajor = $group->first();
+                return [
+                    'id' => $firstMajor->id,
+                    'name' => $firstMajor->name,
+                    'count' => $group->count()
+                ];
+            })
+            ->values();
+            
+        // Base query for individual payments
+        $individualPaymentsQuery = Payment::with(['student', 'major'])
+            ->whereNull('bill_number')
+            ->orderBy('date', 'desc');
+            
+        // Apply major filter by name if provided
+        if ($majorName) {
+            // Find all majors with that name
+            $majorIds = Major::where('name', $majorName)->pluck('id')->toArray();
+            
+            // Filter payments by any of those major IDs
+            $individualPaymentsQuery->whereIn('major_id', $majorIds);
         }
-
-        return view('Dashboard.payments.index', compact('groupedPayments', 'individualPayments'));
+        
+        // Get individual payments
+        $individualPayments = $individualPaymentsQuery->get();
+        
+        // Base query for grouped payments
+        $groupedPaymentsQuery = Payment::with(['student', 'major'])
+            ->whereNotNull('bill_number')
+            ->orderBy('date', 'desc');
+            
+        // Apply major filter by name if provided
+        if ($majorName) {
+            // Use the same list of major IDs as above
+            $groupedPaymentsQuery->whereIn('major_id', $majorIds);
+        }
+        
+        // Get grouped payments
+        $groupedPayments = $this->processGroupedPayments($groupedPaymentsQuery->get());
+        
+        return view('Dashboard.payments.index', compact('individualPayments', 'groupedPayments', 'majors', 'majorName'));
     }
 
     public function create()
@@ -553,40 +555,40 @@ class PaymentController extends Controller
             }
 
              //for rollback
-             $selectedMajors = Major::whereIn('id', $majorIds)->with('semester')->get();
-             $paymentSeletedMajor = Payment::where('student_id', $student->id)
-                 ->with('major')
-                 ->get();
+            //  $selectedMajors = Major::whereIn('id', $majorIds)->with('semester')->get();
+            //  $paymentSeletedMajor = Payment::where('student_id', $student->id)
+            //      ->with('major')
+            //      ->get();
               
-                 $existingPaymentMajor = $paymentSeletedMajor->pluck('major.name')->toArray();
+            //      $existingPaymentMajor = $paymentSeletedMajor->pluck('major.name')->toArray();
               
-                 if(count($existingPaymentMajor) > 0){
-                    // $allMajor = Major::whereIn('id', $majorIds)->get();
-                    $allowMajorWithSemester = $paymentSeletedMajor->pluck('major.name','major.semester_id')->toArray();
-                    foreach($selectedMajors as $selectedMajor){
+            //      if(count($existingPaymentMajor) > 0){
+            //         // $allMajor = Major::whereIn('id', $majorIds)->get();
+            //         $allowMajorWithSemester = $paymentSeletedMajor->pluck('major.name','major.semester_id')->toArray();
+            //         foreach($selectedMajors as $selectedMajor){
                    
-                     $nameBySemesterBelongToMajor = $allowMajorWithSemester[$selectedMajor->semester_id] ?? null;
-                   if(($nameBySemesterBelongToMajor != null) && ($nameBySemesterBelongToMajor !=$selectedMajor->name ) ){
+            //          $nameBySemesterBelongToMajor = $allowMajorWithSemester[$selectedMajor->semester_id] ?? null;
+            //        if(($nameBySemesterBelongToMajor != null) && ($nameBySemesterBelongToMajor !=$selectedMajor->name ) ){
 
-                    // Get the semester name for better user messages
-                    $semester = $selectedMajor->semester->name;
+            //         // Get the semester name for better user messages
+            //         $semester = $selectedMajor->semester->name;
                                            
-                    // Return with sweet alert that this semester has been taken
-                    Session::flash('sweet_alert', [
-                        'type' => 'error',
-                        'title' => 'ຂໍ້ຜິດພາດ!',
-                        'text' => "ທ່ານໄດ້ຊຳລະເງິນ {$nameBySemesterBelongToMajor} ສຳລັບພາກຮຽນ {$semester} ແລ້ວ. ບໍ່ສາມາດຊຳລະຊ້ຳໄດ້."
-                    ]);
-                    return redirect()->back()
-                        // ->with('sweet_alert', [
-                        //     'type' => 'error',
-                        //     'title' => 'ຂໍ້ຜິດພາດ!',
-                        //     'text' => "ທ່ານໄດ້ຊຳລະເງິນ {$nameBySemesterBelongToMajor} ສຳລັບພາກຮຽນ {$semester} ແລ້ວ. ບໍ່ສາມາດຊໍາລະຊ້ຳໄດ້."
-                        // ])
-                        ->withInput();
-                   }
-                    }
-                }
+            //         // Return with sweet alert that this semester has been taken
+            //         Session::flash('sweet_alert', [
+            //             'type' => 'error',
+            //             'title' => 'ຂໍ້ຜິດພາດ!',
+            //             'text' => "ທ່ານໄດ້ຊຳລະເງິນ {$nameBySemesterBelongToMajor} ສຳລັບພາກຮຽນ {$semester} ແລ້ວ. ບໍ່ສາມາດຊຳລະຊ້ຳໄດ້."
+            //         ]);
+            //         return redirect()->back()
+            //             // ->with('sweet_alert', [
+            //             //     'type' => 'error',
+            //             //     'title' => 'ຂໍ້ຜິດພາດ!',
+            //             //     'text' => "ທ່ານໄດ້ຊຳລະເງິນ {$nameBySemesterBelongToMajor} ສຳລັບພາກຮຽນ {$semester} ແລ້ວ. ບໍ່ສາມາດຊໍາລະຊ້ຳໄດ້."
+            //             // ])
+            //             ->withInput();
+            //        }
+            //         }
+            //     }
                  
              //for rollback
 
@@ -662,12 +664,12 @@ class PaymentController extends Controller
             ]);
 
             // Redirect to PDF generation using the bill number
-            if ($firstPayment) {
-                return redirect()->route('payments.export-pdf', $firstPayment->id);
-            }
+            // if ($firstPayment) {
+            //     return redirect()->route('payments.export-pdf', $firstPayment->id);
+            // }
 
             // Fallback if for some reason no payments were created
-            return redirect()->route('main')
+            return redirect()->route('student.payment')
                 ->with('sweet_alert', [
                     'type' => 'success',
                     'title' => 'ສຳເລັດ!',
@@ -740,5 +742,45 @@ class PaymentController extends Controller
             ->get();
 
         return view('student-receipts', compact('student', 'payments', 'registrations', 'upgrades'));
+    }
+
+    /**
+     * Process grouped payments by bill number
+     * 
+     * @param \Illuminate\Database\Eloquent\Collection $payments
+     * @return array
+     */
+    protected function processGroupedPayments($payments)
+    {
+        $groupedPayments = [];
+        $billGroups = [];
+        
+        // Group payments by bill number
+        foreach ($payments as $payment) {
+            if (!isset($billGroups[$payment->bill_number])) {
+                $billGroups[$payment->bill_number] = [
+                    'payment' => $payment,
+                    'payments' => [$payment],
+                    'count' => 1,
+                    'total' => $payment->total_price,
+                    'all_success' => $payment->status === 'success',
+                    'all_pending' => $payment->status === 'pending'
+                ];
+            } else {
+                $group = &$billGroups[$payment->bill_number];
+                $group['payments'][] = $payment;
+                $group['count']++;
+                $group['total'] += $payment->total_price;
+                $group['all_success'] = $group['all_success'] && ($payment->status === 'success');
+                $group['all_pending'] = $group['all_pending'] && ($payment->status === 'pending');
+            }
+        }
+        
+        // Convert to array for view
+        foreach ($billGroups as $group) {
+            $groupedPayments[] = $group;
+        }
+        
+        return $groupedPayments;
     }
 }

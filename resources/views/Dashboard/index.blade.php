@@ -128,6 +128,202 @@
 
 </div>
 
+<!-- Add this student payment search section somewhere appropriate in the dashboard view -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-search me-2"></i>ຄົ້ນຫາການຊຳລະເງິນຂອງນັກສຶກສາ</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ route('dashboard') }}" method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" name="student_payment_search" class="form-control" placeholder="ປ້ອນຊື່ ຫຼື ID ນັກສຶກສາ..." value="{{ request('student_payment_search') }}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> ຄົ້ນຫາ
+                        </button>
+                        @if(request('student_payment_search'))
+                            <a href="{{ route('dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> ລ້າງ
+                            </a>
+                        @endif
+                    </div>
+                </form>
+
+                @if(request('student_payment_search'))
+                    @if($searchedStudent)
+                        <div class="alert alert-success mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">ພົບນັກສຶກສາ: {{ $searchedStudent->name }} {{ $searchedStudent->sername }}</h5>
+                                <span class="badge bg-primary">ທັງໝົດ {{ $studentPayments->count() }} ລາຍການ</span>
+                            </div>
+                        </div>
+
+                        @if($studentPayments->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ລະຫັດ</th>
+                                            <th>ວັນທີ</th>
+                                            <th>ສາຂາ</th>
+                                            <th>ຈຳນວນເງິນ</th>
+                                            <th>ສະຖານະ</th>
+                                            <th>ການກະທຳ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($studentPayments as $payment)
+                                            <tr>
+                                                <td>{{ $payment->id }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>
+                                                <td>{{ $payment->major->name ?? 'N/A' }}</td>
+                                                <td>{{ number_format($payment->total_price, 2) }}</td>
+                                                <td>
+                                                    @if($payment->status == 'pending')
+                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
+                                                    @else
+                                                        <span class="badge bg-success">ສຳເລັດ</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('payments.show', $payment->id) }}" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('payments.export-pdf', $payment->id) }}" class="btn btn-sm btn-success" target="_blank">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="3" class="text-end">ລວມທັງໝົດ:</th>
+                                            <th>{{ number_format($studentPaymentTotal, 2) }}</th>
+                                            <th colspan="2"></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        @else
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i> ນັກສຶກສານີ້ຍັງບໍ່ມີການຊຳລະເງິນ
+                            </div>
+                        @endif
+                    @else
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i> ບໍ່ພົບນັກສຶກສາທີ່ຄົ້ນຫາ
+                        </div>
+                    @endif
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End student payment search section -->
+
+<!-- Add this student upgrade search section below the payment search section -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5 class="mb-0"><i class="fas fa-search me-2"></i>ຄົ້ນຫາການອັບເກຣດວິຊາຂອງນັກສຶກສາ</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ route('dashboard') }}" method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" name="student_upgrade_search" class="form-control" placeholder="ປ້ອນຊື່ ຫຼື ID ນັກສຶກສາ..." value="{{ request('student_upgrade_search') }}">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-search"></i> ຄົ້ນຫາ
+                        </button>
+                        @if(request('student_upgrade_search'))
+                            <a href="{{ route('dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> ລ້າງ
+                            </a>
+                        @endif
+                    </div>
+                </form>
+
+                @if(request('student_upgrade_search'))
+                    @if($searchedUpgradeStudent)
+                        <div class="alert alert-success mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">ພົບນັກສຶກສາ: {{ $searchedUpgradeStudent->name }} {{ $searchedUpgradeStudent->sername }}</h5>
+                                <span class="badge bg-warning">ທັງໝົດ {{ $studentUpgrades->count() }} ລາຍການ</span>
+                            </div>
+                        </div>
+
+                        @if($studentUpgrades->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ລະຫັດ</th>
+                                            <th>ວັນທີ</th>
+                                            <th>ສາຂາ</th>
+                                            <th>ວິຊາທີ່ອັບເກຣດ</th>
+                                            <th>ຈຳນວນເງິນ</th>
+                                            <th>ສະຖານະ</th>
+                                            <th>ການກະທຳ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($studentUpgrades as $upgrade)
+                                            <tr>
+                                                <td>{{ $upgrade->id }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($upgrade->date)->format('d/m/Y') }}</td>
+                                                <td>{{ $upgrade->major->name ?? 'N/A' }}</td>
+                                                <td>
+                                                    @foreach($upgrade->upgradeDetails as $detail)
+                                                        <span class="badge bg-info">{{ $detail->subject->name }}</span>
+                                                    @endforeach
+                                                </td>
+                                                <td>{{ number_format($upgrade->upgradeDetails->sum('total_price'), 2) }}</td>
+                                                <td>
+                                                    @if($upgrade->payment_status == 'pending')
+                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
+                                                    @else
+                                                        <span class="badge bg-success">ສຳເລັດ</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('upgrades.show', $upgrade->id) }}" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('upgrades.export-pdf', $upgrade->id) }}" class="btn btn-sm btn-success" target="_blank">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="4" class="text-end">ລວມທັງໝົດ:</th>
+                                            <th>{{ number_format($studentUpgradeTotal, 2) }}</th>
+                                            <th colspan="2"></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        @else
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i> ນັກສຶກສານີ້ຍັງບໍ່ມີການອັບເກຣດວິຊາຮຽນ
+                            </div>
+                        @endif
+                    @else
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i> ບໍ່ພົບນັກສຶກສາທີ່ຄົ້ນຫາ
+                        </div>
+                    @endif
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End student upgrade search section -->
+
 <div class="row mt-4">
     <div class="col-12">
         <div class="card h-100">
