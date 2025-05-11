@@ -64,8 +64,8 @@ class AuthController extends Controller
         return $this->redirectBasedOnUserType($user)
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'You have been logged in successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ທ່ານໄດ້ເຂົ້າສູ່ລະບົບຢ່າງສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -137,8 +137,8 @@ class AuthController extends Controller
         return redirect()->route('home')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Your account has been created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ບັນຊີຂອງທ່ານໄດ້ຖືກສ້າງຂຶ້ນຢ່າງສຳເລັດແລ້ວ.'
             ]);
     }
 

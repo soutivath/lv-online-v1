@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Student Information</title>
+    <title>ຂໍ້ມູນນັກສຶກສາ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -59,8 +59,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>STUDENT INFORMATION</h1>
-            <h3>Laovieng College</h3>
+            <h1>ຂໍ້ມູນນັກສຶກສາ<br/><span style="font-size: 0.8em;">STUDENT INFORMATION</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <div class="student-image">
@@ -68,63 +68,63 @@
                 <img src="{{ public_path('storage/'.str_replace('public/', '', $student->picture)) }}" alt="Student" style="max-height: 150px;">
             @else
                 <div style="border: 1px solid #ddd; padding: 20px; display: inline-block;">
-                    <p>No picture available</p>
+                    <p>ບໍ່ມີຮູບພາບ<br/><span style="font-size: 0.8em;">No picture available</span></p>
                 </div>
             @endif
         </div>
         
         <div class="info-section">
-            <h4>Personal Information</h4>
+            <h4>ຂໍ້ມູນສ່ວນຕົວ<br/><span style="font-size: 0.8em;">Personal Information</span></h4>
             <table>
                 <tr>
-                    <th style="width: 30%;">Student ID</th>
+                    <th style="width: 30%;">ລະຫັດນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student ID</span></th>
                     <td>{{ $student->id }}</td>
                 </tr>
                 <tr>
-                    <th>Name</th>
+                    <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
                     <td>{{ $student->name }}</td>
                 </tr>
                 <tr>
-                    <th>Surname</th>
+                    <th>ນາມສະກຸນ<br/><span style="font-size: 0.8em;">Surname</span></th>
                     <td>{{ $student->sername }}</td>
                 </tr>
                 <tr>
-                    <th>Gender</th>
+                    <th>ເພດ<br/><span style="font-size: 0.8em;">Gender</span></th>
                     <td>{{ $student->gender }}</td>
                 </tr>
                 <tr>
-                    <th>Birthday</th>
+                    <th>ວັນເດືອນປີເກີດ<br/><span style="font-size: 0.8em;">Birthday</span></th>
                     <td>{{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</td>
                 </tr>
                 <tr>
-                    <th>Nationality</th>
+                    <th>ສັນຊາດ<br/><span style="font-size: 0.8em;">Nationality</span></th>
                     <td>{{ $student->nationality }}</td>
                 </tr>
                 <tr>
-                    <th>Phone</th>
+                    <th>ເບີໂທ<br/><span style="font-size: 0.8em;">Phone</span></th>
                     <td>{{ $student->tell }}</td>
                 </tr>
                 <tr>
-                    <th>Address</th>
+                    <th>ທີ່ຢູ່<br/><span style="font-size: 0.8em;">Address</span></th>
                     <td>{{ $student->address }}</td>
                 </tr>
                 <tr>
-                    <th>Email</th>
-                    <td>{{ $student->user ? $student->user->email : 'No account' }}</td>
+                    <th>ອີເມວ<br/><span style="font-size: 0.8em;">Email</span></th>
+                    <td>{{ $student->user ? $student->user->email : 'ບໍ່ມີບັນຊີ / No account' }}</td>
                 </tr>
             </table>
         </div>
         
         @if($student->registrations->count() > 0)
         <div class="info-section">
-            <h4>Registrations</h4>
+            <h4>ການລົງທະບຽນ<br/><span style="font-size: 0.8em;">Registrations</span></h4>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Major</th>
-                        <th>Amount</th>
+                        <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                        <th>ວັນທີ<br/><span style="font-size: 0.8em;">Date</span></th>
+                        <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
+                        <th>ຈຳນວນເງິນ<br/><span style="font-size: 0.8em;">Amount</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -136,7 +136,7 @@
                             @if($registration->registrationDetails->count() > 0)
                                 {{ $registration->registrationDetails->first()->major->name }}
                             @else
-                                N/A
+                                ບໍ່ມີ
                             @endif
                         </td>
                         <td>
@@ -155,14 +155,14 @@
         
         @if($student->payments->count() > 0)
         <div class="info-section">
-            <h4>Payments</h4>
+            <h4>ການຊຳລະເງິນ<br/><span style="font-size: 0.8em;">Payments</span></h4>
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Major</th>
-                        <th>Amount</th>
+                        <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                        <th>ວັນທີ<br/><span style="font-size: 0.8em;">Date</span></th>
+                        <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
+                        <th>ຈຳນວນເງິນ<br/><span style="font-size: 0.8em;">Amount</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,7 +182,7 @@
         <!-- Score Document Section -->
         @if($student->score)
             <div class="info-section">
-                <h4>Score Document</h4>
+                <h4>ເອກະສານຄະແນນ<br/><span style="font-size: 0.8em;">Score Document</span></h4>
                 <div class="text-center">
                     <img src="{{ public_path('storage/'.str_replace('public/', '', $student->score)) }}" alt="Score Document" style="max-height: 300px;">
                 </div>

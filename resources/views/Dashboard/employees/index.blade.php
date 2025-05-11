@@ -36,7 +36,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ລະຫັດ</th>
                         <th>ຊື່</th>
                         <th>ນາມສະກຸນ</th>
                         <th>ອີເມລ</th>
@@ -96,7 +96,7 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title" id="addEmployeeModalLabel">ເພີ່ມພະນັກງານໃໝ່</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ປິດ"></button>
                 </div>
                 <div class="modal-body">
                     <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>
@@ -186,7 +186,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="viewEmployeeModalLabel{{ $employee->id }}">ເບິ່ງພະນັກງານ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ປິດ"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-4">
@@ -239,7 +239,7 @@
                     @method('PUT')
                     <div class="modal-header">
                         <h5 class="modal-title" id="editEmployeeModalLabel{{ $employee->id }}">ແກ້ໄຂພະນັກງານ</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ປິດ"></button>
                     </div>
                     <div class="modal-body">
                         <h6 class="mb-3">ຂໍ້ມູນສ່ວນຕົວ</h6>

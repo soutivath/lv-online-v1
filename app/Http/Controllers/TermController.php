@@ -24,8 +24,8 @@ class TermController extends Controller
         return redirect()->route('terms.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Term created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ສ້າງພາກຮຽນສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -40,8 +40,8 @@ class TermController extends Controller
         return redirect()->route('terms.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Term updated successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ອັບເດດພາກຮຽນສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -54,15 +54,15 @@ class TermController extends Controller
             return redirect()->route('terms.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Term and all related data deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບພາກຮຽນແລະຂໍ້ມູນທີ່ກ່ຽວຂ້ອງທັງໝົດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('terms.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete term: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການລຶບພາກຮຽນ: ' . $e->getMessage()
                 ]);
         }
     }

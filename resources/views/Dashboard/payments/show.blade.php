@@ -1,16 +1,16 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Payment Details')
+@section('title', 'ລາຍລະອຽດການຊຳລະເງິນ')
 
-@section('page-title', $isGrouped ? 'Group Payment Details' : 'Payment Details')
+@section('page-title', $isGrouped ? 'ລາຍລະອຽດການຊຳລະເງິນເປັນກຸ່ມ' : 'ລາຍລະອຽດການຊຳລະເງິນ')
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <a href="{{ route('payments.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to List
+            <i class="fas fa-arrow-left"></i> ກັບຄືນຫາລາຍການ
         </a>
         <a href="{{ route('payments.export-pdf', $payment->id) }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export PDF
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກ PDF
         </a>
     </div>
 @endsection
@@ -22,9 +22,9 @@
             <div class="card-header {{ $isGrouped ? 'bg-info text-white' : '' }}">
                 <h5>
                     @if($isGrouped)
-                    <i class="fas fa-layer-group me-2"></i>Group Payment Information
+                    <i class="fas fa-layer-group me-2"></i>ຂໍ້ມູນການຊຳລະເງິນເປັນກຸ່ມ
                     @else
-                    Payment Information
+                    ຂໍ້ມູນການຊຳລະເງິນ
                     @endif
                 </h5>
             </div>
@@ -32,54 +32,54 @@
                 <table class="table">
                     @if($payment->bill_number)
                     <tr>
-                        <th style="width: 150px">Bill Number</th>
+                        <th style="width: 150px">ເລກໃບບິນ</th>
                         <td>
                             {{ $payment->bill_number }}
                             @if($isGrouped)
-                                <span class="badge bg-info">Group ({{ $relatedPayments->count() + 1 }} items)</span>
+                                <span class="badge bg-info">ກຸ່ມ ({{ $relatedPayments->count() + 1 }} ລາຍການ)</span>
                             @endif
                         </td>
                     </tr>
                     @endif
                     <tr>
-                        <th style="width: 150px">Payment ID</th>
+                        <th style="width: 150px">ລະຫັດການຊຳລະ</th>
                         <td>{{ $payment->id }}</td>
                     </tr>
                     <tr>
-                        <th>Date</th>
+                        <th>ວັນທີ</th>
                         <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y H:i') }}</td>
                     </tr>
                     @if(!$isGrouped)
                     <tr>
-                        <th>Major</th>
+                        <th>ສາຂາວິຊາ</th>
                         <td>{{ $payment->major->name }}</td>
                     </tr>
                     <tr>
-                        <th>Base Amount</th>
+                        <th>ຈຳນວນເງິນຕົ້ນ</th>
                         <td>{{ number_format($payment->detail_price, 2) }}</td>
                     </tr>
                     <tr>
-                        <th>Discount</th>
+                        <th>ສ່ວນຫຼຸດ</th>
                         <td>{{ $payment->pro }}% ({{ number_format($payment->detail_price - $payment->total_price, 2) }})</td>
                     </tr>
                     <tr>
-                        <th>Total</th>
+                        <th>ລວມທັງໝົດ</th>
                         <td>{{ number_format($payment->total_price, 2) }}</td>
                     </tr>
                     @endif
                     @if($isGrouped)
                     <tr>
-                        <th>Group Total</th>
+                        <th>ລວມທັງໝົດເປັນກຸ່ມ</th>
                         <td class="fw-bold fs-5">{{ number_format($groupTotal, 2) }}</td>
                     </tr>
                     @endif
                     <tr>
-                        <th>Status</th>
+                        <th>ສະຖານະ</th>
                         <td>
                             @if($payment->status == 'pending')
-                                <span class="badge bg-warning">Pending</span>
+                                <span class="badge bg-warning">ລໍຖ້າ</span>
                             @else
-                                <span class="badge bg-success">Success</span>
+                                <span class="badge bg-success">ສຳເລັດ</span>
                             @endif
                         </td>
                     </tr>
@@ -91,36 +91,36 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5>Student Information</h5>
+                <h5>ຂໍ້ມູນນັກສຶກສາ</h5>
             </div>
             <div class="card-body">
                 <div class="row mb-3">
                     <div class="col-md-12 text-center mb-3">
                         @if($payment->student->picture)
-                            <img src="{{ asset('storage/' . $payment->student->picture) }}" alt="Student Picture" class="img-thumbnail" style="max-height: 150px">
+                            <img src="{{ asset('storage/' . $payment->student->picture) }}" alt="ຮູບນັກສຶກສາ" class="img-thumbnail" style="max-height: 150px">
                         @else
                             <div class="border p-3 text-center">
                                 <i class="fas fa-user fa-5x text-secondary"></i>
-                                <p class="mt-2">No picture available</p>
+                                <p class="mt-2">ບໍ່ມີຮູບພາບ</p>
                             </div>
                         @endif
                     </div>
                 </div>
                 <table class="table">
                     <tr>
-                        <th style="width: 150px">Student ID</th>
+                        <th style="width: 150px">ລະຫັດນັກສຶກສາ</th>
                         <td>{{ $payment->student->id }}</td>
                     </tr>
                     <tr>
-                        <th>Name</th>
+                        <th>ຊື່</th>
                         <td>{{ $payment->student->name }} {{ $payment->student->sername }}</td>
                     </tr>
                     <tr>
-                        <th>Gender</th>
+                        <th>ເພດ</th>
                         <td>{{ $payment->student->gender }}</td>
                     </tr>
                     <tr>
-                        <th>Phone</th>
+                        <th>ເບີໂທລະສັບ</th>
                         <td>{{ $payment->student->tell }}</td>
                     </tr>
                 </table>
@@ -132,22 +132,22 @@
 @if($isGrouped)
 <div class="card mb-4">
     <div class="card-header bg-info text-white">
-        <h5 class="mb-0"><i class="fas fa-list me-2"></i>All Items in this Payment Group</h5>
+        <h5 class="mb-0"><i class="fas fa-list me-2"></i>ລາຍການທັງໝົດໃນກຸ່ມການຊຳລະນີ້</h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Major</th>
-                        <th>Semester</th>
-                        <th>Term</th>
-                        <th>Year</th>
-                        <th>Base Price</th>
-                        <th>Discount</th>
-                        <th>Final Price</th>
-                        <th>Status</th>
+                        <th>ລະຫັດ</th>
+                        <th>ສາຂາວິຊາ</th>
+                        <th>ພາກຮຽນ</th>
+                        <th>ເທີມ</th>
+                        <th>ສົກຮຽນ</th>
+                        <th>ລາຄາຕົ້ນ</th>
+                        <th>ສ່ວນຫຼຸດ</th>
+                        <th>ລາຄາສຸດທ້າຍ</th>
+                        <th>ສະຖານະ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -163,9 +163,9 @@
                         <td>{{ number_format($payment->total_price, 2) }}</td>
                         <td>
                             @if($payment->status == 'pending')
-                                <span class="badge bg-warning">Pending</span>
+                                <span class="badge bg-warning">ລໍຖ້າ</span>
                             @else
-                                <span class="badge bg-success">Success</span>
+                                <span class="badge bg-success">ສຳເລັດ</span>
                             @endif
                         </td>
                     </tr>
@@ -186,9 +186,9 @@
                         <td>{{ number_format($relatedPayment->total_price, 2) }}</td>
                         <td>
                             @if($relatedPayment->status == 'pending')
-                                <span class="badge bg-warning">Pending</span>
+                                <span class="badge bg-warning">ລໍຖ້າ</span>
                             @else
-                                <span class="badge bg-success">Success</span>
+                                <span class="badge bg-success">ສຳເລັດ</span>
                             @endif
                         </td>
                     </tr>
@@ -196,7 +196,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="7" class="text-end">Group Total:</th>
+                        <th colspan="7" class="text-end">ລວມທັງໝົດເປັນກຸ່ມ:</th>
                         <th colspan="2">{{ number_format($groupTotal, 2) }}</th>
                     </tr>
                 </tfoot>
@@ -209,10 +209,10 @@
 @if($payment->payment_proof)
 <div class="card mb-4">
     <div class="card-header">
-        <h5>Payment Proof</h5>
+        <h5>ຫຼັກຖານການຊຳລະເງິນ</h5>
     </div>
     <div class="card-body text-center">
-        <img src="{{ asset('storage/' . $payment->payment_proof) }}" alt="Payment Proof" class="img-fluid img-thumbnail" style="max-height: 400px;">
+        <img src="{{ asset('storage/' . $payment->payment_proof) }}" alt="ຫຼັກຖານການຊຳລະເງິນ" class="img-fluid img-thumbnail" style="max-height: 400px;">
     </div>
 </div>
 @endif
@@ -225,9 +225,9 @@
         <button type="submit" class="btn btn-primary">
             <i class="fas fa-check-circle me-1"></i> 
             @if($isGrouped)
-                Confirm All Payments in Group
+                ຢືນຢັນການຊຳລະທັງໝົດໃນກຸ່ມ
             @else
-                Confirm Payment
+                ຢືນຢັນການຊຳລະ
             @endif
         </button>
     </form>
@@ -236,7 +236,7 @@
 
 <div class="d-flex justify-content-end">
     <button class="btn btn-danger" onclick="return confirmDelete('delete-payment-form-{{ $payment->id }}')">
-        <i class="fas fa-trash"></i> Delete Payment
+        <i class="fas fa-trash"></i> ລຶບການຊຳລະ
     </button>
     <form id="delete-payment-form-{{ $payment->id }}" action="{{ route('payments.destroy', $payment->id) }}" method="POST" class="d-none">
         @csrf

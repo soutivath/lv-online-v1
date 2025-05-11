@@ -158,8 +158,8 @@ class PaymentController extends Controller
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Payment for this major has already been recorded.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການຊໍາລະເງິນສຳລັບສາຂານີ້ໄດ້ຖືກບັນທຶກແລ້ວ.'
                 ]);
         }
 
@@ -204,15 +204,15 @@ class PaymentController extends Controller
             return redirect()->route('payments.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Payment created successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ສ້າງການຊໍາລະເງິນສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('payments.create')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to create payment. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການສ້າງການຊໍາລະເງິນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -249,15 +249,15 @@ class PaymentController extends Controller
             return redirect()->route('payments.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Payment deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບການຊໍາລະເງິນສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('payments.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete payment. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການລຶບການຊໍາລະເງິນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -349,15 +349,15 @@ class PaymentController extends Controller
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
+                    'title' => 'ສຳເລັດ!',
                     'text' => $message
                 ]);
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to confirm payment. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການຢືນຢັນການຊຳລະເງິນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }

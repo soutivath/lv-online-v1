@@ -25,8 +25,8 @@ class CreditController extends Controller
         return redirect()->route('credits.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Credit created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ສ້າງໜ່ວຍກິດສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -42,8 +42,8 @@ class CreditController extends Controller
         return redirect()->route('credits.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Credit updated successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ອັບເດດໜ່ວຍກິດສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -54,8 +54,8 @@ class CreditController extends Controller
             return redirect()->route('credits.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Cannot delete this credit as it is being used by one or more subjects.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ບໍ່ສາມາດລຶບໜ່ວຍກິດນີ້ໄດ້ ເນື່ອງຈາກມັນກຳລັງຖືກໃຊ້ໂດຍໜຶ່ງຫຼືຫຼາຍວິຊາ.'
                 ]);
         }
 
@@ -64,8 +64,8 @@ class CreditController extends Controller
         return redirect()->route('credits.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Credit deleted successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ລຶບໜ່ວຍກິດສຳເລັດແລ້ວ.'
             ]);
     }
 

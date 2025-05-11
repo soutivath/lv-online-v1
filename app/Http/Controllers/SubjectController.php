@@ -27,8 +27,8 @@ class SubjectController extends Controller
         return redirect()->route('subjects.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Subject created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ສ້າງວິຊາສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -44,8 +44,8 @@ class SubjectController extends Controller
         return redirect()->route('subjects.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Subject updated successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ອັບເດດວິຊາສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -58,15 +58,15 @@ class SubjectController extends Controller
             return redirect()->route('subjects.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Subject and all related data deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບວິຊາແລະຂໍ້ມູນທີ່ກ່ຽວຂ້ອງທັງໝົດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('subjects.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete subject: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການລຶບວິຊາ: ' . $e->getMessage()
                 ]);
         }
     }

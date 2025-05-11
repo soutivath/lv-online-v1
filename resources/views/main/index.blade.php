@@ -91,18 +91,18 @@
                     </div>
                     <h4 class="text-center mb-3">{{ $student->name }} {{ $student->sername }}</h4>
                     <hr>
-                    <p><strong><i class="fas fa-id-card me-2"></i>ID:</strong> {{ $student->id }}</p>
-                    <p><strong><i class="fas fa-venus-mars me-2"></i>Gender:</strong> {{ $student->gender }}</p>
-                    <p><strong><i class="fas fa-birthday-cake me-2"></i>Birthday:</strong> {{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</p>
-                    <p><strong><i class="fas fa-flag me-2"></i>Nationality:</strong> {{ $student->nationality }}</p>
-                    <p><strong><i class="fas fa-phone me-2"></i>Phone:</strong> {{ $student->tell }}</p>
-                    <p><strong><i class="fas fa-map-marker-alt me-2"></i>Address:</strong> {{ $student->address }}</p>
+                    <p><strong><i class="fas fa-id-card me-2"></i>ລະຫັດ:</strong> {{ $student->id }}</p>
+                    <p><strong><i class="fas fa-venus-mars me-2"></i>ເພດ:</strong> {{ $student->gender }}</p>
+                    <p><strong><i class="fas fa-birthday-cake me-2"></i>ວັນເດືອນປີເກີດ:</strong> {{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</p>
+                    <p><strong><i class="fas fa-flag me-2"></i>ສັນຊາດ:</strong> {{ $student->nationality }}</p>
+                    <p><strong><i class="fas fa-phone me-2"></i>ເບີໂທລະສັບ:</strong> {{ $student->tell }}</p>
+                    <p><strong><i class="fas fa-map-marker-alt me-2"></i>ທີ່ຢູ່:</strong> {{ $student->address }}</p>
                 </div>
             </div>
             <div class="col-md-8">
                 <div class="card mb-4">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Your Registrations</h5>
+                        <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>ການລົງທະບຽນຂອງທ່ານ</h5>
                     </div>
                     <div class="card-body">
                         @if($student->registrations->count() > 0)
@@ -110,10 +110,10 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Major</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
+                                            <th>ວັນທີ</th>
+                                            <th>ສາຂາ</th>
+                                            <th>ຈຳນວນເງິນ</th>
+                                            <th>ສະຖານະ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -127,21 +127,21 @@
                                                             <span class="badge bg-info">+{{ $registration->registrationDetails->count() - 1 }}</span>
                                                         @endif
                                                     @else
-                                                        N/A
+                                                        ບໍ່ມີ
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if($registration->registrationDetails->count() > 0)
                                                         {{ number_format($registration->registrationDetails->sum('total_price'), 2) }}
                                                     @else
-                                                        N/A
+                                                        ບໍ່ມີ
                                                     @endif
                                                 </td>
                                                 <td>
                                                     @if($registration->payment_status == 'pending')
-                                                        <span class="badge bg-warning">Pending</span>
+                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
                                                     @else
-                                                        <span class="badge bg-success">Success</span>
+                                                        <span class="badge bg-success">ສຳເລັດ</span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -150,14 +150,14 @@
                                 </table>
                             </div>
                         @else
-                            <p class="text-muted">No registrations found.</p>
+                            <p class="text-muted">ບໍ່ພົບການລົງທະບຽນ</p>
                         @endif
                     </div>
                 </div>
 
                 <div class="card mb-4">
                     <div class="card-header bg-success text-white">
-                        <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Your Payments</h5>
+                        <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>ການຊຳລະເງິນຂອງທ່ານ</h5>
                     </div>
                     <div class="card-body">
                         @if($student->payments->count() > 0)
@@ -165,11 +165,11 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Major</th>
-                                            <th>Amount</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
+                                            <th>ວັນທີ</th>
+                                            <th>ສາຂາ</th>
+                                            <th>ຈຳນວນເງິນ</th>
+                                            <th>ສະຖານະ</th>
+                                            <th>ຄຳສັ່ງ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -180,9 +180,9 @@
                                                 <td>{{ number_format($payment->total_price, 2) }}</td>
                                                 <td>
                                                     @if($payment->status == 'pending')
-                                                        <span class="badge bg-warning">Pending</span>
+                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
                                                     @else
-                                                        <span class="badge bg-success">Success</span>
+                                                        <span class="badge bg-success">ສຳເລັດ</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -203,7 +203,7 @@
 
                 <div class="card">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="fas fa-arrow-up me-2"></i>Your Upgrades</h5>
+                        <h5 class="mb-0"><i class="fas fa-arrow-up me-2"></i>ການອັບເກຣດຂອງທ່ານ</h5>
                     </div>
                     <div class="card-body">
                         @if($student->upgrades->count() > 0)
@@ -211,11 +211,11 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Date</th>
-                                            <th>Major</th>
-                                            <th>Subjects</th>
-                                            <th>Status</th>
-                                            <th>Receipt</th>
+                                            <th>ວັນທີ</th>
+                                            <th>ສາຂາ</th>
+                                            <th>ວິຊາຮຽນ</th>
+                                            <th>ສະຖານະ</th>
+                                            <th>ໃບຮັບເງິນ</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -226,9 +226,9 @@
                                                 <td>{{ $upgrade->upgradeDetails->count() }}</td>
                                                 <td>
                                                     @if($upgrade->payment_status == 'pending')
-                                                        <span class="badge bg-warning">Pending</span>
+                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
                                                     @else
-                                                        <span class="badge bg-success">Success</span>
+                                                        <span class="badge bg-success">ສຳເລັດ</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -242,7 +242,7 @@
                                 </table>
                             </div>
                         @else
-                            <p class="text-muted">No upgrades found.</p>
+                            <p class="text-muted">ບໍ່ພົບການອັບເກຣດ</p>
                         @endif
                     </div>
                 </div>

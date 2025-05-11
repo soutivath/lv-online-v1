@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Employee Information</title>
+    <title>ຂໍ້ມູນພະນັກງານ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -54,62 +54,62 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>EMPLOYEE INFORMATION</h1>
-            <h3>Laovieng College</h3>
+            <h1>ຂໍ້ມູນພະນັກງານ<br/><span style="font-size: 0.8em;">EMPLOYEE INFORMATION</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <div class="employee-image">
             @if($employee->picture)
-                <img src="{{ public_path('storage/'.str_replace('public/', '', $employee->picture)) }}" alt="Employee" style="max-height: 150px;">
+                <img src="{{ public_path('storage/'.str_replace('public/', '', $employee->picture)) }}" alt="ພະນັກງານ" style="max-height: 150px;">
             @else
                 <div style="border: 1px solid #ddd; padding: 20px; display: inline-block;">
-                    <p>No picture available</p>
+                    <p>ບໍ່ມີຮູບພາບ<br/><span style="font-size: 0.8em;">ບໍ່ມີຮູບພາບ</span></p>
                 </div>
             @endif
         </div>
         
         <div class="info-section">
-            <h4>Personal Information</h4>
+            <h4>ຂໍ້ມູນສ່ວນຕົວ<br/><span style="font-size: 0.8em;">Personal Information</span></h4>
             <table>
                 <tr>
-                    <th style="width: 30%;">Employee ID</th>
+                    <th style="width: 30%;">ລະຫັດພະນັກງານ<br/><span style="font-size: 0.8em;">Employee ID</span></th>
                     <td>{{ $employee->id }}</td>
                 </tr>
                 <tr>
-                    <th>Name</th>
+                    <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
                     <td>{{ $employee->name }}</td>
                 </tr>
                 <tr>
-                    <th>Surname</th>
+                    <th>ນາມສະກຸນ<br/><span style="font-size: 0.8em;">Surname</span></th>
                     <td>{{ $employee->sername }}</td>
                 </tr>
                 <tr>
-                    <th>Gender</th>
+                    <th>ເພດ<br/><span style="font-size: 0.8em;">Gender</span></th>
                     <td>{{ $employee->gender }}</td>
                 </tr>
                 <tr>
-                    <th>Birthday</th>
+                    <th>ວັນເດືອນປີເກີດ<br/><span style="font-size: 0.8em;">Birthday</span></th>
                     <td>{{ \Carbon\Carbon::parse($employee->birthday)->format('d/m/Y') }}</td>
                 </tr>
                 <tr>
-                    <th>Join Date</th>
+                    <th>ວັນທີເຂົ້າຮ່ວມ<br/><span style="font-size: 0.8em;">Join Date</span></th>
                     <td>{{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</td>
                 </tr>
                 <tr>
-                    <th>Role</th>
-                    <td>{{ $employee->role == 'admin' ? 'Administrator' : 'Teacher' }}</td>
+                    <th>ບົດບາດ<br/><span style="font-size: 0.8em;">Role</span></th>
+                    <td>{{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ / Administrator' : 'ອາຈານ / Teacher' }}</td>
                 </tr>
                 <tr>
-                    <th>Phone</th>
+                    <th>ເບີໂທ<br/><span style="font-size: 0.8em;">Phone</span></th>
                     <td>{{ $employee->tell }}</td>
                 </tr>
                 <tr>
-                    <th>Address</th>
+                    <th>ທີ່ຢູ່<br/><span style="font-size: 0.8em;">Address</span></th>
                     <td>{{ $employee->address }}</td>
                 </tr>
                 <tr>
-                    <th>Email</th>
-                    <td>{{ $employee->user ? $employee->user->email : 'No account' }}</td>
+                    <th>ອີເມວ<br/><span style="font-size: 0.8em;">Email</span></th>
+                    <td>{{ $employee->user ? $employee->user->email : 'ບໍ່ມີບັນຊີ / No account' }}</td>
                 </tr>
             </table>
         </div>

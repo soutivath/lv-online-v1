@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Employees</title>
+    <title>ພະນັກງານທັງໝົດ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -48,21 +48,21 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL EMPLOYEES REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານພະນັກງານທັງໝົດ<br/><span style="font-size: 0.8em;">ALL EMPLOYEES REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Gender</th>
-                    <th>Join Date</th>
-                    <th>Role</th>
-                    <th>Phone</th>
-                    <th>Email</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
+                    <th>ນາມສະກຸນ<br/><span style="font-size: 0.8em;">Surname</span></th>
+                    <th>ເພດ<br/><span style="font-size: 0.8em;">Gender</span></th>
+                    <th>ວັນທີເຂົ້າຮ່ວມ<br/><span style="font-size: 0.8em;">Join Date</span></th>
+                    <th>ບົດບາດ<br/><span style="font-size: 0.8em;">Role</span></th>
+                    <th>ເບີໂທ<br/><span style="font-size: 0.8em;">Phone</span></th>
+                    <th>ອີເມວ<br/><span style="font-size: 0.8em;">Email</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -73,9 +73,9 @@
                     <td>{{ $employee->sername }}</td>
                     <td>{{ $employee->gender }}</td>
                     <td>{{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</td>
-                    <td>{{ $employee->role == 'admin' ? 'Administrator' : 'Teacher' }}</td>
+                    <td>{{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ / Administrator' : 'ອາຈານ / Teacher' }}</td>
                     <td>{{ $employee->tell }}</td>
-                    <td>{{ $employee->user ? $employee->user->email : 'No account' }}</td>
+                    <td>{{ $employee->user ? $employee->user->email : 'ບໍ່ມີບັນຊີ / No account' }}</td>
                 </tr>
                 @endforeach
             </tbody>

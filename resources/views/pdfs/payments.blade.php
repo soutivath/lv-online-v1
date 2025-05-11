@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Payments</title>
+    <title>ການຊຳລະເງິນທັງໝົດ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -52,21 +52,21 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL PAYMENTS REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານການຊຳລະເງິນທັງໝົດ<br/><span style="font-size: 0.8em;">ALL PAYMENTS REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Student</th>
-                    <th>Major</th>
-                    <th>Base Amount</th>
-                    <th>Discount %</th>
-                    <th>Final Amount</th>
-                    <th>Employee</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ວັນທີ<br/><span style="font-size: 0.8em;">Date</span></th>
+                    <th>ນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student</span></th>
+                    <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
+                    <th>ຈຳນວນເງິນພື້ນຖານ<br/><span style="font-size: 0.8em;">Base Amount</span></th>
+                    <th>ສ່ວນຫຼຸດ %<br/><span style="font-size: 0.8em;">Discount %</span></th>
+                    <th>ຈຳນວນເງິນສຸດທ້າຍ<br/><span style="font-size: 0.8em;">Final Amount</span></th>
+                    <th>ພະນັກງານ<br/><span style="font-size: 0.8em;">Employee</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -79,13 +79,13 @@
                     <td>{{ number_format($payment->detail_price, 2) }}</td>
                     <td>{{ $payment->pro }}%</td>
                     <td>{{ number_format($payment->total_price, 2) }}</td>
-                    <td>{{ $payment->employee ? $payment->employee->name : 'N/A' }}</td>
+                    <td>{{ $payment->employee ? $payment->employee->name : 'ບໍ່ມີ' }}</td>
                 </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="6" style="text-align: right">Total:</th>
+                    <th colspan="6" style="text-align: right">ຈຳນວນເງິນທັງໝົດ / Total:</th>
                     <th>{{ number_format($total, 2) }}</th>
                     <th></th>
                 </tr>

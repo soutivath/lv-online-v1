@@ -51,14 +51,14 @@
                             
 
                             <div class="col-md-6">
-                                <label class="form-label">Student</label>
+                                <label class="form-label">ນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student</span></label>
                                 
                                 <!-- Inline-styled dropdown to ensure it works -->
                                 <div style="position: relative; width: 100%; margin-bottom: 1rem;">
                                     <!-- Display button -->
                                     <button type="button" onclick="toggleStudentList()" 
                                             style="width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; padding: 8px 12px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                                        <span id="selectedStudentText">Select Student</span>
+                                        <span id="selectedStudentText">ເລືອກນັກສຶກສາ</span>
                                         <i class="fas fa-chevron-down"></i>
                                     </button>
                                     
@@ -66,7 +66,7 @@
                                     <div id="studentListContainer" style="display: none; position: absolute; top: 100%; left: 0; width: 100%; background: white; border: 1px solid #ced4da; border-radius: 4px; margin-top: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 9999; max-height: 300px; overflow: hidden;">
                                         <!-- Search input -->
                                         <div style="padding: 8px; border-bottom: 1px solid #eee;">
-                                            <input type="text" id="studentSearchInput" placeholder="Search students..." 
+                                            <input type="text" id="studentSearchInput" placeholder="ຄົ້ນຫານັກສຶກສາ..." 
                                                    onkeyup="filterStudents()" 
                                                    style="width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 4px;">
                                         </div>
@@ -84,7 +84,7 @@
                                         
                                         <!-- No results message -->
                                         <div id="noStudentsMsg" style="display: none; padding: 12px; text-align: center; font-style: italic; color: #6c757d;">
-                                            No matching students found
+                                            ບໍ່ພົບນັກສຶກສາທີ່ຄົ້ນຫາ
                                         </div>
                                     </div>
                                     

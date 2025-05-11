@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Registrations</title>
+    <title>ການລົງທະບຽນທັງໝົດ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -48,20 +48,20 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL REGISTRATIONS REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານການລົງທະບຽນທັງໝົດ<br/><span style="font-size: 0.8em;">ALL REGISTRATIONS REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Student</th>
-                    <th>Major</th>
-                    <th>Discount %</th>
-                    <th>Total Price</th>
-                    <th>Employee</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ວັນທີ<br/><span style="font-size: 0.8em;">Date</span></th>
+                    <th>ນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student</span></th>
+                    <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
+                    <th>ສ່ວນຫຼຸດ %<br/><span style="font-size: 0.8em;">Discount %</span></th>
+                    <th>ລາຄາທັງໝົດ<br/><span style="font-size: 0.8em;">Total Price</span></th>
+                    <th>ພະນັກງານ<br/><span style="font-size: 0.8em;">Employee</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -74,7 +74,7 @@
                         @if($registration->registrationDetails->count() > 0)
                             {{ $registration->registrationDetails->first()->major->name }}
                         @else
-                            N/A
+                            ບໍ່ມີ
                         @endif
                     </td>
                     <td>{{ $registration->pro }}%</td>
@@ -85,7 +85,7 @@
                             0.00
                         @endif
                     </td>
-                    <td>{{ $registration->employee ? $registration->employee->name : 'N/A' }}</td>
+                    <td>{{ $registration->employee ? $registration->employee->name : 'ບໍ່ມີ' }}</td>
                 </tr>
                 @endforeach
             </tbody>

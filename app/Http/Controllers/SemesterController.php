@@ -24,8 +24,8 @@ class SemesterController extends Controller
         return redirect()->route('semesters.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Semester created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ສ້າງເທີມສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -40,8 +40,8 @@ class SemesterController extends Controller
         return redirect()->route('semesters.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Semester updated successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ອັບເດດເທີມສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -54,15 +54,15 @@ class SemesterController extends Controller
             return redirect()->route('semesters.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Semester and all related data deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບເທີມແລະຂໍ້ມູນທີ່ກ່ຽວຂ້ອງທັງໝົດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('semesters.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete semester: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການລຶບເທີມ: ' . $e->getMessage()
                 ]);
         }
     }

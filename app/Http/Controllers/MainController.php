@@ -38,8 +38,8 @@ class MainController extends Controller
             return redirect()->route('login')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Student account not found.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ບໍ່ພົບບັນຊີນັກສຶກສາ.'
                 ]);
         }
         

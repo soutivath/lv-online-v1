@@ -47,7 +47,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ລະຫັດ</th>
                         <th>ຊື່</th>
                         <th>ໜ່ວຍກິດ</th>
                         <th>ລາຄາໜ່ວຍກິດ</th>
@@ -183,7 +183,7 @@
     
     // Additional confirmation function for subject deletion
     function confirmSubjectDelete(formId) {
-        if (confirm('Are you sure you want to delete this subject?')) {
+        if (confirm('ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບວິຊານີ້?')) {
             document.getElementById(formId).submit();
         }
     }

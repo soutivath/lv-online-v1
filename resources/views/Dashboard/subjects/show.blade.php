@@ -7,13 +7,13 @@
 @section('page-actions')
     <div class="btn-group" role="group">
         <a href="{{ route('subjects.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to List
+            <i class="fas fa-arrow-left"></i> ກັບຄືນຫາລາຍການ
         </a>
         <a href="{{ route('subjects.edit', $subject->id) }}" class="btn btn-primary">
             <i class="fas fa-edit"></i> Edit
         </a>
         <a href="{{ route('subjects.export-pdf', $subject->id) }}" class="btn btn-success" target="_blank">
-            <i class="fas fa-file-pdf"></i> Export PDF
+            <i class="fas fa-file-pdf"></i> ສົ່ງອອກ PDF
         </a>
     </div>
 @endsection

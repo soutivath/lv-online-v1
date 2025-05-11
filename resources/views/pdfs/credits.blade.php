@@ -2,10 +2,10 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Credits</title>
+    <title>ໜ່ວຍກິດທັງໝົດ</title>
     <style>
         body {
-            font-family: 'Phetsarath OT', sans-serif;
+            font-family: 'Phetsarath', sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -46,17 +46,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL CREDITS REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານໜ່ວຍກິດທັງໝົດ<br/><span style="font-size: 0.8em;">ALL CREDITS REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Credit Quantity</th>
-                    <th>Price</th>
-                    <th>Subjects Count</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ຈຳນວນໜ່ວຍກິດ<br/><span style="font-size: 0.8em;">Credit Quantity</span></th>
+                    <th>ລາຄາ<br/><span style="font-size: 0.8em;">Price</span></th>
+                    <th>ຈຳນວນວິຊາ<br/><span style="font-size: 0.8em;">Subjects Count</span></th>
                 </tr>
             </thead>
             <tbody>

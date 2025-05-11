@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Students</title>
+    <title>ນັກສຶກສາທັງໝົດ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -48,21 +48,21 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL STUDENTS REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານນັກສຶກສາທັງໝົດ<br/><span style="font-size: 0.8em;">ALL STUDENTS REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Surname</th>
-                    <th>Gender</th>
-                    <th>Birthday</th>
-                    <th>Nationality</th>
-                    <th>Phone</th>
-                    <th>Email</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
+                    <th>ນາມສະກຸນ<br/><span style="font-size: 0.8em;">Surname</span></th>
+                    <th>ເພດ<br/><span style="font-size: 0.8em;">Gender</span></th>
+                    <th>ວັນເດືອນປີເກີດ<br/><span style="font-size: 0.8em;">Birthday</span></th>
+                    <th>ສັນຊາດ<br/><span style="font-size: 0.8em;">Nationality</span></th>
+                    <th>ເບີໂທ<br/><span style="font-size: 0.8em;">Phone</span></th>
+                    <th>ອີເມວ<br/><span style="font-size: 0.8em;">Email</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -75,7 +75,7 @@
                     <td>{{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</td>
                     <td>{{ $student->nationality }}</td>
                     <td>{{ $student->tell }}</td>
-                    <td>{{ $student->user ? $student->user->email : 'No account' }}</td>
+                    <td>{{ $student->user ? $student->user->email : 'ບໍ່ມີບັນຊີ / No account' }}</td>
                 </tr>
                 @endforeach
             </tbody>

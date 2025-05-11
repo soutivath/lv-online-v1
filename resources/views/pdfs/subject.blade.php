@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Subject Information</title>
+    <title>ຂໍ້ມູນວິຊາຮຽນ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -42,30 +42,30 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>SUBJECT INFORMATION</h1>
-            <h3>Laovieng College</h3>
+            <h1>ຂໍ້ມູນວິຊາ<br/><span style="font-size: 0.8em;">SUBJECT INFORMATION</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
-        <h4>Subject Details</h4>
+        <h4>ລາຍລະອຽດວິຊາ<br/><span style="font-size: 0.8em;">Subject Details</span></h4>
         <table>
             <tr>
-                <th style="width: 30%;">ID</th>
+                <th style="width: 30%;">ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
                 <td>{{ $subject->id }}</td>
             </tr>
             <tr>
-                <th>Name</th>
+                <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
                 <td>{{ $subject->name }}</td>
             </tr>
             <tr>
-                <th>Credits</th>
+                <th>ໜ່ວຍກິດ<br/><span style="font-size: 0.8em;">Credits</span></th>
                 <td>{{ $subject->credit->qty }}</td>
             </tr>
             <tr>
-                <th>Credit Price</th>
+                <th>ລາຄາໜ່ວຍກິດ<br/><span style="font-size: 0.8em;">Credit Price</span></th>
                 <td>{{ number_format($subject->credit->price, 2) }}</td>
             </tr>
             <tr>
-                <th>Total Price</th>
+                <th>ລາຄາທັງໝົດ<br/><span style="font-size: 0.8em;">Total Price</span></th>
                 <td>{{ number_format($subject->credit->qty * $subject->credit->price, 2) }}</td>
             </tr>
         </table>

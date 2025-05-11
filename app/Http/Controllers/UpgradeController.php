@@ -123,8 +123,8 @@ class UpgradeController extends Controller
             return redirect()->route('upgrades.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Upgrade created successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ສ້າງການອັບເກຣດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -132,8 +132,8 @@ class UpgradeController extends Controller
             return redirect()->route('upgrades.create')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to create upgrade. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການສ້າງການອັບເກຣດລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -159,8 +159,8 @@ class UpgradeController extends Controller
             return redirect()->route('upgrades.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Upgrade deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບການອັບເກຣດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -168,8 +168,8 @@ class UpgradeController extends Controller
             return redirect()->route('upgrades.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete upgrade. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການລຶບການອັບເກຣດລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -212,15 +212,15 @@ class UpgradeController extends Controller
             return redirect()->route('upgrades.show', $upgrade->id)
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Upgrade payment has been confirmed.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ການຢືນຢັນການຊຳລະເງິນອັບເກຣດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('upgrades.show', $upgrade->id)
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to confirm payment. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການຢືນຢັນການຊຳລະເງິນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }

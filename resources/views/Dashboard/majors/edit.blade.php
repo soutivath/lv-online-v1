@@ -1,13 +1,13 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Edit Major')
+@section('title', 'ແກ້ໄຂຂໍ້ມູນສາຂາ')
 
-@section('page-title', 'Edit Major')
+@section('page-title', 'ແກ້ໄຂຂໍ້ມູນສາຂາ')
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <a href="{{ route('majors.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to List
+            <i class="fas fa-arrow-left"></i> ກັບຄືນຫາລາຍການ
         </a>
     </div>
 @endsection
@@ -15,7 +15,7 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h5>Edit Major Information</h5>
+        <h5>ແກ້ໄຂຂໍ້ມູນສາຂາ</h5>
     </div>
     <div class="card-body">
         <form action="{{ route('majors.update', $major->id) }}" method="POST">
@@ -24,7 +24,7 @@
             
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="name" class="form-label">Major Name</label>
+                    <label for="name" class="form-label">ຊື່ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major Name</span></label>
                     <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $major->name) }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -32,7 +32,7 @@
                 </div>
                 
                 <div class="col-md-6 mb-3">
-                    <label for="sokhn" class="form-label">Major Code</label>
+                    <label for="sokhn" class="form-label">ລະຫັດສາຂາ<br/><span style="font-size: 0.8em;">Major Code</span></label>
                     <input type="text" class="form-control @error('sokhn') is-invalid @enderror" id="sokhn" name="sokhn" value="{{ old('sokhn', $major->sokhn) }}" required>
                     @error('sokhn')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -42,9 +42,9 @@
             
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label for="semester_id" class="form-label">Semester</label>
+                    <label for="semester_id" class="form-label">ພາກຮຽນ<br/><span style="font-size: 0.8em;">Semester</span></label>
                     <select class="form-select @error('semester_id') is-invalid @enderror" id="semester_id" name="semester_id" required>
-                        <option value="">Select Semester</option>
+                        <option value="">ເລືອກພາກຮຽນ</option>
                         @foreach($semesters as $semester)
                             <option value="{{ $semester->id }}" {{ old('semester_id', $major->semester_id) == $semester->id ? 'selected' : '' }}>
                                 {{ $semester->name }}
@@ -57,9 +57,9 @@
                 </div>
                 
                 <div class="col-md-4 mb-3">
-                    <label for="term_id" class="form-label">Term</label>
+                    <label for="term_id" class="form-label">ເທີມ<br/><span style="font-size: 0.8em;">Term</span></label>
                     <select class="form-select @error('term_id') is-invalid @enderror" id="term_id" name="term_id" required>
-                        <option value="">Select Term</option>
+                        <option value="">ເລືອກເທີມ</option>
                         @foreach($terms as $term)
                             <option value="{{ $term->id }}" {{ old('term_id', $major->term_id) == $term->id ? 'selected' : '' }}>
                                 {{ $term->name }}
@@ -72,9 +72,9 @@
                 </div>
                 
                 <div class="col-md-4 mb-3">
-                    <label for="year_id" class="form-label">Academic Year</label>
+                    <label for="year_id" class="form-label">ສົກຮຽນ<br/><span style="font-size: 0.8em;">Academic Year</span></label>
                     <select class="form-select @error('year_id') is-invalid @enderror" id="year_id" name="year_id" required>
-                        <option value="">Select Year</option>
+                        <option value="">ເລືອກສົກຮຽນ</option>
                         @foreach($years as $year)
                             <option value="{{ $year->id }}" {{ old('year_id', $major->year_id) == $year->id ? 'selected' : '' }}>
                                 {{ $year->name }}
@@ -89,9 +89,9 @@
             
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="tuition_id" class="form-label">Tuition Fee</label>
+                    <label for="tuition_id" class="form-label">ຄ່າຮຽນ<br/><span style="font-size: 0.8em;">Tuition Fee</span></label>
                     <select class="form-select @error('tuition_id') is-invalid @enderror" id="tuition_id" name="tuition_id" required>
-                        <option value="">Select Tuition Fee</option>
+                        <option value="">ເລືອກຄ່າຮຽນ</option>
                         @foreach($tuitions as $tuition)
                             <option value="{{ $tuition->id }}" {{ old('tuition_id', $major->tuition_id) == $tuition->id ? 'selected' : '' }}>
                                 {{ number_format($tuition->price, 2) }}
@@ -105,8 +105,8 @@
             </div>
             
             <div class="d-grid gap-2 mt-3">
-                <button type="submit" class="btn btn-primary">Update Major</button>
-                <a href="{{ route('majors.index') }}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">ອັບເດດຂໍ້ມູນສາຂາ</button>
+                <a href="{{ route('majors.index') }}" class="btn btn-secondary">ຍົກເລີກ</a>
             </div>
         </form>
     </div>

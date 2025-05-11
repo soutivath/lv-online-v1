@@ -1,16 +1,16 @@
 @extends('Dashboard.layout')
 
-@section('title', 'Major Upgrade Details')
+@section('title', 'ລາຍລະອຽດການອັບເກຣດ')
 
-@section('page-title', 'Upgrade Details for ' . $major->name)
+@section('page-title', 'ລາຍລະອຽດການອັບເກຣດສຳລັບ ' . $major->name)
 
 @section('page-actions')
     <div class="btn-group" role="group">
         <a href="{{ route('dashboard') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
+            <i class="fas fa-arrow-left"></i> ກັບຄືນຫາໜ້າຄວບຄຸມ
         </a>
         {{-- <button onclick="window.print()" class="btn btn-primary">
-            <i class="fas fa-print"></i> Print Report
+            <i class="fas fa-print"></i> ພິມລາຍງານ
         </button> --}}
     </div>
 @endsection
@@ -20,43 +20,43 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                <h5>Major Information</h5>
+                <h5>ຂໍ້ມູນສາຂາ</h5>
                 <table class="table table-borderless">
                     <tr>
-                        <th width="150">Name:</th>
+                        <th width="150">ຊື່:</th>
                         <td>{{ $major->name }}</td>
                     </tr>
                     <tr>
-                        <th>Related Majors:</th>
-                        <td>{{ count($relatedMajorIds) }} major instances across different semesters/terms</td>
+                        <th>ສາຂາທີ່ກ່ຽວຂ້ອງ:</th>
+                        <td>{{ count($relatedMajorIds) }} ສາຂາໃນພາກຮຽນ/ເທີມຕ່າງໆ</td>
                     </tr>
                     <tr>
-                        <th>Semester:</th>
+                        <th>ພາກຮຽນ:</th>
                         <td>{{ $major->semester->name }}</td>
                     </tr>
                     <tr>
-                        <th>Term:</th>
+                        <th>ເທີມ:</th>
                         <td>{{ $major->term->name }}</td>
                     </tr>
                     <tr>
-                        <th>Year:</th>
+                        <th>ສົກຮຽນ:</th>
                         <td>{{ $major->year->name }}</td>
                     </tr>
                 </table>
             </div>
             <div class="col-md-6">
-                <h5>Upgrade Summary</h5>
+                <h5>ສະຫຼຸບການອັບເກຣດ</h5>
                 <table class="table table-borderless">
                     <tr>
-                        <th width="200">Total Students:</th>
+                        <th width="200">ຈຳນວນນັກສຶກສາທັງໝົດ:</th>
                         <td><span class="badge bg-primary">{{ $studentCount }}</span></td>
                     </tr>
                     <tr>
-                        <th>Total Upgrades:</th>
+                        <th>ຈຳນວນການອັບເກຣດທັງໝົດ:</th>
                         <td><span class="badge bg-primary">{{ $upgrades->count() }}</span></td>
                     </tr>
                     <tr>
-                        <th>Total Amount:</th>
+                        <th>ຈຳນວນເງິນທັງໝົດ:</th>
                         <td><span class="badge bg-success">{{ number_format($totalAmount, 2) }}</span></td>
                     </tr>
                 </table>
@@ -67,20 +67,20 @@
 
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Upgrade List</h5>
+        <h5 class="mb-0">ລາຍການອັບເກຣດ</h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Student</th>
-                        <th>Date</th>
-                        <th>Subjects</th>
-                        <th>Total Amount</th>
-                        <th>Status</th>
-                        <th>Action</th>
+                        <th>ລະຫັດ</th>
+                        <th>ນັກສຶກສາ</th>
+                        <th>ວັນທີ</th>
+                        <th>ວິຊາຮຽນ</th>
+                        <th>ຈຳນວນເງິນທັງໝົດ</th>
+                        <th>ສະຖານະ</th>
+                        <th>ຄຳສັ່ງ</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,13 +106,13 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center">No upgrades found for this major</td>
+                        <td colspan="7" class="text-center">ບໍ່ພົບການອັບເກຣດສຳລັບສາຂານີ້</td>
                     </tr>
                     @endforelse
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="4" class="text-end">Total:</th>
+                        <th colspan="4" class="text-end">ລວມທັງໝົດ:</th>
                         <th>{{ number_format($totalAmount, 2) }}</th>
                         <th colspan="2"></th>
                     </tr>

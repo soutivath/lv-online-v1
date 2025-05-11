@@ -96,7 +96,7 @@ class StudentController extends Controller
             $student->gender = $validatedData['gender'];
             $student->birthday = $validatedData['birthday'];
             $student->nationality = $validatedData['nationality'];
-            $student->tell = $validatedData['tell'];
+            $student->tell = '+85620' . $validatedData['tell'];
             $student->address = $validatedData['address'];
 
             // Handle picture upload if present
@@ -110,14 +110,13 @@ class StudentController extends Controller
             }
 
             $student->save();
-
             DB::commit();
 
             return redirect()->route('students.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Student created successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ສ້າງນັກສຶກສາສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -125,8 +124,8 @@ class StudentController extends Controller
                 ->withInput()
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to create student. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການສ້າງນັກສຶກສາ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -184,7 +183,7 @@ class StudentController extends Controller
             $student->gender = $validatedData['gender'];
             $student->birthday = $validatedData['birthday'];
             $student->nationality = $validatedData['nationality'];
-            $student->tell = $validatedData['tell'];
+            $student->tell = '+85620' . $validatedData['tell'];
             $student->address = $validatedData['address'];
 
             // Handle picture upload if present
@@ -241,8 +240,8 @@ class StudentController extends Controller
             return redirect()->route('students.show', $student->id)
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Student updated successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ອັບເດດນັກສຶກສາສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -250,8 +249,8 @@ class StudentController extends Controller
                 ->withInput()
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to update student. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການອັບເດດນັກສຶກສາ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -283,8 +282,8 @@ class StudentController extends Controller
             return redirect()->route('students.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Student and all related data deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບນັກສຶກສາແລະຂໍ້ມູນທີ່ກ່ຽວຂ້ອງທັງໝົດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -292,8 +291,8 @@ class StudentController extends Controller
             return redirect()->route('students.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete student: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການລຶບນັກສຶກສາ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -376,7 +375,7 @@ class StudentController extends Controller
             $student->gender = $validatedData['gender'];
             $student->birthday = $validatedData['birthday'];
             $student->nationality = $validatedData['nationality'];
-            $student->tell = $validatedData['tell'];
+            $student->tell = '+85620' . $validatedData['tell'];
             $student->address = $validatedData['address'];
 
             // Handle picture upload if present
@@ -419,16 +418,16 @@ class StudentController extends Controller
             if (!$userData) {
                 return redirect()->back()->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'User data not found. Please register first.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ບໍ່ພົບຂໍ້ມູນຜູ້ໃຊ້. ກະລຸນາລົງທະບຽນກ່ອນ.'
                 ]);
             }
             $user = User::find($userData['id']);
             if (!$user) {
                 return redirect()->back()->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'User not found in database.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ບໍ່ພົບຜູ້ໃຊ້ໃນຖານຂໍ້ມູນ.'
                 ]);
             }
 
@@ -456,7 +455,7 @@ class StudentController extends Controller
                 $student->nationality = $validatedData['nationality'];
             }
             if (!empty($validatedData['tell'])) {
-                $student->tell = $validatedData['tell'];
+                $student->tell = '+85620' . $validatedData['tell'];
             }
             if (!empty($validatedData['address'])) {
                 $student->address = $validatedData['address'];

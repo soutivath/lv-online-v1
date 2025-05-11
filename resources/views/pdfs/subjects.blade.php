@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
-    <title>All Subjects</title>
+    <title>ວິຊາຮຽນທັງໝົດ</title>
     <style>
            body {
             font-family: 'Phetsarath', sans-serif;
@@ -42,17 +42,17 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL SUBJECTS REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານວິຊາທັງໝົດ<br/><span style="font-size: 0.8em;">ALL SUBJECTS REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Credits</th>
-                    <th>Credit Price</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
+                    <th>ໜ່ວຍກິດ<br/><span style="font-size: 0.8em;">Credits</span></th>
+                    <th>ລາຄາໜ່ວຍກິດ<br/><span style="font-size: 0.8em;">Credit Price</span></th>
                 </tr>
             </thead>
             <tbody>

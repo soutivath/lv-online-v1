@@ -70,9 +70,14 @@
                             <div class="row">
                                 <div class="col-md-12 mb-3">
                                     <label for="tell" class="form-label">ເບີໂທ <span class="text-danger">*</span></label>
-                                    <input type="tel" class="form-control" id="tell" name="tell" value="{{ old('tell') }}" 
-                                           pattern="[0-9]+" inputmode="numeric" required>
-                                    <div class="form-text">ປ້ອນຕົວເລກເທົ່ານັ້ນ</div>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <img src="https://flagcdn.com/16x12/la.png" alt="Laos" style="margin-right: 5px;"> +85620
+                                        </span>
+                                        <input type="tel" class="form-control" id="tell" name="tell" value="{{ old('tell') }}" 
+                                               pattern="[0-9]{8}" maxlength="8" inputmode="numeric" required>
+                                    </div>
+                                    <div class="form-text">ກະລຸນາປ້ອນເບີ Whatsapp</div>
                                 </div>
                             </div>
                             
@@ -361,6 +366,20 @@
         // Make sure submit button is working correctly
         const form = document.getElementById('studentRegistrationForm');
         if (form) {
+            // Phone number validation for 8 digits
+            const phoneInput = document.getElementById('tell');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    // Remove any non-digit characters
+                    this.value = this.value.replace(/\D/g, '');
+                    
+                    // Limit to 8 characters
+                    if (this.value.length > 8) {
+                        this.value = this.value.slice(0, 8);
+                    }
+                });
+            }
+            
             form.onsubmit = function(e) {
                 // Basic validation
                 const requiredFields = form.querySelectorAll('[required]');
@@ -371,7 +390,13 @@
                         valid = false;
                         field.classList.add('is-invalid');
                     } else {
-                        field.classList.remove('is-invalid');
+                        // Validate phone has exactly 8 digits
+                        if (field.id === 'tell' && field.value.length !== 8) {
+                            valid = false;
+                            field.classList.add('is-invalid');
+                        } else {
+                            field.classList.remove('is-invalid');
+                        }
                     }
                 });
                 

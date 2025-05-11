@@ -47,7 +47,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ລະຫັດ</th>
                         <th>ຊື່</th>
                         <th>ພາກຮຽນ</th>
                         <th>ເທີມ</th>

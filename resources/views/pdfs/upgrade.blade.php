@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Grade Upgrade Receipt</title>
+    <title>ໃບຮັບເງິນການອັບເກຣດ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -64,58 +64,58 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>GRADE UPGRADE RECEIPT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ໃບຮັບເງິນການປັບປຸງຄະແນນ<br/><span style="font-size: 0.8em;">GRADE UPGRADE RECEIPT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <div class="info-section">
-            <h4>Upgrade Information</h4>
+            <h4>ຂໍ້ມູນການປັບປຸງຄະແນນ<br/><span style="font-size: 0.8em;">Upgrade Information</span></h4>
             <table>
                 <tr>
-                    <th style="width: 30%;">Upgrade ID</th>
+                    <th style="width: 30%;">ລະຫັດການປັບປຸງ<br/><span style="font-size: 0.8em;">Upgrade ID</span></th>
                     <td>{{ $upgrade->id }}</td>
                 </tr>
                 <tr>
-                    <th>Date</th>
+                    <th>ວັນທີ<br/><span style="font-size: 0.8em;">Date</span></th>
                     <td>{{ \Carbon\Carbon::parse($upgrade->date)->format('d/m/Y') }}</td>
                 </tr>
                 <tr>
-                    <th>Employee</th>
-                    <td>{{ $upgrade->employee ? $upgrade->employee->name . ' ' . $upgrade->employee->sername : 'N/A' }}</td>
+                    <th>ພະນັກງານ<br/><span style="font-size: 0.8em;">Employee</span></th>
+                    <td>{{ $upgrade->employee ? $upgrade->employee->name . ' ' . $upgrade->employee->sername : 'ບໍ່ມີ' }}</td>
                 </tr>
                 <tr>
-                    <th>Payment Status</th>
-                    <td>{{ $upgrade->payment_status == 'pending' ? 'Pending' : 'Success' }}</td>
+                    <th>ສະຖານະການຊຳລະເງິນ<br/><span style="font-size: 0.8em;">Payment Status</span></th>
+                    <td>{{ $upgrade->payment_status == 'pending' ? 'ລໍຖ້າ / Pending' : 'ສຳເລັດ / Success' }}</td>
                 </tr>
             </table>
         </div>
         
         <div class="info-section">
-            <h4>Student Information</h4>
+            <h4>ຂໍ້ມູນນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student Information</span></h4>
             <table>
                 <tr>
-                    <th style="width: 30%;">Student ID</th>
+                    <th style="width: 30%;">ລະຫັດນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student ID</span></th>
                     <td>{{ $upgrade->student->id }}</td>
                 </tr>
                 <tr>
-                    <th>Name</th>
+                    <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
                     <td>{{ $upgrade->student->name }} {{ $upgrade->student->sername }}</td>
                 </tr>
                 <tr>
-                    <th>Major</th>
+                    <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
                     <td>{{ $upgrade->major->name }}</td>
                 </tr>
             </table>
         </div>
         
-        <h4>Subject Upgrades</h4>
+        <h4>ການປັບປຸງຄະແນນວິຊາ<br/><span style="font-size: 0.8em;">Subject Upgrades</span></h4>
         <table>
             <thead>
                 <tr>
-                    <th>Subject</th>
-                    <th>Credits</th>
-                    <th>Credit Price</th>
-                    <th>Amount</th>
+                    <th>ວິຊາ<br/><span style="font-size: 0.8em;">Subject</span></th>
+                    <th>ໜ່ວຍກິດ<br/><span style="font-size: 0.8em;">Credits</span></th>
+                    <th>ລາຄາໜ່ວຍກິດ<br/><span style="font-size: 0.8em;">Credit Price</span></th>
+                    <th>ຈຳນວນເງິນ<br/><span style="font-size: 0.8em;">Amount</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -130,7 +130,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="3" style="text-align: right">Total:</th>
+                    <th colspan="3" style="text-align: right">ຈຳນວນເງິນທັງໝົດ / Total:</th>
                     <th>{{ number_format($totalAmount, 2) }}</th>
                 </tr>
             </tfoot>

@@ -24,8 +24,8 @@ class YearController extends Controller
         return redirect()->route('years.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Academic year created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ສ້າງປີການສຶກສາສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -40,8 +40,8 @@ class YearController extends Controller
         return redirect()->route('years.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Academic year updated successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ອັບເດດປີການສຶກສາສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -54,15 +54,15 @@ class YearController extends Controller
             return redirect()->route('years.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Academic year and all related data deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບປີການສຶກສາແລະຂໍ້ມູນທີ່ກ່ຽວຂ້ອງທັງໝົດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('years.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete academic year: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການລຶບປີການສຶກສາ: ' . $e->getMessage()
                 ]);
         }
     }

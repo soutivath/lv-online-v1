@@ -24,8 +24,8 @@ class TuitionController extends Controller
         return redirect()->route('tuitions.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Tuition fee created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ສ້າງຄ່າຮຽນສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -40,8 +40,8 @@ class TuitionController extends Controller
         return redirect()->route('tuitions.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Tuition fee updated successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ອັບເດດຄ່າຮຽນສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -52,8 +52,8 @@ class TuitionController extends Controller
             return redirect()->route('tuitions.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Cannot delete this tuition fee as it is being used by one or more majors.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ບໍ່ສາມາດລຶບຄ່າຮຽນນີ້ໄດ້ ເນື່ອງຈາກມັນກຳລັງຖືກໃຊ້ໂດຍໜຶ່ງຫຼືຫຼາຍສາຂາ.'
                 ]);
         }
 
@@ -62,8 +62,8 @@ class TuitionController extends Controller
         return redirect()->route('tuitions.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Tuition fee deleted successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ລຶບຄ່າຮຽນສຳເລັດແລ້ວ.'
             ]);
     }
 

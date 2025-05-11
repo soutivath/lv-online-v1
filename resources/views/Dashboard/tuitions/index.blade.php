@@ -36,7 +36,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ລະຫັດ</th>
                         <th>ລາຄາ</th>
                         <th>ຄຳສັ່ງ</th>
                     </tr>

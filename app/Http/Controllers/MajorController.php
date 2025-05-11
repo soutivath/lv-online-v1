@@ -44,8 +44,8 @@ class MajorController extends Controller
         return redirect()->route('majors.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Major created successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ສ້າງສາຂາສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -65,8 +65,8 @@ class MajorController extends Controller
         return redirect()->route('majors.index')
             ->with('sweet_alert', [
                 'type' => 'success',
-                'title' => 'Success!',
-                'text' => 'Major updated successfully.'
+                'title' => 'ສຳເລັດ!',
+                'text' => 'ອັບເດດສາຂາສຳເລັດແລ້ວ.'
             ]);
     }
 
@@ -79,15 +79,15 @@ class MajorController extends Controller
             return redirect()->route('majors.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Major and all related data deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບສາຂາແລະຂໍ້ມູນທີ່ກ່ຽວຂ້ອງທັງໝົດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('majors.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete major: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການລຶບສາຂາ: ' . $e->getMessage()
                 ]);
         }
     }

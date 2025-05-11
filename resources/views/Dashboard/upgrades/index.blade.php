@@ -62,7 +62,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ລະຫັດ</th>
                         <th>ນັກສຶກສາ</th>
                         <th>ວັນທີ</th>
                         <th>ສາຂາ</th>

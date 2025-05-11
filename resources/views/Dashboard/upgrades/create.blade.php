@@ -279,7 +279,7 @@
             const semesterId = $('#semester_filter').val();
             
             // Show loading indicator
-            $('#major_id').html('<option value="">Loading majors...</option>');
+            $('#major_id').html('<option value="">ກຳລັງໂຫຼດສາຂາ...</option>');
             
             $.ajax({
                 url: "{{ route('majors.filtered') }}",
@@ -296,7 +296,7 @@
                 },
                 success: function(response) {
                     // Clear current options and add default option
-                    $('#major_id').empty().append('<option value="">Select Major</option>');
+                    $('#major_id').empty().append('<option value="">ເລືອກສາຂາ</option>');
                     
                     // Add filtered majors
                     if (response.majors && response.majors.length > 0) {
@@ -308,7 +308,7 @@
                             );
                         });
                     } else {
-                        $('#major_id').append('<option value="" disabled>No majors match the selected filters</option>');
+                        $('#major_id').append('<option value="" disabled>ບໍ່ມີສາຂາທີ່ກົງກັບຕົວກັ່ນຕອງທີ່ເລືອກ</option>');
                     }
                     
                     // Refresh Select2
@@ -317,7 +317,7 @@
                 error: function(xhr, status, error) {
                     console.error("Error fetching filtered majors:", error);
                     console.log("Response:", xhr.responseText);
-                    $('#major_id').html('<option value="">Error loading majors. Please try again.</option>');
+                    $('#major_id').html('<option value="">ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດສາຂາ. ກະລຸນາລອງໃໝ່.</option>');
                 }
             });
         }

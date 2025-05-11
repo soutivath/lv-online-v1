@@ -66,7 +66,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>ລະຫັດ</th>
                         <th>ຊື່</th>
                         <th>ນາມສະກຸນ</th>
                         <th>ອີເມລ</th>
@@ -323,7 +323,7 @@
                                 <div class="picture-preview mt-2" style="display: none;"></div>
                                 @if($student->picture)
                                     <div class="mt-2 current-image">
-                                        <img src="{{ asset('storage/' . $student->picture) }}" alt="Current Picture" class="img-thumbnail" style="max-height: 100px;">
+                                        <img src="{{ asset('storage/' . $student->picture) }}" alt="ຮູບປັດຈຸບັນ" class="img-thumbnail" style="max-height: 100px;">
                                         <span class="text-muted small d-block">ຮູບປັດຈຸບັນ</span>
                                     </div>
                                 @endif
@@ -377,7 +377,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                <img id="previewImage" src="" alt="Document Preview" class="img-fluid">
+                <img id="previewImage" src="" alt="ຕົວຢ່າງເອກະສານ" class="img-fluid">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ປິດ</button>
@@ -437,7 +437,7 @@
                     if (file.type.startsWith('image/')) {
                         preview.html('<img src="' + e.target.result + '" class="img-thumbnail mt-2" style="max-height: 200px;">');
                     } else {
-                        preview.html('<div class="alert alert-info mt-2">File selected: ' + file.name + '</div>');
+                        preview.html('<div class="alert alert-info mt-2">ໄຟລ໌ທີ່ເລືອກ: ' + file.name + '</div>');
                     }
                     preview.show();
                 };
@@ -459,8 +459,8 @@
                 if (this.files.length > 0 && this.files[0].size > 5 * 1024 * 1024) { // 5MB
                     Swal.fire({
                         icon: 'error',
-                        title: 'File too large',
-                        text: 'Please select a file smaller than 5MB.'
+                        title: 'ໄຟລ໌ໃຫຍ່ເກີນໄປ',
+                        text: 'ກະລຸນາເລືອກໄຟລ໌ທີ່ມີຂະໜາດນ້ອຍກວ່າ 5MB.'
                     });
                     isValid = false;
                     return false; // Break the loop
@@ -480,9 +480,9 @@
             name: 'score',
             render: function(data) {
                 if (data) {
-                    return '<span class="badge bg-success">Uploaded</span>';
+                    return '<span class="badge bg-success">ອັບໂຫລດແລ້ວ</span>';
                 } else {
-                    return '<span class="badge bg-secondary">Not uploaded</span>';
+                    return '<span class="badge bg-secondary">ຍັງບໍ່ໄດ້ອັບໂຫລດ</span>';
                 }
             }
         },
@@ -491,10 +491,10 @@
 
     // Add this to your existing JavaScript
     function previewDocument(url) {
-        // Set the image source
+        // ຕັ້ງແຫຼ່ງທີ່ມາຂອງຮູບພາບ
         document.getElementById('documentPreviewImage').src = url;
         
-        // Show the modal
+        // ສະແດງ modal
         const previewModal = new bootstrap.Modal(document.getElementById('documentPreviewModal'));
         previewModal.show();
     }
@@ -520,9 +520,9 @@
             render: function(data, type, row) {
                 if (data) {
                     return '<button class="btn btn-sm btn-info view-document-btn" data-document-url="' + 
-                           '{{ asset("storage") }}/' + data + '"><i class="fas fa-eye"></i> View</button>';
+                           '{{ asset("storage") }}/' + data + '"><i class="fas fa-eye"></i> ເບິ່ງ</button>';
                 } else {
-                    return '<span class="badge bg-secondary">No document</span>';
+                    return '<span class="badge bg-secondary">ບໍ່ມີເອກະສານ</span>';
                 }
             }
         }

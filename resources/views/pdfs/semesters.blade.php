@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Semesters</title>
+    <title>ພາກຮຽນທັງໝົດ</title>
     <style>
         body {
             font-family: 'Phetsarath', sans-serif;
@@ -41,16 +41,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL SEMESTERS REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານພາກຮຽນທັງໝົດ<br/><span style="font-size: 0.8em;">ALL SEMESTERS REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Majors Count</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ຊື່<br/><span style="font-size: 0.8em;">Name</span></th>
+                    <th>ຈຳນວນສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Majors Count</span></th>
                 </tr>
             </thead>
             <tbody>

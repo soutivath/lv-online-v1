@@ -81,8 +81,8 @@ class EmployeeController extends Controller
             return redirect()->route('employees.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Employee and user account created successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ສ້າງພະນັກງານແລະບັນຊີຜູ້ໃຊ້ສຳເລັດແລ້ວ.'
                 ]);
                 
         } catch (\Exception $e) {
@@ -91,8 +91,8 @@ class EmployeeController extends Controller
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to create employee: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການສ້າງພະນັກງານ: ' . $e->getMessage()
                 ])
                 ->withInput();
         }
@@ -183,8 +183,8 @@ class EmployeeController extends Controller
             return redirect()->route('employees.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Employee and user account updated successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ອັບເດດພະນັກງານແລະບັນຊີຜູ້ໃຊ້ສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -192,8 +192,8 @@ class EmployeeController extends Controller
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to update employee: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການອັບເດດພະນັກງານ: ' . $e->getMessage()
                 ])
                 ->withInput();
         }
@@ -222,8 +222,8 @@ class EmployeeController extends Controller
             return redirect()->route('employees.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Employee and all related data deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບພະນັກງານແລະຂໍ້ມູນທີ່ກ່ຽວຂ້ອງທັງໝົດສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -231,8 +231,8 @@ class EmployeeController extends Controller
             return redirect()->route('employees.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete employee: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ລົ້ມເຫຼວໃນການລຶບພະນັກງານ: ' . $e->getMessage()
                 ]);
         }
     }

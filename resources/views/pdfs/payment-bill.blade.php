@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Payment Bill</title>
+    <title>ໃບເກັບເງິນ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -68,26 +68,26 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>PAYMENT BILL</h1>
-            <h3>Laovieng College</h3>
+            <h1>ໃບບິນການຊຳລະເງິນ<br/><span style="font-size: 0.8em;">PAYMENT BILL</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <div class="bill-info">
-            <p><strong>Bill No:</strong> {{ $payment->id }}</p>
-            <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y H:i') }}</p>
-            <p><strong>Student ID:</strong> {{ $payment->student->id }}</p>
-            <p><strong>Student Name:</strong> {{ $payment->student->name }} {{ $payment->student->sername }}</p>
-            <p><strong>Major:</strong> {{ $payment->major->name }}</p>
-            <p><strong>Received By:</strong> {{ $payment->employee ? $payment->employee->name . ' ' . $payment->employee->sername : 'N/A' }}</p>
+            <p><strong>ເລກບິນ / Bill No:</strong> {{ $payment->id }}</p>
+            <p><strong>ວັນທີ / Date:</strong> {{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y H:i') }}</p>
+            <p><strong>ລະຫັດນັກສຶກສາ / Student ID:</strong> {{ $payment->student->id }}</p>
+            <p><strong>ຊື່ນັກສຶກສາ / Student Name:</strong> {{ $payment->student->name }} {{ $payment->student->sername }}</p>
+            <p><strong>ສາຂາວິຊາ / Major:</strong> {{ $payment->major->name }}</p>
+            <p><strong>ຜູ້ຮັບເງິນ / Received By:</strong> {{ $payment->employee ? $payment->employee->name . ' ' . $payment->employee->sername : 'ບໍ່ມີ' }}</p>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Discount</th>
-                    <th>Final Amount</th>
+                    <th>ລາຍລະອຽດ<br/><span style="font-size: 0.8em;">Description</span></th>
+                    <th>ຈຳນວນເງິນ<br/><span style="font-size: 0.8em;">Amount</span></th>
+                    <th>ສ່ວນຫຼຸດ<br/><span style="font-size: 0.8em;">Discount</span></th>
+                    <th>ຈຳນວນເງິນສຸດທ້າຍ<br/><span style="font-size: 0.8em;">Final Amount</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -102,7 +102,7 @@
         </table>
         
         <div class="totals">
-            <p><strong>Total Amount: {{ number_format($payment->total_price, 2) }}</strong></p>
+            <p><strong>ຈຳນວນເງິນທັງໝົດ / Total Amount: {{ number_format($payment->total_price, 2) }}</strong></p>
         </div>
         
         {{-- <div class="qr-code">

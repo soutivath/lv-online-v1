@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Payment Bill - {{ $bill_number }}</title>
+    <title>ໃບເກັບເງິນ - {{ $bill_number }}</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -68,28 +68,28 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>PAYMENT BILL</h1>
-            <h3>Laovieng College</h3>
+            <h1>ໃບບິນການຊຳລະເງິນ<br/><span style="font-size: 0.8em;">PAYMENT BILL</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <div class="bill-info">
-            <p><strong>Bill No:</strong> {{ $bill_number }}</p>
-            <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($date)->format('d/m/Y H:i') }}</p>
-            <p><strong>Student ID:</strong> {{ $student->id }}</p>
-            <p><strong>Student Name:</strong> {{ $student->name }} {{ $student->sername }}</p>
-            <p><strong>Received By:</strong> {{ isset($employee) ? $employee->name . ' ' . $employee->sername : 'N/A' }}</p>
+            <p><strong>ເລກບິນ / Bill No:</strong> {{ $bill_number }}</p>
+            <p><strong>ວັນທີ / Date:</strong> {{ \Carbon\Carbon::parse($date)->format('d/m/Y H:i') }}</p>
+            <p><strong>ລະຫັດນັກສຶກສາ / Student ID:</strong> {{ $student->id }}</p>
+            <p><strong>ຊື່ນັກສຶກສາ / Student Name:</strong> {{ $student->name }} {{ $student->sername }}</p>
+            <p><strong>ຜູ້ຮັບເງິນ / Received By:</strong> {{ isset($employee) ? $employee->name . ' ' . $employee->sername : 'ບໍ່ມີ' }}</p>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>Major</th>
-                    <th>Semester</th>
-                    <th>Term</th>
-                    <th>Year</th>
-                    <th>Base Price</th>
-                    <th>Discount</th>
-                    <th>Final Price</th>
+                    <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
+                    <th>ພາກຮຽນ<br/><span style="font-size: 0.8em;">Semester</span></th>
+                    <th>ເທີມ<br/><span style="font-size: 0.8em;">Term</span></th>
+                    <th>ປີການສຶກສາ<br/><span style="font-size: 0.8em;">Year</span></th>
+                    <th>ລາຄາພື້ນຖານ<br/><span style="font-size: 0.8em;">Base Price</span></th>
+                    <th>ສ່ວນຫຼຸດ<br/><span style="font-size: 0.8em;">Discount</span></th>
+                    <th>ລາຄາສຸດທ້າຍ<br/><span style="font-size: 0.8em;">Final Price</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -107,14 +107,14 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="6" style="text-align: right;">Total:</th>
+                    <th colspan="6" style="text-align: right;">ຈຳນວນເງິນທັງໝົດ / Total:</th>
                     <th>{{ number_format($total, 2) }}</th>
                 </tr>
             </tfoot>
         </table>
         
         <div class="totals">
-            <p><strong>Total Amount: {{ number_format($total, 2) }}</strong></p>
+            <p><strong>ຈຳນວນເງິນທັງໝົດ / Total Amount: {{ number_format($total, 2) }}</strong></p>
         </div>
         
         {{-- <div class="qr-code">

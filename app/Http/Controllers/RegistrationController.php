@@ -118,8 +118,8 @@ class RegistrationController extends Controller
             return redirect()->route('registrations.create')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Please select at least one major for registration.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ກະລຸນາເລືອກຢ່າງນ້ອຍໜຶ່ງສາຂາສຳລັບການລົງທະບຽນ.'
                 ]);
         }
 
@@ -128,8 +128,8 @@ class RegistrationController extends Controller
             return redirect()->route('registrations.create')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Duplicate majors detected. Please select each major only once.'
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ພົບສາຂາຊ້ຳກັນ. ກະລຸນາເລືອກແຕ່ລະສາຂາພຽງຄັ້ງດຽວ.'
                 ]);
         }
 
@@ -236,8 +236,8 @@ class RegistrationController extends Controller
             return redirect()->route('registrations.show', $registration->id)
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Registration created successfully with ' . count($majorIds) . ' majors.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ສ້າງການລົງທະບຽນສຳເລັດແລ້ວກັບ ' . count($majorIds) . ' ສາຂາ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -245,8 +245,8 @@ class RegistrationController extends Controller
             return redirect()->route('registrations.create')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to create registration. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການສ້າງການລົງທະບຽນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -306,8 +306,8 @@ class RegistrationController extends Controller
             return redirect()->route('registrations.index')
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Registration deleted successfully.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ລຶບການລົງທະບຽນສຳເລັດແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -315,8 +315,8 @@ class RegistrationController extends Controller
             return redirect()->route('registrations.index')
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to delete registration. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການລຶບການລົງທະບຽນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -393,15 +393,15 @@ class RegistrationController extends Controller
             return redirect()->route('registrations.show', $registration->id)
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Registration payment has been confirmed and payment records updated.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ຢືນຢັນການຊຳລະເງິນສຳເລັດແລ້ວ ແລະ ອັບເດດບັນທຶກການຊຳລະເງິນແລ້ວ.'
                 ]);
         } catch (\Exception $e) {
             return redirect()->route('registrations.show', $registration->id)
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to confirm payment. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການຢືນຢັນການຊຳລະເງິນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }
@@ -580,8 +580,8 @@ class RegistrationController extends Controller
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'success',
-                    'title' => 'Success!',
-                    'text' => 'Registration created successfully with ' . count($majorIds) . ' majors.'
+                    'title' => 'ສຳເລັດ!',
+                    'text' => 'ສ້າງການລົງທະບຽນສຳເລັດແລ້ວກັບ ' . count($majorIds) . ' ສາຂາ.'
                 ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -589,8 +589,8 @@ class RegistrationController extends Controller
             return redirect()->back()
                 ->with('sweet_alert', [
                     'type' => 'error',
-                    'title' => 'Error!',
-                    'text' => 'Failed to create registration. Error: ' . $e->getMessage()
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ການສ້າງການລົງທະບຽນລົ້ມເຫລວ. ຂໍ້ຜິດພາດ: ' . $e->getMessage()
                 ]);
         }
     }

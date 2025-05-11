@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Upgrades</title>
+    <title>ການອັບເກຣດທັງໝົດ</title>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -48,20 +48,20 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL UPGRADES REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານການປັບປຸງຄະແນນທັງໝົດ<br/><span style="font-size: 0.8em;">ALL UPGRADES REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Student</th>
-                    <th>Major</th>
-                    <th>Subjects Count</th>
-                    <th>Total Amount</th>
-                    <th>Employee</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ວັນທີ<br/><span style="font-size: 0.8em;">Date</span></th>
+                    <th>ນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student</span></th>
+                    <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
+                    <th>ຈຳນວນວິຊາ<br/><span style="font-size: 0.8em;">Subjects Count</span></th>
+                    <th>ຈຳນວນເງິນທັງໝົດ<br/><span style="font-size: 0.8em;">Total Amount</span></th>
+                    <th>ພະນັກງານ<br/><span style="font-size: 0.8em;">Employee</span></th>
                 </tr>
             </thead>
             <tbody>
@@ -73,7 +73,7 @@
                     <td>{{ $upgrade->major->name }}</td>
                     <td>{{ $upgrade->upgradeDetails->count() }}</td>
                     <td>{{ number_format($upgrade->upgradeDetails->sum('total_price'), 2) }}</td>
-                    <td>{{ $upgrade->employee ? $upgrade->employee->name : 'N/A' }}</td>
+                    <td>{{ $upgrade->employee ? $upgrade->employee->name : 'ບໍ່ມີ' }}</td>
                 </tr>
                 @endforeach
             </tbody>

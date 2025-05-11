@@ -2,10 +2,10 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>All Tuition Fees</title>
+    <title>ຄ່າຮຽນທັງໝົດ</title>
     <style>
         body {
-            font-family: 'Phetsarath OT', sans-serif;
+            font-family: 'Phetsarath', sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -46,16 +46,16 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ALL TUITION FEES REPORT</h1>
-            <h3>Laovieng College</h3>
+            <h1>ລາຍງານຄ່າຮຽນທັງໝົດ<br/><span style="font-size: 0.8em;">ALL TUITION FEES REPORT</span></h1>
+            <h3>ວິທະຍາໄລລາວວຽງ<br/><span style="font-size: 0.8em;">Laovieng College</span></h3>
         </div>
         
         <table>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Price</th>
-                    <th>Majors Using This Fee</th>
+                    <th>ລະຫັດ<br/><span style="font-size: 0.8em;">ID</span></th>
+                    <th>ລາຄາ<br/><span style="font-size: 0.8em;">Price</span></th>
+                    <th>ສາຂາວິຊາທີ່ໃຊ້ຄ່າຮຽນນີ້<br/><span style="font-size: 0.8em;">Majors Using This Fee</span></th>
                 </tr>
             </thead>
             <tbody>
