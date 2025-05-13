@@ -40,7 +40,7 @@ class DashboardController extends Controller
             if ($searchedStudent) {
                 // Get all payments for this student
                 $studentPayments = Payment::where('student_id', $searchedStudent->id)
-                    ->with(['major'])
+                    ->with(['major.year', 'major.term', 'major.semester'])
                     ->orderBy('date', 'desc')
                     ->get();
                     
@@ -66,7 +66,7 @@ class DashboardController extends Controller
             if ($searchedUpgradeStudent) {
                 // Get all upgrades for this student
                 $studentUpgrades = Upgrade::where('student_id', $searchedUpgradeStudent->id)
-                    ->with(['major', 'upgradeDetails.subject'])
+                    ->with(['major.year', 'major.term', 'major.semester', 'upgradeDetails.subject'])
                     ->orderBy('date', 'desc')
                     ->get();
                     

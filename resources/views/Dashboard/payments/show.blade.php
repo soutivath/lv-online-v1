@@ -55,6 +55,18 @@
                         <td>{{ $payment->major->name }}</td>
                     </tr>
                     <tr>
+                        <th>ປີການສຶກສາ</th>
+                        <td>{{ $payment->major->year->name }}</td>
+                    </tr>
+                    <tr>
+                        <th>ເທີມ</th>
+                        <td>{{ $payment->major->term->name }}</td>
+                    </tr>
+                    <tr>
+                        <th>ພາກຮຽນ</th>
+                        <td>{{ $payment->major->semester->name }}</td>
+                    </tr>
+                    <tr>
                         <th>ຈຳນວນເງິນຕົ້ນ</th>
                         <td>{{ number_format($payment->detail_price, 2) }}</td>
                     </tr>

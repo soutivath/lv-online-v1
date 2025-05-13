@@ -27,20 +27,20 @@
                         <td>{{ $major->name }}</td>
                     </tr>
                     <tr>
-                        <th>ສາຂາທີ່ກ່ຽວຂ້ອງ:</th>
-                        <td>{{ count($relatedMajorIds) }} ສາຂາໃນພາກຮຽນ/ເທີມຕ່າງໆ</td>
-                    </tr>
-                    <tr>
-                        <th>ພາກຮຽນ:</th>
-                        <td>{{ $major->semester->name }}</td>
+                        <th>ປີການສຶກສາ:</th>
+                        <td>{{ $major->year->name }}</td>
                     </tr>
                     <tr>
                         <th>ເທີມ:</th>
                         <td>{{ $major->term->name }}</td>
                     </tr>
                     <tr>
-                        <th>ສົກຮຽນ:</th>
-                        <td>{{ $major->year->name }}</td>
+                        <th>ພາກຮຽນ:</th>
+                        <td>{{ $major->semester->name }}</td>
+                    </tr>
+                    <tr>
+                        <th>ສາຂາທີ່ກ່ຽວຂ້ອງ:</th>
+                        <td>{{ count($relatedMajorIds) }} ສາຂາໃນພາກຮຽນ/ເທີມຕ່າງໆ</td>
                     </tr>
                 </table>
             </div>
@@ -77,6 +77,9 @@
                         <th>ລະຫັດ</th>
                         <th>ນັກສຶກສາ</th>
                         <th>ວັນທີ</th>
+                        <th>ປີການສຶກສາ</th>
+                        <th>ເທີມ</th>
+                        <th>ພາກຮຽນ</th>
                         <th>ວິຊາຮຽນ</th>
                         <th>ຈຳນວນເງິນທັງໝົດ</th>
                         <th>ສະຖານະ</th>
@@ -89,6 +92,9 @@
                         <td>{{ $upgrade->id }}</td>
                         <td>{{ $upgrade->student->name }} {{ $upgrade->student->sername }}</td>
                         <td>{{ \Carbon\Carbon::parse($upgrade->date)->format('d/m/Y') }}</td>
+                        <td>{{ $upgrade->major->year->name }}</td>
+                        <td>{{ $upgrade->major->term->name }}</td>
+                        <td>{{ $upgrade->major->semester->name }}</td>
                         <td>
                             <span class="badge bg-info">{{ $upgrade->upgradeDetails->count() }} subjects</span>
                         </td>
@@ -106,13 +112,13 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="text-center">ບໍ່ພົບການອັບເກຣດສຳລັບສາຂານີ້</td>
+                        <td colspan="10" class="text-center">ບໍ່ພົບການອັບເກຣດສຳລັບສາຂານີ້</td>
                     </tr>
                     @endforelse
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th colspan="4" class="text-end">ລວມທັງໝົດ:</th>
+                        <th colspan="7" class="text-end">ລວມທັງໝົດ:</th>
                         <th>{{ number_format($totalAmount, 2) }}</th>
                         <th colspan="2"></th>
                     </tr>

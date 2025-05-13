@@ -63,6 +63,9 @@
                     <th>ວັນທີ<br/><span style="font-size: 0.8em;">Date</span></th>
                     <th>ນັກສຶກສາ<br/><span style="font-size: 0.8em;">Student</span></th>
                     <th>ສາຂາວິຊາ<br/><span style="font-size: 0.8em;">Major</span></th>
+                    <th>ປີການສຶກສາ<br/><span style="font-size: 0.8em;">Year</span></th>
+                    <th>ເທີມ<br/><span style="font-size: 0.8em;">Term</span></th>
+                    <th>ພາກຮຽນ<br/><span style="font-size: 0.8em;">Semester</span></th>
                     <th>ຈຳນວນເງິນພື້ນຖານ<br/><span style="font-size: 0.8em;">Base Amount</span></th>
                     <th>ສ່ວນຫຼຸດ %<br/><span style="font-size: 0.8em;">Discount %</span></th>
                     <th>ຈຳນວນເງິນສຸດທ້າຍ<br/><span style="font-size: 0.8em;">Final Amount</span></th>
@@ -76,6 +79,9 @@
                     <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>
                     <td>{{ $payment->student->name }} {{ $payment->student->sername }}</td>
                     <td>{{ $payment->major->name }}</td>
+                    <td>{{ $payment->major->year->name ?? 'ບໍ່ມີ' }}</td>
+                    <td>{{ $payment->major->term->name ?? 'ບໍ່ມີ' }}</td>
+                    <td>{{ $payment->major->semester->name ?? 'ບໍ່ມີ' }}</td>
                     <td>{{ number_format($payment->detail_price, 2) }}</td>
                     <td>{{ $payment->pro }}%</td>
                     <td>{{ number_format($payment->total_price, 2) }}</td>
@@ -85,7 +91,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="6" style="text-align: right">ຈຳນວນເງິນທັງໝົດ / Total:</th>
+                    <th colspan="9" style="text-align: right">ຈຳນວນເງິນທັງໝົດ / Total:</th>
                     <th>{{ number_format($total, 2) }}</th>
                     <th></th>
                 </tr>

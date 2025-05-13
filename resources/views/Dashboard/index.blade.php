@@ -167,6 +167,9 @@
                                             <th>ລະຫັດ</th>
                                             <th>ວັນທີ</th>
                                             <th>ສາຂາ</th>
+                                            <th>ປີການສຶກສາ</th>
+                                            <th>ເທີມ</th>
+                                            <th>ພາກຮຽນ</th>
                                             <th>ຈຳນວນເງິນ</th>
                                             <th>ສະຖານະ</th>
                                             <th>ການກະທຳ</th>
@@ -177,7 +180,10 @@
                                             <tr>
                                                 <td>{{ $payment->id }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>
-                                                <td>{{ $payment->major->name ?? 'N/A' }}</td>
+                                                <td>{{ $payment->major->name ?? 'ບໍ່ມີ' }}</td>
+                                                <td>{{ $payment->major->year->name ?? 'ບໍ່ມີ' }}</td>
+                                                <td>{{ $payment->major->term->name ?? 'ບໍ່ມີ' }}</td>
+                                                <td>{{ $payment->major->semester->name ?? 'ບໍ່ມີ' }}</td>
                                                 <td>{{ number_format($payment->total_price, 2) }}</td>
                                                 <td>
                                                     @if($payment->status == 'pending')
@@ -262,6 +268,9 @@
                                             <th>ລະຫັດ</th>
                                             <th>ວັນທີ</th>
                                             <th>ສາຂາ</th>
+                                            <th>ປີການສຶກສາ</th>
+                                            <th>ເທີມ</th>
+                                            <th>ພາກຮຽນ</th>
                                             <th>ວິຊາທີ່ອັບເກຣດ</th>
                                             <th>ຈຳນວນເງິນ</th>
                                             <th>ສະຖານະ</th>
@@ -273,7 +282,10 @@
                                             <tr>
                                                 <td>{{ $upgrade->id }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($upgrade->date)->format('d/m/Y') }}</td>
-                                                <td>{{ $upgrade->major->name ?? 'N/A' }}</td>
+                                                <td>{{ $upgrade->major->name ?? 'ບໍ່ມີ' }}</td>
+                                                <td>{{ $upgrade->major->year->name ?? 'ບໍ່ມີ' }}</td>
+                                                <td>{{ $upgrade->major->term->name ?? 'ບໍ່ມີ' }}</td>
+                                                <td>{{ $upgrade->major->semester->name ?? 'ບໍ່ມີ' }}</td>
                                                 <td>
                                                     @foreach($upgrade->upgradeDetails as $detail)
                                                         <span class="badge bg-info">{{ $detail->subject->name }}</span>
@@ -300,7 +312,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="4" class="text-end">ລວມທັງໝົດ:</th>
+                                            <th colspan="7" class="text-end">ລວມທັງໝົດ:</th>
                                             <th>{{ number_format($studentUpgradeTotal, 2) }}</th>
                                             <th colspan="2"></th>
                                         </tr>

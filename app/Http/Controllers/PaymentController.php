@@ -11,11 +11,13 @@ use App\Models\Registration;
 use App\Models\RegistrationDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use PDF;
+use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\PaymentStatusService;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class PaymentController extends Controller
 {
@@ -48,7 +50,7 @@ class PaymentController extends Controller
             ->values();
             
         // Base query for individual payments
-        $individualPaymentsQuery = Payment::with(['student', 'major'])
+        $individualPaymentsQuery = Payment::with(['student', 'major.year', 'major.term', 'major.semester'])
             ->whereNull('bill_number')
             ->orderBy('date', 'desc');
             
@@ -65,7 +67,7 @@ class PaymentController extends Controller
         $individualPayments = $individualPaymentsQuery->get();
         
         // Base query for grouped payments
-        $groupedPaymentsQuery = Payment::with(['student', 'major'])
+        $groupedPaymentsQuery = Payment::with(['student', 'major.year', 'major.term', 'major.semester'])
             ->whereNotNull('bill_number')
             ->orderBy('date', 'desc');
             
@@ -280,7 +282,7 @@ class PaymentController extends Controller
                 'total' => $groupedPayments->sum('total_price'),
             ];
 
-            $pdf = \PDF::loadView('pdfs.grouped-payment-bill', $data);
+            $pdf = Pdf::loadView('pdfs.grouped-payment-bill', $data);
             return $pdf->download('bill-' . $payment->bill_number . '.pdf');
         }
 
@@ -299,7 +301,7 @@ class PaymentController extends Controller
         ]);
 
         // Generate QR code image
-        $qrCode = base64_encode(\QrCode::format('png')
+        $qrCode = base64_encode(QrCode::format('png')
             ->size(200)
             ->margin(1)
             ->generate($qrContent));
@@ -309,13 +311,13 @@ class PaymentController extends Controller
             'qrCode' => $qrCode
         ];
 
-        $pdf = \PDF::loadView('pdfs.payment-bill', $data);
+        $pdf = Pdf::loadView('pdfs.payment-bill', $data);
         return $pdf->download('payment-bill-' . $payment->id . '.pdf');
     }
 
     public function exportAllPDF()
     {
-        $payments = Payment::with(['student', 'major', 'employee'])->get();
+        $payments = Payment::with(['student', 'major.year', 'major.term', 'major.semester', 'employee'])->get();
 
         $data = [
             'payments' => $payments,
@@ -323,7 +325,7 @@ class PaymentController extends Controller
             'total' => $payments->sum('total_price')
         ];
 
-        $pdf = \PDF::loadView('pdfs.payments', $data);
+        $pdf = Pdf::loadView('pdfs.payments', $data);
         return $pdf->download('all-payments.pdf');
     }
 
@@ -369,11 +371,11 @@ class PaymentController extends Controller
     {
         try {
             // Debug mode - log all steps to identify the issue
-            \Log::info('Starting showStudentPaymentForm method');
+            Log::info('Starting showStudentPaymentForm method');
 
             // Check if user is logged in
             if (!Session::has('user')) {
-                \Log::info('User not logged in - redirecting to login');
+                Log::info('User not logged in - redirecting to login');
                 return redirect()->route('login')
                     ->with('sweet_alert', [
                         'type' => 'error',
@@ -384,14 +386,14 @@ class PaymentController extends Controller
 
             // Get user data
             $userData = Session::get('user');
-            \Log::info('User is logged in', ['user_id' => $userData['id']]);
+            Log::info('User is logged in', ['user_id' => $userData['id']]);
 
             // Load user with student relationship
             $user = User::with('student')->find($userData['id']);
 
             // Check if student profile exists
             if (!$user || !$user->student) {
-                \Log::info('User is not a student', ['user_id' => $userData['id']]);
+                Log::info('User is not a student', ['user_id' => $userData['id']]);
                 return redirect()->route('home')
                     ->with('sweet_alert', [
                         'type' => 'error',
@@ -402,10 +404,10 @@ class PaymentController extends Controller
 
             // Get student information
             $student = $user->student;
-            \Log::info('Found student profile', ['student_id' => $student->id]);
+            Log::info('Found student profile', ['student_id' => $student->id]);
 
             // Get registered major names from registration details
-            \Log::info('Getting registered major names');
+            Log::info('Getting registered major names');
             $registeredMajorNames = DB::table('registrations')
                 ->join('registration_details', 'registrations.id', '=', 'registration_details.registration_id')
                 ->join('majors', 'registration_details.major_id', '=', 'majors.id')
@@ -414,7 +416,7 @@ class PaymentController extends Controller
                 ->unique()
                 ->toArray();
 
-            \Log::info('Found registered major names', ['names' => $registeredMajorNames]);
+            Log::info('Found registered major names', ['names' => $registeredMajorNames]);
 
             // Get majors that have been paid by this student
             $paidMajorIds = Payment::where('student_id', $student->id)
@@ -422,7 +424,7 @@ class PaymentController extends Controller
                 ->pluck('major_id')
                 ->toArray();
 
-            \Log::info('Found paid major IDs', ['ids' => $paidMajorIds]);
+            Log::info('Found paid major IDs', ['ids' => $paidMajorIds]);
 
             // Get all majors matching the registered names, excluding already paid ones
             $majors = Major::with(['semester', 'term', 'year', 'tuition'])
@@ -430,10 +432,10 @@ class PaymentController extends Controller
                 ->whereNotIn('id', $paidMajorIds)
                 ->get();
 
-            \Log::info('Filtered majors for payment', ['count' => $majors->count()]);
+            Log::info('Filtered majors for payment', ['count' => $majors->count()]);
 
             if ($majors->isEmpty()) {
-                \Log::info('No available majors for payment');
+                Log::info('No available majors for payment');
                 return redirect()->route('home')
                     ->with('sweet_alert', [
                         'type' => 'info',
@@ -444,10 +446,10 @@ class PaymentController extends Controller
 
             $students = Student::all();
 
-            \Log::info('Rendering student-payment view');
+            Log::info('Rendering student-payment view');
             return view('student-payment', compact('student', 'majors', 'students'));
         } catch (\Exception $e) {
-            \Log::error('Exception in showStudentPaymentForm', [
+            Log::error('Exception in showStudentPaymentForm', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -467,7 +469,7 @@ class PaymentController extends Controller
     public function storeStudentPayment(Request $request)
     {
         // Log the request for debugging
-        \Log::info('Payment submission received', [
+        Log::info('Payment submission received', [
             'request_data' => $request->all(),
             'files' => $request->hasFile('payment_proof') ? 'Yes' : 'No'
         ]);
@@ -491,7 +493,7 @@ class PaymentController extends Controller
             // $user = User::with('student')->find($userData['id']);
 
             // if (!$user || !$user->student) {
-            //     \Log::error('Student not found for user', ['user_id' => $userData['id']]);
+            //     Log::error('Student not found for user', ['user_id' => $userData['id']]);
             //     return redirect()->back()->with('error', 'ບໍ່ພົບຂໍ້ມູນນັກສຶກສາ');
             // }
             $student = Student::findOrFail($request->student_id);
@@ -648,7 +650,7 @@ class PaymentController extends Controller
                 $payment->payment_proof = $paymentProofPath;
 
                 $payment->save();
-                \Log::info('Payment record created', ['payment_id' => $payment->id]);
+                Log::info('Payment record created', ['payment_id' => $payment->id]);
 
                 // Store first payment ID for PDF redirect
                 if (!$firstPayment) {
@@ -676,7 +678,7 @@ class PaymentController extends Controller
                     'text' => 'ການຊຳລະເງິນຂອງທ່ານສຳເລັດແລ້ວ ແລະ ລໍຖ້າການອະນຸມັດ'
                 ]);
         } catch (\Exception $e) {
-            \Log::error('Error in payment submission', [
+            Log::error('Error in payment submission', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);

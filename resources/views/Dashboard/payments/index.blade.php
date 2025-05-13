@@ -135,6 +135,9 @@
                         <th>ນັກສຶກສາ</th>
                         <th>ວັນທີ</th>
                         <th>ສາຂາ</th>
+                        <th>ປີການສຶກສາ</th>
+                        <th>ເທີມ</th>
+                        <th>ພາກຮຽນ</th>
                         <th>ຈຳນວນເງິນ</th>
                         <th>ສະຖານະ</th>
                         <th>ຄຳສັ່ງ</th>
@@ -147,6 +150,9 @@
                             <td>{{ $payment->student->name }} {{ $payment->student->sername }}</td>
                             <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>
                             <td>{{ $payment->major->name }}</td>
+                            <td>{{ $payment->major->year->name ?? 'ບໍ່ມີ' }}</td>
+                            <td>{{ $payment->major->term->name ?? 'ບໍ່ມີ' }}</td>
+                            <td>{{ $payment->major->semester->name ?? 'ບໍ່ມີ' }}</td>
                             <td>{{ number_format($payment->total_price, 2) }}</td>
                             <td>
                                 @if($payment->status == 'pending')
@@ -182,7 +188,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">ບໍ່ພົບລາຍການການຊຳລະເງິນເທື່ອລະລາຍການ</td>
+                            <td colspan="10" class="text-center">ບໍ່ພົບລາຍການການຊຳລະເງິນເທື່ອລະລາຍການ</td>
                         </tr>
                     @endforelse
                 </tbody>
