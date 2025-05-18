@@ -76,7 +76,8 @@
                                 <i class="bi bi-person-circle me-1"></i> {{ session('user')['name'] }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li><a class="dropdown-item {{ request()->routeIs('main') ? 'active' : '' }}" href="{{ route('main') }}"><i class="bi bi-person me-2"></i>ໂປຣໄຟລ໌</a></li>
+                                <li><a class="dropdown-item {{ request()->routeIs('main') && !request()->get('view') ? 'active' : '' }}" href="{{ route('main') }}"><i class="bi bi-speedometer2 me-2"></i>ໂປຣໄຟລ໌</a></li>
+                                {{-- <li><a class="dropdown-item {{ request()->get('view') == 'profile' ? 'active' : '' }}" href="{{ route('main', ['view' => 'profile']) }}"><i class="bi bi-person me-2"></i>ໂປຣໄຟລ໌</a></li> --}}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ url('/logout') }}" method="POST" id="logout-form">

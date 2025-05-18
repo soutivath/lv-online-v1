@@ -15,6 +15,7 @@ use App\Http\Controllers\MajorController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UpgradeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\Auth\LoginController;
@@ -75,7 +76,14 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/logout', 'App\Http\Controllers\AuthController@logout')->name('logout');
 
 // Student main page route
-Route::get('/main', [MainController::class, 'index'])->name('main');
+Route::middleware(['check.role:student'])->group(function () {
+    Route::get('/main', [MainController::class, 'index'])->name('main');
+});
+
+// Student profile route
+Route::middleware(['check.role:student'])->group(function () {
+    Route::get('/student/profile', [MainController::class, 'index'])->name('student.profile');
+});
 
 // Protected admin routes that require authentication
 Route::middleware(['check.role:admin,student'])->group(function () {

@@ -14,6 +14,46 @@ use PDF;
 
 class StudentController extends Controller
 {
+    /**
+     * Display the student profile information
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function profile()
+    {
+        // Check if user is logged in
+        if (!Session::has('user')) {
+            return redirect()->route('login');
+        }
+        
+        // Get user data
+        $userData = Session::get('user');
+        $user = User::find($userData['id']);
+        
+        if (!$user) {
+            return redirect()->route('login');
+        }
+        
+        // Get student data with relevant relationships
+        $student = Student::where('user_id', $user->id)->with([
+            'registrations.registrationDetails.major.semester.term.year', 
+            'payments.major.semester.term.year', 
+            'upgrades.major.semester.term.year',
+            'upgrades.upgradeDetails.subject'
+        ])->first();
+        
+        if (!$student) {
+            Session::forget('user');
+            return redirect()->route('login')
+                ->with('sweet_alert', [
+                    'type' => 'error',
+                    'title' => 'ຜິດພາດ!',
+                    'text' => 'ບໍ່ພົບບັນຊີນັກສຶກສາ.'
+                ]);
+        }
+        
+        return view('student.profile', compact('student'));
+    }
     public function index(Request $request)
     {
         $query = Student::query();
