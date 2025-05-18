@@ -11,6 +11,71 @@
             font-variation-settings:
                 "wdth" 100;
         }
+        
+        /* Student profile summary styles */
+        .student-summary-card {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .student-summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .student-stat-card {
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .student-stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .student-profile-picture {
+            border: 3px solid #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .student-profile-picture:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Student dashboard table styles */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .table-sm {
+            font-size: 0.85rem;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            --bs-table-accent-bg: rgba(0, 0, 0, 0.02);
+        }
+        
+        .student-summary-card .card-header {
+            padding: 0.75rem 1rem;
+        }
+        
+        .student-summary-card .table th {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .student-summary-card .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,7 +108,7 @@
     <nav class="navbar navbar-dark navbar-expand-lg  border-primary-subtle border-bottom border-2 sticky-top" style="background-color:#2f2cca;">
         <div class="container pt-3">
             <div class="col">
-                <img src="assets/img/pf.jpg" alt="" class=" mt-3 " style="width: 120px; border-radius:50%;">
+                <img src="{{ asset('assets/img/pf.jpg') }}" alt="" class=" mt-3 " style="width: 120px; border-radius:50%;">
                 <a class="navbar-brand" href="#" style="font-size: 25px"> Laovieng Collage</a>
             </div>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -77,7 +142,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                                 <li><a class="dropdown-item {{ request()->routeIs('main') && !request()->get('view') ? 'active' : '' }}" href="{{ route('main') }}"><i class="bi bi-speedometer2 me-2"></i>ໂປຣໄຟລ໌</a></li>
-                                {{-- <li><a class="dropdown-item {{ request()->get('view') == 'profile' ? 'active' : '' }}" href="{{ route('main', ['view' => 'profile']) }}"><i class="bi bi-person me-2"></i>ໂປຣໄຟລ໌</a></li> --}}
+                                {{-- <li><a class="dropdown-item {{ request()->get('view') == 'profile' ? 'active' : '' }}" href="{{ route('student.profile') }}"><i class="bi bi-person-badge me-2"></i>ບັດນັກສຶກສາ</a></li> --}}
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form action="{{ url('/logout') }}" method="POST" id="logout-form">
@@ -114,9 +179,254 @@
             </div>
         </div>
     </div>
+
+    {{-- Student Profile Summary (shown when a student is logged in) --}}
+    @if(session()->has('user') && request()->is('/'))
+        @php
+            $user = \App\Models\User::find(session('user')['id']);
+            $student = \App\Models\Student::where('user_id', $user->id)->with([
+                'registrations.registrationDetails.major.term',
+                'registrations.registrationDetails.major.year',
+                'payments.major.term',
+                'payments.major.year',
+                'upgrades.major.term',
+                'upgrades.major.year',
+                'upgrades.upgradeDetails.subject'
+            ])->first();
+        @endphp
+        
+        @if($student)
+            <div class="container my-4">
+                <div class="card shadow-sm border-0 mb-4 student-summary-card">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-person-vcard-fill me-2"></i>ຍິນດີຕ້ອນຮັບ, {{ $student->name }} {{ $student->sername }}</h4>
+                        <span class="badge bg-light text-primary fs-6">{{ $student->id }}</span>
+                    </div>
+                    <div class="card-body pt-4">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 text-center mb-3 mb-md-0">
+                                <div class="d-flex flex-column align-items-center">
+                                    @if($student->picture)
+                                        <img src="{{ asset('storage/' . $student->picture) }}" alt="Student Picture" class="img-fluid rounded-circle student-profile-picture mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                    @else
+                                        <div class="border rounded-circle d-inline-flex justify-content-center align-items-center bg-light student-profile-picture mb-3" style="width: 150px; height: 150px;">
+                                            <i class="bi bi-person-fill" style="font-size: 5rem; color: #adb5bd;"></i>
+                                        </div>
+                                    @endif
+                                    
+                                    <!-- Student Mini Info -->
+                                    <div class="mb-3 text-start w-100">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="bi bi-person-vcard me-2 text-primary"></i>
+                                            <small>{{ $student->id }}</small>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="bi bi-calendar-date me-2 text-primary"></i>
+                                            <small>{{ \Carbon\Carbon::parse($student->created_at)->format('d/m/Y') }}</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Quick Stats -->
+                                    <div class="d-flex justify-content-around w-100 border-top pt-3">
+                                        <div class="text-center mx-1">
+                                            <div class="bg-primary bg-opacity-10 rounded-circle p-2 mb-1" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-mortarboard-fill text-primary"></i>
+                                            </div>
+                                            <div class="small">{{ $student->registrations->count() }}</div>
+                                        </div>
+                                        <div class="text-center mx-1">
+                                            <div class="bg-success bg-opacity-10 rounded-circle p-2 mb-1" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-cash-coin text-success"></i>
+                                            </div>
+                                            <div class="small">{{ $student->payments->count() }}</div>
+                                        </div>
+                                        <div class="text-center mx-1">
+                                            <div class="bg-info bg-opacity-10 rounded-circle p-2 mb-1" style="width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-arrow-up-circle-fill text-info"></i>
+                                            </div>
+                                            <div class="small">{{ $student->upgrades->count() }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-9 col-md-8">
+                                <!-- Registration Tab -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-mortarboard-fill me-2"></i>ການລົງທະບຽນຂອງທ່ານ</h5>
+                                        <span class="badge bg-white text-primary">{{ $student->registrations->count() }}</span>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        @if($student->registrations->count() > 0)
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-striped table-hover mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>ວັນທີ</th>
+                                                            <th>ສາຂາ</th>
+                                                            <th>ປີການສຶກສາ</th>
+                                                            <th>ເທີມ</th>
+                                                            <th>ສະຖານະ</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($student->registrations as $registration)
+                                                            <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($registration->date)->format('d/m/Y') }}</td>
+                                                                <td>
+                                                                    @if($registration->registrationDetails->count() > 0)
+                                                                        {{ $registration->registrationDetails->first()->major->name }}
+                                                                    @else
+                                                                        ບໍ່ມີ
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if($registration->registrationDetails->count() > 0 && isset($registration->registrationDetails->first()->major->year))
+                                                                        {{ $registration->registrationDetails->first()->major->year->name }}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if($registration->registrationDetails->count() > 0 && isset($registration->registrationDetails->first()->major->term))
+                                                                        {{ $registration->registrationDetails->first()->major->term->name }}
+                                                                    @else
+                                                                        -
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if($registration->payment_status == 'pending')
+                                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
+                                                                    @else
+                                                                        <span class="badge bg-success">ສຳເລັດ</span>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @else
+                                            <p class="text-muted p-3 mb-0">ບໍ່ພົບການລົງທະບຽນ</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <!-- Payment Information -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-cash-coin me-2"></i>ການຊຳລະເງິນຂອງທ່ານ</h5>
+                                        <span class="badge bg-white text-success">{{ $student->payments->count() }}</span>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        @if($student->payments->count() > 0)
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-striped table-hover mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>ວັນທີ</th>
+                                                            <th>ສາຂາ</th>
+                                                            <th>ປີການສຶກສາ</th>
+                                                            <th>ຈຳນວນເງິນ</th>
+                                                            <th>ສະຖານະ</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($student->payments as $payment)
+                                                            <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>
+                                                                <td>{{ $payment->major->name }}</td>
+                                                                <td>{{ isset($payment->major->year) ? $payment->major->year->name : '-' }}</td>
+                                                                <td>{{ number_format($payment->total_price, 2) }}</td>
+                                                                <td>
+                                                                    @if($payment->status == 'pending')
+                                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
+                                                                    @else
+                                                                        <span class="badge bg-success">ສຳເລັດ</span>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @else
+                                            <p class="text-muted p-3 mb-0">ບໍ່ພົບການຊຳລະເງິນ</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <!-- Upgrade Information -->
+                                <div class="card mb-3">
+                                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-arrow-up-circle-fill me-2"></i>ການອັບເກຣດຂອງທ່ານ</h5>
+                                        <span class="badge bg-white text-info">{{ $student->upgrades->count() }}</span>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        @if($student->upgrades->count() > 0)
+                                            <div class="table-responsive">
+                                                <table class="table table-sm table-striped table-hover mb-0">
+                                                    <thead class="table-light">
+                                                        <tr>
+                                                            <th>ວັນທີ</th>
+                                                            <th>ສາຂາ</th>
+                                                            <th>ປີການສຶກສາ</th>
+                                                            <th>ວິຊາຮຽນ</th>
+                                                            <th>ສະຖານະ</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($student->upgrades as $upgrade)
+                                                            <tr>
+                                                                <td>{{ \Carbon\Carbon::parse($upgrade->date)->format('d/m/Y') }}</td>
+                                                                <td>{{ $upgrade->major->name }}</td>
+                                                                <td>{{ isset($upgrade->major->year) ? $upgrade->major->year->name : '-' }}</td>
+                                                                <td>
+                                                                    @if($upgrade->upgradeDetails->count() > 0)
+                                                                        {{ $upgrade->upgradeDetails->count() }} ວິຊາ
+                                                                    @else
+                                                                        0 ວິຊາ
+                                                                    @endif
+                                                                </td>
+                                                                <td>
+                                                                    @if($upgrade->payment_status == 'pending')
+                                                                        <span class="badge bg-warning">ລໍຖ້າ</span>
+                                                                    @else
+                                                                        <span class="badge bg-success">ສຳເລັດ</span>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        @else
+                                            <p class="text-muted p-3 mb-0">ບໍ່ພົບການອັບເກຣດ</p>
+                                        @endif
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                {{-- <div class="d-flex justify-content-between mb-3">
+                                    <a href="{{ route('main') }}" class="btn btn-primary">
+                                        <i class="bi bi-speedometer2 me-1"></i> ກວດສອບລາຍລະອຽດ
+                                    </a>
+                                    <a href="{{ route('student.profile') }}" class="btn btn-outline-primary">
+                                        <i class="bi bi-person-badge me-1"></i> ເບິ່ງບັດນັກສຶກສາ
+                                    </a>
+                                </div> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endif
+    
     {{-- contents --}}
-    <div class="container-fluid" style="background-color:#e4e5f0;"">
-        @yield('contents');
+    <div class="container-fluid" style="background-color:#e4e5f0;">
+        @yield('contents')
     </div>
 
     @if(session()->has('auth_user'))

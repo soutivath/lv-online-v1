@@ -4,23 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile - Laovieng College</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+      <!-- Bootstrap CSS -->    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">    <!-- Student ID Card Enhanced Styles -->
+    <link rel="stylesheet" href="{{ asset('css/student-id-card.css') }}">
     <style>
         .profile-section {
             padding: 20px;
             background-color: #f8f9fa;
             border-radius: 5px;
             margin-bottom: 20px;
-        }
-        .student-picture {
+        }        .student-picture {
             max-width: 150px;
             margin-bottom: 15px;
+        }
+        .student-profile-picture {
+            border: 3px solid #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .student-profile-picture:hover {
+            transform: scale(1.05);
         }
         .navbar-brand {
             display: flex;
@@ -47,20 +56,41 @@
             font-weight: bold;
             color: #555;
         }
-        
-        /* Student ID Card Styles */
+          /* Student ID Card Styles */
         .student-id-card {
             width: 100%;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             background-color: white;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            position: relative;
         }
         
         .student-id-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transform: translateY(-8px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2), 0 0 25px rgba(47,44,202,0.3);
+        }
+        
+        .student-id-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 12px;
+            z-index: 1;
+        }
+        
+        .student-id-card:hover::before {
+            opacity: 1;
         }
         
         .id-card-header {
@@ -70,6 +100,27 @@
             display: flex;
             align-items: center;
             border-bottom: 3px solid #ffcc00;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .id-card-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .student-id-card:hover .id-card-header::after {
+            opacity: 0.7;
+            transform: scale(1);
         }
         
         .college-logo {
@@ -82,29 +133,59 @@
             align-items: center;
             margin-right: 15px;
             font-size: 24px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .college-logo {
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
         }
         
         .header-text h5 {
             margin: 0;
             font-weight: bold;
             letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .header-text h5 {
+            transform: translateY(-2px);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         
         .header-text p.small {
             margin: 0;
             font-size: 0.8rem;
             opacity: 0.8;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .student-id-card:hover .header-text p.small {
+            opacity: 1;
         }
         
         .id-card-body {
             padding: 20px;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
         }
         
         .student-photo {
             text-align: center;
             margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
         }
         
         .student-photo img {
@@ -113,6 +194,14 @@
             object-fit: cover;
             border-radius: 50%;
             border: 3px solid #e2e2e2;
+            transition: all 0.5s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .student-id-card:hover .student-photo img {
+            transform: scale(1.05);
+            border-color: #2f2cca;
+            box-shadow: 0 8px 25px rgba(47,44,202,0.3);
         }
         
         .no-photo {
@@ -125,10 +214,21 @@
             justify-content: center;
             color: #aaa;
             border: 3px solid #e2e2e2;
+            transition: all 0.5s ease;
+        }
+        
+        .student-id-card:hover .no-photo {
+            background-color: #e9ecef;
+            color: #555;
+            border-color: #2f2cca;
+            transform: rotate(-5deg) scale(1.05);
         }
         
         .student-details {
             flex: 1;
+            position: relative;
+            z-index: 1;
+            width: 100%;
         }
         
         .student-name {
@@ -136,34 +236,96 @@
             font-weight: 600;
             color: #333;
             margin-bottom: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .student-name {
+            transform: translateY(-2px);
+            color: #2f2cca;
         }
         
         .student-id {
             font-size: 0.9rem;
             color: #666;
             margin-bottom: 10px;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding: 3px 10px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .student-id-card:hover .student-id {
+            transform: translateY(-2px);
+            background-color: #2f2cca;
+            color: white;
+            box-shadow: 0 5px 15px rgba(47,44,202,0.3);
         }
         
         .details-list {
             margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .details-list {
+            transform: translateY(-2px);
         }
         
         .detail-item {
             margin-bottom: 8px;
             display: flex;
             font-size: 0.9rem;
+            padding: 5px 0;
+            transition: all 0.2s ease;
+            border-bottom: 1px dashed transparent;
+        }
+        
+        .student-id-card:hover .detail-item {
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .student-id-card:hover .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .student-id-card:hover .detail-item:hover {
+            background-color: #f8f9fa;
+            padding-left: 5px;
+            border-radius: 4px;
         }
         
         .detail-label {
             font-weight: 500;
             color: #555;
             width: 100px;
+            transition: all 0.3s ease;
+        }
+        
+        .detail-label i {
+            width: 20px;
+            margin-right: 5px;
+            color: #2f2cca;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .detail-item:hover .detail-label {
+            color: #2f2cca;
+        }
+        
+        .student-id-card:hover .detail-item:hover .detail-label i {
+            transform: scale(1.2);
         }
         
         .detail-value {
             color: #333;
             font-weight: 400;
             flex: 1;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .detail-item:hover .detail-value {
+            font-weight: 600;
         }
         
         .barcode-container {
@@ -171,6 +333,7 @@
             margin-top: 10px;
             padding: 10px 0;
             border-top: 1px dashed #eee;
+            position: relative;
         }
         
         .barcode {
@@ -178,12 +341,128 @@
             padding: 8px 15px;
             background-color: #f8f9fa;
             border-radius: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .student-id-card:hover .barcode {
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Barcode scanline animation */
+        .barcode::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0) 0%, 
+                rgba(255,255,255,0.8) 50%, 
+                rgba(255,255,255,0) 100%);
+            transform: skewX(-25deg);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.05s;
+        }
+        
+        .student-id-card:hover .barcode::after {
+            animation: scanline 1.5s ease-in-out infinite;
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        @keyframes scanline {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 200%;
+            }
         }
         
         .barcode-number {
-            font-family: monospace;
+            font-family: 'Courier New', monospace;
             font-size: 0.9rem;
             margin-left: 8px;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .barcode-number {
+            font-weight: 700;
+        }
+        
+        /* QR Code Styles */
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .qr-container {
+            border-top: 1px dashed #ccc;
+        }
+        
+        .qr-code {
+            max-width: 100px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 8px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .qr-code::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #2f2cca 0%, #4a47e3 100%);
+            z-index: -1;
+            opacity: 0;
+            transform: scale(1.15);
+            transition: all 0.4s ease;
+        }
+        
+        .student-id-card:hover .qr-code {
+            transform: translateY(-5px) scale(1.1) rotate(2deg);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15), 0 0 15px rgba(47,44,202,0.2);
+            padding: 10px;
+        }
+        
+        .student-id-card:hover .qr-code::before {
+            opacity: 0.1;
+            transform: scale(1);
+        }
+        
+        .qr-caption {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+        
+        .student-id-card:hover .qr-caption {
+            transform: translateY(2px);
+            color: #2f2cca;
+            opacity: 1;
         }
         
         .id-card-footer {
@@ -191,21 +470,39 @@
             background-color: #f8f9fa;
             font-size: 0.8rem;
             border-top: 1px solid #eee;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .student-id-card:hover .id-card-footer {
+            background-color: #f0f3f9;
         }
         
         .contact-info {
             color: #555;
             margin-bottom: 8px;
+            transition: all 0.3s ease;
         }
         
         .contact-info div {
             margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .contact-info div {
+            transform: translateX(3px);
         }
         
         .contact-info i {
             color: #2f2cca;
             width: 15px;
             margin-right: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .contact-info i {
+            transform: scale(1.2);
         }
         
         .expiry-info {
@@ -213,11 +510,128 @@
             font-style: italic;
             color: #888;
             font-size: 0.75rem;
+            transition: all 0.3s ease;
         }
         
         .valid-until {
             color: #FF5722;
             font-weight: 500;
+            position: relative;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .student-id-card:hover .valid-until {
+            transform: scale(1.05);
+            text-shadow: 0 2px 8px rgba(255,87,34,0.2);
+        }
+
+        /* Add flip card functionality */
+        .flip-card {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+        
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .flip-card-front {
+            background-color: white;
+        }
+        
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(135deg, #2f2cca 0%, #1c37e1 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .flip-hint {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(47, 44, 202, 0.8);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            z-index: 10;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .flip-hint:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .back-content {
+            width: 100%;
+        }
+        
+        .back-header {
+            margin-bottom: 20px;
+        }
+        
+        .back-logo {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .back-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .back-subtitle {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .scan-code-container {
+            margin: 20px 0;
+        }
+        
+        .scan-code-title {
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .back-footer {
+            font-size: 12px;
+            margin-top: 20px;
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -259,71 +673,10 @@
     <div class="container py-4">
         <h2 class="page-title"><i class="fas fa-user-circle me-2"></i>Student Profile</h2>
         
-        <div class="row">            <div class="col-md-4">
+        <div class="row">
+            <div class="col-md-4">
                 <!-- Student ID Card -->
-                <div class="student-id-card mb-4">
-                    <div class="id-card-header">
-                        <div class="college-logo">
-                            <i class="fas fa-graduation-cap"></i>
-                        </div>
-                        <div class="header-text">
-                            <h5>Laovieng College</h5>
-                            <p class="small text-white">Student Identification Card</p>
-                            <p class="small text-white">ບັດນັກສຶກສາ</p>
-                        </div>
-                    </div>
-                    
-                    <div class="id-card-body">
-                        <div class="student-photo">
-                            @if($student->picture)
-                                <img src="{{ asset('storage/' . $student->picture) }}" alt="Student Picture" class="img-fluid">
-                            @else
-                                <div class="no-photo">
-                                    <i class="fas fa-user fa-3x"></i>
-                                </div>
-                            @endif
-                        </div>
-                        
-                        <div class="student-details">
-                            <div class="text-center mb-2">
-                                <h5 class="student-name">{{ $student->name }} {{ $student->sername }}</h5>
-                                <div class="student-id">{{ $student->id }}</div>
-                            </div>
-                            
-                            <div class="details-list">
-                                <div class="detail-item">
-                                    <span class="detail-label"><i class="fas fa-venus-mars"></i> ເພດ:</span>
-                                    <span class="detail-value">{{ $student->gender }}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label"><i class="fas fa-birthday-cake"></i> ເກີດວັນທີ:</span>
-                                    <span class="detail-value">{{ \Carbon\Carbon::parse($student->birthday)->format('d/m/Y') }}</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="detail-label"><i class="fas fa-flag"></i> ສັນຊາດ:</span>
-                                    <span class="detail-value">{{ $student->nationality }}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="barcode-container">
-                                <div class="barcode">
-                                    <i class="fas fa-barcode fa-lg"></i>
-                                    <span class="barcode-number">{{ $student->id }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="id-card-footer">
-                        <div class="contact-info">
-                            <div><i class="fas fa-phone"></i> {{ $student->tell }}</div>
-                            <div><i class="fas fa-map-marker-alt"></i> {{ $student->address }}</div>
-                        </div>
-                        <div class="expiry-info">
-                            <div class="valid-until">Valid until: 31/12/2025</div>
-                        </div>
-                    </div>
-                </div>
+                @include('main.dashboard-card')
                 
                 <!-- Additional student information section -->
                 <div class="profile-section">
@@ -369,7 +722,8 @@
                                                     @else
                                                         ບໍ່ມີ
                                                     @endif
-                                                </td>                                                <td>
+                                                </td>
+                                                <td>
                                                     @if($registration->registrationDetails->count() > 0 && isset($registration->registrationDetails->first()->major->year))
                                                         {{ $registration->registrationDetails->first()->major->year->name }}
                                                     @else
@@ -430,7 +784,8 @@
                                     <tbody>
                                         @foreach($student->payments as $payment)
                                             <tr>
-                                                <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>                                                <td>{{ $payment->major->name }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($payment->date)->format('d/m/Y') }}</td>
+                                                <td>{{ $payment->major->name }}</td>
                                                 <td>{{ isset($payment->major->year) ? $payment->major->year->name : '-' }}</td>
                                                 <td>{{ isset($payment->major->term) ? $payment->major->term->name : '-' }}</td>
                                                 <td>{{ number_format($payment->total_price, 2) }}</td>
@@ -479,7 +834,8 @@
                                     <tbody>
                                         @foreach($student->upgrades as $upgrade)
                                             <tr>
-                                                <td>{{ \Carbon\Carbon::parse($upgrade->date)->format('d/m/Y') }}</td>                                                <td>{{ $upgrade->major->name }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($upgrade->date)->format('d/m/Y') }}</td>
+                                                <td>{{ $upgrade->major->name }}</td>
                                                 <td>{{ isset($upgrade->major->year) ? $upgrade->major->year->name : '-' }}</td>
                                                 <td>{{ isset($upgrade->major->term) ? $upgrade->major->term->name : '-' }}</td>
                                                 <td>
@@ -540,14 +896,14 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Bootstrap Bundle with Popper -->
+    </div>    <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>    <script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
+    <!-- Student ID Card Enhancement -->
+    <script src="{{ asset('js/student-id-card.js') }}"></script><script>
         @if(session('sweet_alert'))
             // Only show SweetAlert for fresh page loads, not when navigating back
             let alreadyShown = sessionStorage.getItem('alert_shown_{{ session()->getId() }}');
@@ -569,20 +925,86 @@
             window.addEventListener('beforeunload', function() {
                 sessionStorage.removeItem('alert_shown_{{ session()->getId() }}');
             });
-        @endif
-
-        // Add hover animation effect to student ID card
+        @endif        // Enhanced animations for student ID card
         document.addEventListener('DOMContentLoaded', function() {
             const studentIdCard = document.querySelector('.student-id-card');
             if (studentIdCard) {
+                // Track mouse position for 3D effect
+                studentIdCard.addEventListener('mousemove', function(e) {
+                    const card = this;
+                    const cardRect = card.getBoundingClientRect();
+                    
+                    // Calculate mouse position relative to card center
+                    const cardCenterX = cardRect.left + cardRect.width / 2;
+                    const cardCenterY = cardRect.top + cardRect.height / 2;
+                    
+                    // Calculate rotation based on mouse position
+                    const rotateY = ((e.clientX - cardCenterX) / (cardRect.width / 2)) * 5;
+                    const rotateX = -((e.clientY - cardCenterY) / (cardRect.height / 2)) * 5;
+                    
+                    // Apply the 3D transform
+                    card.style.transform = `translateY(-8px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    
+                    // Add dynamic highlight effect based on mouse position
+                    const highlight = card.querySelector('.id-card-header::after');
+                    if (highlight) {
+                        const x = ((e.clientX - cardRect.left) / cardRect.width) * 100;
+                        const y = ((e.clientY - cardRect.top) / cardRect.height) * 100;
+                        highlight.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%)`;
+                    }
+                });
+                
                 studentIdCard.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-5px) rotateY(5deg)';
+                    this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2), 0 0 25px rgba(47,44,202,0.3)';
                 });
                 
                 studentIdCard.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0) rotateY(0)';
+                    this.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
+                    this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                });
+                
+                // Add click interaction for a subtle "press" effect
+                studentIdCard.addEventListener('mousedown', function() {
+                    this.style.transform = 'translateY(-5px) scale(0.98)';
+                });
+                
+                studentIdCard.addEventListener('mouseup', function() {
+                    this.style.transform = 'translateY(-8px) scale(1)';
                 });
             }
+              // QR code animation has been removed              // QR pulse animation CSS has been removed
+            
+            // Add flip card functionality
+            const flipCards = document.querySelectorAll('.flip-card');
+            flipCards.forEach(function(flipCard) {
+                if (flipCard) {
+                    // Toggle flip on click
+                    flipCard.addEventListener('click', function() {
+                        this.classList.toggle('flipped');
+                    });
+                    
+                    // Add flip hint functionality
+                    const flipHint = flipCard.querySelector('.flip-hint');
+                    if (flipHint) {
+                        flipHint.addEventListener('click', function(e) {
+                            e.stopPropagation(); // Prevent the flip-card click event
+                            flipCard.classList.toggle('flipped');
+                        });
+                    }
+                    
+                    // Reset rotation when flipped to avoid interference with 3D effects
+                    flipCard.addEventListener('transitionend', function(e) {
+                        if (e.propertyName === 'transform') {
+                            if (this.classList.contains('flipped')) {
+                                const frontCard = this.querySelector('.student-id-card');
+                                if (frontCard) {
+                                    frontCard.style.transform = 'none';
+                                }
+                            }
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>

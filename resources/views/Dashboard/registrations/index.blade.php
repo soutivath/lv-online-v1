@@ -81,12 +81,8 @@
                             <td>
                                 @if($registration->registrationDetails->count() > 0)
                                     <div class="d-flex flex-column gap-1">
-                                        @foreach($registration->registrationDetails as $index => $detail)
-                                            @if($index < 2)
-                                                <span class="badge bg-info">{{ $detail->major->name }}</span>
-                                            @elseif($index == 2)
-                                                <span class="badge bg-secondary">+{{ $registration->registrationDetails->count() - 2 }} ເພີ່ມເຕີມ</span>
-                                            @endif
+                                        @foreach($registration->registrationDetails as $detail)
+                                            <span class="badge bg-info">{{ $detail->major->name }}</span>
                                         @endforeach
                                     </div>
                                 @else
