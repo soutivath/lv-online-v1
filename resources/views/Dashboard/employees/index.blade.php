@@ -59,7 +59,7 @@
                             <td>{{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</td>
                             <td>
                                 <span class="badge {{ $employee->role == 'admin' ? 'bg-primary' : 'bg-info' }}">
-                                    {{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ' : 'ອາຈານ' }}
+                                    {{ $employee->role == 'admin' ? 'ແອັດມິນ' : 'ຢູເຊີ' }}
                                 </span>
                             </td>
                             <td>
@@ -147,8 +147,8 @@
                     <div class="mb-3">
                         <label for="role" class="form-label">ບົດບາດ</label>
                         <select class="form-select" id="role" name="role" required>
-                            <option value="admin">ຜູ້ບໍລິຫານ</option>
-                            <option value="teacher">ອາຈານ</option>
+                            <option value="admin">ແອັດມິນ</option>
+                            <option value="teacher">ຢູເຊີ</option>
                         </select>
                     </div>
                     
@@ -215,7 +215,7 @@
                             <p><strong>ວັນທີເຂົ້າຮ່ວມ:</strong> {{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</p>
                             <p><strong>ເບີໂທ:</strong> {{ $employee->tell }}</p>
                             <p><strong>ທີ່ຢູ່:</strong> {{ $employee->address }}</p>
-                            <p><strong>ບົດບາດ:</strong> {{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ' : 'ອາຈານ' }}</p>
+                            <p><strong>ບົດບາດ:</strong> {{ $employee->role == 'admin' ? 'ແອັດມິນ' : 'ຢູເຊີ' }}</p>
                         </div>
                     </div>
                     
@@ -297,8 +297,8 @@
                         <div class="mb-3">
                             <label for="edit_role{{ $employee->id }}" class="form-label">ບົດບາດ</label>
                             <select class="form-select" id="edit_role{{ $employee->id }}" name="role" required>
-                                <option value="admin" {{ $employee->role == 'admin' ? 'selected' : '' }}>ຜູ້ບໍລິຫານ</option>
-                                <option value="teacher" {{ $employee->role == 'teacher' ? 'selected' : '' }}>ອາຈານ</option>
+                                <option value="admin" {{ $employee->role == 'admin' ? 'selected' : '' }}>ແອັດມິນ</option>
+                                <option value="teacher" {{ $employee->role == 'teacher' ? 'selected' : '' }}>ຢູເຊີ</option>
                             </select>
                         </div>
                         

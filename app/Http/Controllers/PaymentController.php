@@ -443,11 +443,33 @@ class PaymentController extends Controller
                         'text' => 'ທ່ານບໍ່ມີສາຂາທີ່ລົງທະບຽນແລ້ວຍັງບໍ່ໄດ້ຊຳລະເງິນ'
                     ]);
             }
+            
+            // Check if user is coming from registration by finding their most recent registration
+            // This will be used to automatically select the major in the payment form
+            $recentRegistration = Registration::where('student_id', $student->id)
+                ->orderBy('created_at', 'desc')
+                ->first();
+                
+            // Get the recently registered major ID if it exists and hasn't been paid for yet
+            $recentMajorId = null;
+            if ($recentRegistration) {
+                // Get the first unpaid major from the most recent registration
+                $recentDetail = RegistrationDetail::where('registration_id', $recentRegistration->id)
+                    ->whereHas('major', function($query) use($paidMajorIds) {
+                        $query->whereNotIn('id', $paidMajorIds);
+                    })
+                    ->first();
+                    
+                if ($recentDetail) {
+                    $recentMajorId = $recentDetail->major_id;
+                    Log::info('Found recent unpaid major', ['major_id' => $recentMajorId]);
+                }
+            }
 
             $students = Student::all();
 
             Log::info('Rendering student-payment view');
-            return view('student-payment', compact('student', 'majors', 'students'));
+            return view('student-payment', compact('student', 'majors', 'students', 'recentMajorId'));
         } catch (\Exception $e) {
             Log::error('Exception in showStudentPaymentForm', [
                 'error' => $e->getMessage(),

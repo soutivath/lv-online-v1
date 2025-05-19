@@ -97,7 +97,7 @@
                 </tr>
                 <tr>
                     <th>ບົດບາດ<br/><span style="font-size: 0.8em;">Role</span></th>
-                    <td>{{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ / Administrator' : 'ອາຈານ / Teacher' }}</td>
+                    <td>{{ $employee->role == 'admin' ? 'ແອັດມິນ / Administrator' : 'ຢູເຊີ / User' }}</td>
                 </tr>
                 <tr>
                     <th>ເບີໂທ<br/><span style="font-size: 0.8em;">Phone</span></th>

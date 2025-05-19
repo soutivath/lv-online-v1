@@ -1073,6 +1073,31 @@
                 addMajor();
             });
         }
+        
+        // Auto-select recent major if coming from registration
+        @if(isset($recentMajorId))
+            console.log('Found recent major ID: {{ $recentMajorId }}');
+            // Find the major element
+            const recentMajorElement = document.querySelector(`.major-option[data-id="{{ $recentMajorId }}"]`);
+            
+            if (recentMajorElement) {
+                // Get the major details
+                const name = recentMajorElement.getAttribute('data-name');
+                const semester = recentMajorElement.getAttribute('data-semester');
+                const term = recentMajorElement.getAttribute('data-term');
+                const year = recentMajorElement.getAttribute('data-year');
+                const price = recentMajorElement.getAttribute('data-price');
+                
+                // Auto-select the major
+                document.getElementById('selectedMajorText').textContent = name + ' | ' + semester + ' | ' + term + ' | ' + year;
+                document.getElementById('selected_major_id').value = '{{ $recentMajorId }}';
+                
+                // Auto-add the major to the list
+                setTimeout(() => {
+                    addMajor();
+                }, 500);
+            }
+        @endif
     });
 
 

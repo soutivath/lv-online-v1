@@ -73,7 +73,7 @@
                     <td>{{ $employee->sername }}</td>
                     <td>{{ $employee->gender }}</td>
                     <td>{{ \Carbon\Carbon::parse($employee->date)->format('d/m/Y') }}</td>
-                    <td>{{ $employee->role == 'admin' ? 'ຜູ້ບໍລິຫານ / Administrator' : 'ອາຈານ / Teacher' }}</td>
+                    <td>{{ $employee->role == 'admin' ? 'ແອັດມິນ / Administrator' : 'ຢູເຊີ / Teacher' }}</td>
                     <td>{{ $employee->tell }}</td>
                     <td>{{ $employee->user ? $employee->user->email : 'ບໍ່ມີບັນຊີ / No account' }}</td>
                 </tr>
